@@ -1,0 +1,111 @@
+package com.novatronic.masivas.backoffice.config;
+
+import com.hazelcast.config.*;
+import com.novatronic.novalog.audit.logger.NovaLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+//import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+//import org.springframework.data.domain.AuditorAware;
+
+/**
+ *
+ * @author Obi Consulting
+ */
+@Configuration
+@EnableScheduling
+//@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+public class ApplicationConfig {
+
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(ApplicationConfig.class);
+
+    private static final String CLASSPATH_FILE = "aas.properties";
+    private static final String EXTERNAL_FILE_RELATIVE = "/LBTRWEB/aas.properties";
+
+    @Autowired
+    private Environment env;
+
+    @Value("#{'${cache.config.ips}'.split(',')}")
+    private List<String> ips;
+
+    @Value("${ip.autoincrement:false}")
+    private Boolean autoincrementHazelcast;
+
+    @Value("${ip.port:5701}")
+    private Integer portHazelcast;
+
+    @Value("${ip.portCount:3}")
+    private Integer portCountHazelcast;
+
+    @Value("${instanceName:tam_gkn_prod}")
+    private String instanceName;
+
+    public String getProperty(String pPropertyKey) {
+        return env.getProperty(pPropertyKey);
+    }
+
+//    @Bean
+//    public AuditorAware<String> auditorProvider() {
+//        return new AuditorAwareImpl();
+//    }
+
+    @Bean
+    public Config hazelcastConfig() throws IOException {
+        Config config = new Config();
+        //SubZero.useAsGlobalSerializer(config);
+        NetworkConfig network = config.getNetworkConfig();
+        JoinConfig join = network.getJoin();
+        join.getMulticastConfig().setEnabled(false);
+        network.setPort(portHazelcast);
+        network.setPortAutoIncrement(autoincrementHazelcast);
+        if (autoincrementHazelcast) {
+            network.setPortCount(portCountHazelcast);
+        }
+        join.getTcpIpConfig().setMembers(this.ips);
+        join.getTcpIpConfig().setEnabled(true);
+        return config.setInstanceName(instanceName);
+
+    }
+
+    @Bean(name = "aasProperties")
+    public Properties aasProperties() throws IOException {
+        Properties properties;
+
+        // 1. Intentar cargar desde classpath
+        Resource classpathResource = new ClassPathResource(CLASSPATH_FILE);
+        if (classpathResource.exists()) {
+            LOGGER.info("Cargando archivo de configuración desde classpath: {}", CLASSPATH_FILE);
+            properties = PropertiesLoaderUtils.loadProperties(classpathResource);
+            return properties;
+        }
+
+        // 2. Si no existe en classpath, intentar desde ruta externa
+        String configPath = System.getenv("SIXCFG");
+        if (configPath == null || configPath.isBlank()) {
+            LOGGER.error("Variable de entorno SIXCFG no está definida.");
+            throw new IOException("Variable de entorno SIXCFG no está definida.");
+        }
+
+        String externalFilePath = configPath + EXTERNAL_FILE_RELATIVE;
+        Resource externalResource = new FileSystemResource(externalFilePath);
+        if (!externalResource.exists()) {
+            LOGGER.error("El archivo de configuración no existe: {}", externalFilePath);
+            throw new IOException("El archivo de configuración no existe: " + externalFilePath);
+        }
+
+        LOGGER.info("Cargando archivo de configuración desde ruta externa: {}", externalFilePath);
+        properties = PropertiesLoaderUtils.loadProperties(externalResource);
+        return properties;
+    }
+
+}
