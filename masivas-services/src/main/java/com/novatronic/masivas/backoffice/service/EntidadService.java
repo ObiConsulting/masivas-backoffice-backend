@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.EntidadRepository;
-import java.util.List;
+import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -31,10 +35,26 @@ public class EntidadService {
 //        entidadRepository.save(this);
     }
 
-//    public ResultadoOperacionConsulta buscar(FiltroMasivasRequest request, String usuario) {
-    public String buscar(FiltroMasivasRequest request, String usuario) {
-        List<TpEntidad> lista = entidadRepository.findAll();
-        return null;
+    public Page<TpEntidad> buscar(FiltroMasivasRequest request, String usuario) {
+        try {
+            Pageable pageable = null;
+            if (request.getCampoOrdenamiento().isEmpty()) {
+                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
+            } else {
+                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenamiento())) {
+                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenamiento()).ascending());
+                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenamiento())) {
+                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenamiento()).descending());
+                }
+
+            }
+            Page<TpEntidad> objPageable = entidadRepository.buscarPorFiltros(request.getCodigoEntidad(), request.getDescripcionEntidad(), request.getEstado(), pageable);
+            return objPageable;
+        } catch (Exception e) {
+            System.out.println("Error" + e);
+            return null;
+        }
+
     }
 
 }

@@ -22,6 +22,10 @@ public class ConstantesServices {
 
     public static final Integer TAMANO_PAGINA_20 = 20;
     public static final Integer TAMANO_PAGINA_10 = 10;
+    public static final Integer PAGINA_INICIAL = 0;
+
+    public static final String ORDEN_ASC = "ASC";
+    public static final String ORDEN_DESC = "DESC";
 
     public static final String BLANCO = " ";
     public static final String VACIO = "";
@@ -64,5 +68,7 @@ public class ConstantesServices {
 
     public static final String TIPO_ARCHIVO_PDF = "PDF";
     public static final String TIPO_ARCHIVO_XLSX = "XLSX";
+    
+    public static final String MENSAJE_EXITO_BUSCAR_ENTIDAD = "Entidad buscada correctamente";
 
 }
