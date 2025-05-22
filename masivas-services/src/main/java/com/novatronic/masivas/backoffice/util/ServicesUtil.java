@@ -206,35 +206,6 @@ public final class ServicesUtil {
         return xmlCalender;
     }
 
-    public static String verificarOperacion(
-            List<String> arrayCodigos,
-            Integer countOperacion,
-            Integer totalElementos,
-            MessageSource messageSource,
-            String claveParcial,
-            String claveError
-    ) {
-        String mensaje = "";
-        if (arrayCodigos.contains(ConstantesServices.CODIGO_SESION_BCRP_INACTIVA_WS)) {
-            mensaje = messageSource.getMessage(ConstantesServices.CODIGO_SESION_BCRP_INACTIVA_WS, null, Locale.getDefault());
-            return mensaje;
-        }
-        if (countOperacion > 0 && countOperacion < totalElementos) {
-            mensaje = messageSource.getMessage(claveParcial, null, Locale.getDefault());
-        }
-
-//        if (countOperacion == 0 && totalElementos > 0
-//                && ConstantesServices.CODIGO_SESION_LBTR_ACTIVA_WS.equals(codigoRespuesta)
-//                && ConstantesServices.CODIGO_SESION_BCRP_ACTIVA_WS.equals(codigoRespuesta)) {
-//            mensaje = getMessageResponse(ConstantesServices.CODIGO_SESION_BCRP_INACTIVA_WS);
-//        }
-        if (countOperacion == 0 && totalElementos > 0) {
-            mensaje = messageSource.getMessage(claveError, null, Locale.getDefault());
-        }
-
-        return mensaje;
-    }
-
     public static String gregorianDateToStringExt(XMLGregorianCalendar xMLGregorianDate) {
         Date fecha = null;
         if (xMLGregorianDate != null) {

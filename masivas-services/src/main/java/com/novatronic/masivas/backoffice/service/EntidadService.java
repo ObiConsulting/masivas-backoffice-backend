@@ -8,6 +8,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.EntidadRepository;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import jakarta.transaction.Transactional;
+import java.util.Date;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,27 +31,44 @@ public class EntidadService {
         this.messageSource = messageSource;
     }
 
+    @Transactional
     public void crearEntidad(MasivasRequestDTO request, String usuario) {
-//        TpEntidad entidad = new TpEntidad();
+        try {
+            TpEntidad entidad = new TpEntidad();
+            entidad.setCodEntidad(request.getCodigoEntidad());
+            entidad.setDescEntidad(request.getDescripcionEntidad());
+            entidad.setEstado(request.getEstado());
+            entidad.setIdPerfil(1L);
+            entidad.setFecCreacion(new Date());
+            entidad.setUsuCreacion(usuario);
 
-//        entidadRepository.save(this);
+            System.out.println("before insert: ");
+            TpEntidad tpEntidadSaved = entidadRepository.save(entidad);
+            System.out.println("result insert: " + tpEntidadSaved);
+
+        } catch (Exception e) {
+            System.out.println("Error" + e);
+        }
     }
 
     public Page<TpEntidad> buscar(FiltroMasivasRequest request, String usuario) {
+
         try {
+
             Pageable pageable = null;
-            if (request.getCampoOrdenamiento().isEmpty()) {
+            if (request.getCampoOrdenar().isEmpty()) {
                 pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
             } else {
-                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenamiento())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenamiento()).ascending());
-                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenamiento())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenamiento()).descending());
+                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
+                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).ascending());
+                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
+                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
                 }
-
             }
-            Page<TpEntidad> objPageable = entidadRepository.buscarPorFiltros(request.getCodigoEntidad(), request.getDescripcionEntidad(), request.getEstado(), pageable);
+
+            Page<TpEntidad> objPageable = entidadRepository.buscarPorFiltros(request.getCodigo(), request.getDescripcion(), request.getEstado(), pageable);
             return objPageable;
+
         } catch (Exception e) {
             System.out.println("Error" + e);
             return null;

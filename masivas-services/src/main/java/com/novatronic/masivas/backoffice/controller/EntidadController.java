@@ -34,8 +34,13 @@ public class EntidadController {
 
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse> registrarEntidad(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
-
-        return null;
+        try {
+            entidadService.crearEntidad(request, userContext.getUsername());
+            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_ENTIDAD, null));
+        } catch (Exception e) {
+            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+        }
     }
 
     @PostMapping("/buscar")
@@ -44,6 +49,7 @@ public class EntidadController {
         ModelMapper modelMapper = new ModelMapper();
 
         Page<TpEntidad> objPegeable = entidadService.buscar(request, userContext.getUsername());
+
         if (objPegeable != null) {
 
             Page<TpEntidadDTO> dtoPage = objPegeable.map(e -> modelMapper.map(e, TpEntidadDTO.class));

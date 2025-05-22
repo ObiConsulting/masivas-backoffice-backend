@@ -51,13 +51,10 @@ public interface EntidadRepository extends JpaRepository<TpEntidad, BigDecimal> 
 //            Pageable pageable
 //    );
 //    
-
-    @Query("""
-    SELECT e FROM TpEntidad e
-    WHERE (:codEntidad IS NULL OR e.codEntidad = :codEntidad)
-      AND (:descEntidad IS NULL OR LOWER(e.descEntidad) LIKE LOWER(CONCAT('%', :descEntidad, '%')))
-      AND (:estado IS NULL OR e.estado = :estado)
-""")
+    @Query("    SELECT e FROM TpEntidad e\n"
+            + "    WHERE (:codEntidad IS NULL OR e.codEntidad = :codEntidad)\n"
+            + "      AND (:descEntidad IS NULL OR LOWER(e.descEntidad) LIKE LOWER(CONCAT('%', :descEntidad, '%')))\n"
+            + "      AND (:estado IS NULL OR e.estado = :estado)\n")
     Page<TpEntidad> buscarPorFiltros(
             @Param("codEntidad") String codEntidad,
             @Param("descEntidad") String descEntidad,

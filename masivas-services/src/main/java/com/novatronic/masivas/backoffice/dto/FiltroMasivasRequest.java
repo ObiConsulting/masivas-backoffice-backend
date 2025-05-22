@@ -9,17 +9,18 @@ import lombok.Setter;
  *
  * @author Obi Consulting
  */
-//@Data
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FiltroMasivasRequest {
 
-    private String codigoEntidad;
-    private String descripcionEntidad;
+    private String codigo;
+    private String descripcion;
     private String estado;
-    private String campoOrdenamiento;
-    private String sentidoOrdenamiento;
+
+    //Campos Generales
+    private String campoOrdenar;
+    private String sentidoOrdenar;
     private Integer numeroPagina;
     private Integer registrosPorPagina;
 
@@ -31,20 +32,20 @@ public class FiltroMasivasRequest {
         return registrosPorPagina != null ? registrosPorPagina : ConstantesServices.TAMANO_PAGINA_10;
     }
 
-    public String getSentidoOrdenamiento() {
-        return sentidoOrdenamiento != null ? sentidoOrdenamiento : "DESC";
+    public String getSentidoOrdenar() {
+        return sentidoOrdenar != null ? sentidoOrdenar : "DESC";
     }
 
-    public String getCampoOrdenamiento() {
-        return campoOrdenamiento != null ? campoOrdenamiento : "";
+    public String getCampoOrdenar() {
+        return campoOrdenar != null ? campoOrdenar : "";
     }
 
-    public String getCodigoEntidad() {
-        return codigoEntidad != null ? codigoEntidad : "";
+    public String getCodigo() {
+        return codigo != null ? codigo : "";
     }
 
-    public String getDescripcionEntidad() {
-        return descripcionEntidad != null ? descripcionEntidad : "";
+    public String getDescripcion() {
+        return descripcion != null ? descripcion : "";
     }
 
     public String getEstado() {

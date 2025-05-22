@@ -53,3 +53,4 @@ Thumbs.db
 *.code-workspace
 .factorypath
 *.factorypath
+nb-configuration.xml

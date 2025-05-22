@@ -37,13 +37,14 @@ public class LbtrRepositoryTest {
 
         TpEntidad tpEntidad = new TpEntidad();
 
-        tpEntidad.setCodEntidad("9999");
-        tpEntidad.setDescEntidad("BANCO RVARGAS");
+        tpEntidad.setCodEntidad("556");
+        tpEntidad.setDescEntidad("BANCO nuevo 556");
         tpEntidad.setEstado("0");
         tpEntidad.setIdPerfil(1L);
         tpEntidad.setFecCreacion(new Date());
         tpEntidad.setUsuCreacion("rvargas");
 
+        System.out.println("before insert: ");
         TpEntidad tpEntidadSaved = entidadRepository.save(tpEntidad);
         System.out.println("result insert: " + tpEntidadSaved);
 
