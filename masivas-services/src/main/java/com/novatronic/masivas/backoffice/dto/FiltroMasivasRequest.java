@@ -14,9 +14,18 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FiltroMasivasRequest {
 
+    //IDs
+    private Long idEntidad;
+    private Long idGrupoParametro;
+
     private String codigo;
-    private String descripcion;
     private String estado;
+
+    //Entidad
+    private String nombre;
+
+    //Grupo Parametro
+    private String descripcion;
 
     //Campos Generales
     private String campoOrdenar;
@@ -44,12 +53,24 @@ public class FiltroMasivasRequest {
         return codigo != null ? codigo : "";
     }
 
+    public String getNombre() {
+        return nombre != null ? nombre : "";
+    }
+
     public String getDescripcion() {
         return descripcion != null ? descripcion : "";
     }
 
     public String getEstado() {
         return estado != null ? estado : "";
+    }
+
+    public Long getIdEntidad() {
+        return idEntidad;
+    }
+
+    public Long getIdGrupoParametro() {
+        return idGrupoParametro;
     }
 
 }

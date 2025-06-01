@@ -30,7 +30,7 @@ public class ApplicationConfig {
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ApplicationConfig.class);
 
     private static final String CLASSPATH_FILE = "aas.properties";
-    private static final String EXTERNAL_FILE_RELATIVE = "/LBTRWEB/aas.properties";
+    private static final String EXTERNAL_FILE_RELATIVE = "/MSVBAS/aas.properties";
 
     @Autowired
     private Environment env;

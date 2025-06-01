@@ -35,7 +35,7 @@ public class ParametroCacheService {
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ParametroCacheService.class);
 
     private static final String CLASSPATH_FILE = "nova-log.properties";
-    private static final String EXTERNAL_FILE_RELATIVE = "/LBTRWEB/nova-log.properties";
+    private static final String EXTERNAL_FILE_RELATIVE = "/MSVBAS/nova-log.properties";
 
     @PostConstruct
     public void initCache() throws IOException {

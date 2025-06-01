@@ -18,7 +18,7 @@ import org.springframework.data.domain.Sort;
  * @author obi
  */
 @SpringBootTest
-public class LbtrRepositoryTest {
+public class MasivasRepositoryTest {
 
     @Autowired
     private EntidadRepository entidadRepository;
@@ -37,8 +37,8 @@ public class LbtrRepositoryTest {
 
         TpEntidad tpEntidad = new TpEntidad();
 
-        tpEntidad.setCodEntidad("556");
-        tpEntidad.setDescEntidad("BANCO nuevo 556");
+        tpEntidad.setCodigo("159");
+        tpEntidad.setNombre("BANCO nuevo 159");
         tpEntidad.setEstado("0");
         tpEntidad.setIdPerfil(1L);
         tpEntidad.setFecCreacion(new Date());
@@ -53,10 +53,10 @@ public class LbtrRepositoryTest {
     @Test
     public void updateEntidad() {
 
-        Optional<TpEntidad> opt = entidadRepository.getByCodEntidad("0002");
+        Optional<TpEntidad> opt = entidadRepository.getByCodigo("0002");
         if (opt.isPresent()) {
             TpEntidad tpEntidad = opt.get();
-            tpEntidad.setDescEntidad("BANCO DE CREDITO DEL PERU2");
+            tpEntidad.setNombre("BANCO DE CREDITO DEL PERU2");
             tpEntidad.setFecModificacion(new Date());
             tpEntidad.setUsuModificacion("rvargas");
             TpEntidad tpEntidadSaved = entidadRepository.save(tpEntidad);
@@ -72,15 +72,13 @@ public class LbtrRepositoryTest {
         Pageable pageable = PageRequest.of(1, 5, Sort.by("cod_Entidad").ascending());
         Page<TpEntidad> resultados = entidadRepository.buscarPorFiltros("", "", "", pageable);
         for (TpEntidad resultado : resultados) {
-            
-            System.out.println("resultado"+ resultado   +"\n");
-            
+
+            System.out.println("resultado" + resultado + "\n");
+
         }
-        System.out.println("total elementos: "+resultados.getTotalElements());
-        System.out.println("total Paginas: "+resultados.getTotalPages());
-        System.out.println("Numero Elemntos: "+resultados.getNumberOfElements());
-        
-        
+        System.out.println("total elementos: " + resultados.getTotalElements());
+        System.out.println("total Paginas: " + resultados.getTotalPages());
+        System.out.println("Numero Elemntos: " + resultados.getNumberOfElements());
 
     }
 

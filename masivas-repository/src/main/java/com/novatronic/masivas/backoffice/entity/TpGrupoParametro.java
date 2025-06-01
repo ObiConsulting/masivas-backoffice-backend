@@ -21,41 +21,36 @@ import lombok.ToString;
  * @author Obi Consulting
  */
 @Entity
-@Table(name = "TP_ENTIDAD")
+@Table(name = "TP_GRUPO_PARAMETRO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TpEntidad extends ModelAudit<String> implements Serializable {
+public class TpGrupoParametro extends ModelAudit<String> implements Serializable {
 
     @Id
     @Basic(optional = false)
-    @Column(name = "ID_ENTIDAD")
-    @SequenceGenerator(name = "SEQ_TP_ENTIDAD", sequenceName = "SEQ_TP_ENTIDAD", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_ENTIDAD")
-    private Long idEntidad;
+    @Column(name = "ID_GRUPO_PARAMETRO")
+    @SequenceGenerator(name = "SEQ_TP_GRUPO_PARAMETRO", sequenceName = "SEQ_TP_GRUPO_PARAMETRO", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_GRUPO_PARAMETRO")
+    private Long idGrupoParametro;
     @Basic(optional = false)
     @Size(max = 20)
-    @Column(name = "COD_ENTIDAD")
+    @Column(name = "COD_GRUPO_PARAMETRO")
     private String codigo;
     @Basic(optional = false)
     @Size(max = 100)
-    @Column(name = "DESC_ENTIDAD")
-    private String nombre;
+    @Column(name = "DESC_GRUPO_PARAMETRO")
+    private String descripcion;
     @Basic(optional = false)
     @Size(max = 1)
     @Column(name = "ESTADO")
     private String estado;
 
-    @Basic(optional = false)
-    @Column(name = "ID_PERFIL")
-    private Long idPerfil;
-
-    public TpEntidad(String codigo, String nombre, String estado, Long idPerfil, Date fecCreacion, String usuCreacion) {
+    public TpGrupoParametro(String codigo, String descripcion, String estado, Date fecCreacion, String usuCreacion) {
         this.codigo = codigo;
-        this.nombre = nombre;
+        this.descripcion = descripcion;
         this.estado = estado;
-        this.idPerfil = idPerfil;
         this.setFecCreacion(fecCreacion);
         this.setUsuCreacion(usuCreacion);
     }

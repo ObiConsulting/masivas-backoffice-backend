@@ -65,7 +65,7 @@ public class SeguridadController {
             List<String> valores = userContext.getAuthoritiesList();
 
             CustomPaginate customPaginate = new CustomPaginate<>(1, valores.size(), valores);
-            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.MENSAJE_OK_API, "Operación correcta", customPaginate)
+            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, "Operación correcta", customPaginate)
             );
 
         } catch (Exception e) {

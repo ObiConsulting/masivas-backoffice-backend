@@ -1,8 +1,10 @@
 package com.novatronic.masivas.backoffice.dto;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  *
@@ -11,19 +13,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MasivasRequestDTO {
+@ToString
+public class DetalleRegistroEntidadDTO implements Serializable {
 
-    //IDs
     private Long idEntidad;
-    private Long idGrupoParametro;
-
-    //Campos
     private String codigo;
+    private String nombre;
     private String estado;
 
-    //Entidad
-    private String nombre;
-    //Grupo Parametro
-    private String descripcion;
-
+    private String usuCreacion;
+    private String fecCreacion;
+    private String usuModificacion;
+    private String fecModificacion;
 }

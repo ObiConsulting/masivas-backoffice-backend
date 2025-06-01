@@ -35,10 +35,10 @@ public class SeguridadService {
     private final SCAAutentication scaAutentication;
     private final JwtUtil jwtUtil;
 
-    @Value("${lbtr.sca.empresa}")
+    @Value("${masivas.sca.empresa}")
     private String empresa;
 
-    @Value("${lbtr.sca.aplicacion}")
+    @Value("${masivas.sca.aplicacion}")
     private String aplicacion;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(SeguridadService.class);

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySources;
  */
 //@PropertySources({
 //    @PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true),
-//    @PropertySource(value = "file:${SIXCFG}/LBTRWEB/application.properties", ignoreResourceNotFound = false)
+//    @PropertySource(value = "file:${SIXCFG}/MSVBAS/application.properties", ignoreResourceNotFound = false)
 //})
 @ComponentScan(basePackages = {"com.novatronic"})
 @SpringBootApplication
