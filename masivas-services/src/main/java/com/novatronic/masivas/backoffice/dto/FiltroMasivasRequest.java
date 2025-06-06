@@ -72,5 +72,4 @@ public class FiltroMasivasRequest {
     public Long getIdGrupoParametro() {
         return idGrupoParametro;
     }
-
 }

@@ -39,7 +39,7 @@ public class SeguridadController {
             res = seguridadService.authenticate(authRequest.getUsername(), authRequest.getPassword());
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
-            res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
@@ -52,7 +52,7 @@ public class SeguridadController {
             res = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
-            res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
@@ -69,7 +69,7 @@ public class SeguridadController {
             );
 
         } catch (Exception e) {
-            res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
@@ -86,7 +86,7 @@ public class SeguridadController {
             return ResponseEntity.ok(new MasivasResponse<>("200", "Sesión cerrada correctamente", null));
 
         } catch (Exception e) {
-            res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
@@ -98,7 +98,7 @@ public class SeguridadController {
             res = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
-            res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }

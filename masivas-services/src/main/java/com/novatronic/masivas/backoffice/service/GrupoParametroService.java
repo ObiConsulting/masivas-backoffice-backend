@@ -5,14 +5,21 @@ import com.novatronic.masivas.backoffice.dto.DetalleConsultaGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroGrupoParametroDTO;
+import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.entity.TpGrupoParametro;
+import com.novatronic.masivas.backoffice.exception.DataBaseException;
+import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.GrupoParametroRepository;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.logger.NovaLogger;
+import jakarta.transaction.RollbackException;
 import jakarta.transaction.Transactional;
 import java.util.Date;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,99 +33,184 @@ import org.springframework.data.domain.Sort;
 @Service
 public class GrupoParametroService {
 
+    @Autowired
     private final GrupoParametroRepository grupoParametroRepository;
     private final MessageSource messageSource;
 
-    @Autowired
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(GrupoParametroService.class);
+
     public GrupoParametroService(GrupoParametroRepository grupoParametroRepository, MessageSource messageSource) {
         this.grupoParametroRepository = grupoParametroRepository;
         this.messageSource = messageSource;
     }
 
-    @Transactional
     public Long crearGrupoParametro(MasivasRequestDTO request, String usuario) {
-        TpGrupoParametro grupoParametro = new TpGrupoParametro(
-                request.getCodigo(),
-                request.getDescripcion(),
-                ConstantesServices.ESTADO_INACTIVO,
-                new Date(),
-                usuario
-        );
-        System.out.println("before insert: ");
-        grupoParametro = grupoParametroRepository.save(grupoParametro);
-        System.out.println("result insert: " + grupoParametro);
-        return grupoParametro.getIdGrupoParametro();
+
+        try {
+
+            TpGrupoParametro grupoParametro = new TpGrupoParametro(
+                    request.getCodigo(),
+                    request.getDescripcion(),
+                    ConstantesServices.ESTADO_INACTIVO,
+                    new Date(),
+                    usuario
+            );
+            LOGGER.info("before insert: ");
+            grupoParametro = grupoParametroRepository.save(grupoParametro);
+            LOGGER.info("result insert: " + grupoParametro);
+            return grupoParametro.getIdGrupoParametro();
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                excepcion = excepcion.getCause();
+                if (excepcion instanceof ConstraintViolationException) {
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, e);
+                }
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
     }
 
     public CustomPaginate<DetalleConsultaGrupoParametroDTO> buscarGrupoParametro(FiltroMasivasRequest request, String usuario) {
 
-        ModelMapper modelMapper = new ModelMapper();
-        Pageable pageable = null;
+        try {
 
-        if (request.getCampoOrdenar().isEmpty()) {
-            pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
-        } else {
-            if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
-                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).ascending());
-            } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
-                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
+            ModelMapper modelMapper = new ModelMapper();
+            Pageable pageable = null;
+
+            if (request.getCampoOrdenar().isEmpty()) {
+                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
+            } else {
+                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
+                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).ascending());
+                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
+                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
+                }
             }
+
+            Page<TpGrupoParametro> objPageable = grupoParametroRepository.buscarPorFiltros(request.getCodigo(), request.getDescripcion(), request.getEstado(), pageable);
+
+            Page<DetalleConsultaGrupoParametroDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaGrupoParametroDTO.class));
+
+            int totalPaginas = objPageable.getTotalPages();
+            long totalRegistrosLong = objPageable.getTotalElements();
+
+            int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
+
+            CustomPaginate customPaginate = new CustomPaginate<>(
+                    totalPaginas,
+                    totalRegistros,
+                    dtoPage.getContent()
+            );
+
+            return customPaginate;
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
         }
 
-        Page<TpGrupoParametro> objPageable = grupoParametroRepository.buscarPorFiltros(request.getCodigo(), request.getDescripcion(), request.getEstado(), pageable);
-
-        Page<DetalleConsultaGrupoParametroDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaGrupoParametroDTO.class));
-
-        int totalPaginas = objPageable.getTotalPages();
-        long totalRegistrosLong = objPageable.getTotalElements();
-
-        int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
-
-        CustomPaginate customPaginate = new CustomPaginate<>(
-                totalPaginas,
-                totalRegistros,
-                dtoPage.getContent()
-        );
-
-        return customPaginate;
-
     }
 
-    @Transactional
     public Long editarGrupoParametro(MasivasRequestDTO request, String usuario) {
 
-        TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
-        updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
+        try {
 
-        System.out.println("before update: ");
-        TpGrupoParametro tpGrupoParametroSaved = grupoParametroRepository.save(grupoParametro);
-        System.out.println("result update: " + tpGrupoParametroSaved);
-        return grupoParametro.getIdGrupoParametro();
+            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
+            updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
+
+            System.out.println("before update: ");
+            TpGrupoParametro tpGrupoParametroSaved = grupoParametroRepository.save(grupoParametro);
+            System.out.println("result update: " + tpGrupoParametroSaved);
+            return grupoParametro.getIdGrupoParametro();
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                excepcion = excepcion.getCause();
+                if (excepcion instanceof ConstraintViolationException) {
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, e);
+                }
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
     }
 
-    @Transactional
     public DetalleRegistroGrupoParametroDTO obtenerGrupoParametro(FiltroMasivasRequest request, String usuario) {
 
-        ModelMapper modelMapper = new ModelMapper();
-        System.out.println("before findById: ");
-        TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
-        System.out.println("result findById: " + grupoParametro);
-        DetalleRegistroGrupoParametroDTO grupoParametroDTO = new DetalleRegistroGrupoParametroDTO();
+        try {
 
-        modelMapper.map(grupoParametro, grupoParametroDTO);
-        return grupoParametroDTO;
+            ModelMapper modelMapper = new ModelMapper();
+            System.out.println("before findById: ");
+            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
+            System.out.println("result findById: " + grupoParametro);
+            DetalleRegistroGrupoParametroDTO grupoParametroDTO = new DetalleRegistroGrupoParametroDTO();
+
+            modelMapper.map(grupoParametro, grupoParametroDTO);
+            return grupoParametroDTO;
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
     }
 
     @Transactional
-    public Long eliminarGrupoParametro(MasivasRequestDTO request, String usuario) {
+    public EstadoDTO cambiarEstadoGrupoParametro(MasivasRequestDTO request, String usuario, String estado) {
 
-        TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
-        updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.BLANCO);
+        try {
 
-        System.out.println("before update: ");
-        TpGrupoParametro tpGrupoParametroSaved = grupoParametroRepository.save(grupoParametro);
-        System.out.println("result update: " + tpGrupoParametroSaved);
-        return grupoParametro.getIdGrupoParametro();
+            int numExito = 0;
+            int totalIds = request.getIdsOperacion().size();
+            String mensaje;
+
+            for (Long id : request.getIdsOperacion()) {
+                TpGrupoParametro grupoParametro = grupoParametroRepository.findById(id).get();
+                request.setEstado(estado);
+                updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.BLANCO);
+
+                System.out.println("before update: ");
+                TpGrupoParametro tpGrupoParametroSaved = grupoParametroRepository.save(grupoParametro);
+                System.out.println("result update: " + tpGrupoParametroSaved);
+                numExito++;
+            }
+
+            if (numExito == totalIds) {
+                if (totalIds > 1) {
+                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACIONES;
+                } else {
+                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACION;
+                }
+            } else if (numExito > 0 && numExito < totalIds) {
+                mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_OPERACIONES;
+                mensaje = String.format(mensaje, numExito, totalIds - numExito);
+            } else {
+                if (totalIds > 1) {
+                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACIONES;
+                } else {
+                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACION;
+                }
+            }
+
+            return new EstadoDTO(mensaje, numExito);
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
     }
 
     private void updateGrupoParametro(TpGrupoParametro grupoParametro, MasivasRequestDTO request, String usuario, String operacion) {
@@ -132,6 +224,10 @@ public class GrupoParametroService {
 
         grupoParametro.setFecModificacion(new Date());
         grupoParametro.setUsuModificacion(usuario);
+    }
+
+    public void logError(String mensajeError, Exception e) {
+        LOGGER.error(mensajeError, e);
     }
 
 }

@@ -6,17 +6,13 @@ import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroGrupoParametroDTO;
+import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.GrupoParametroService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,95 +26,52 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GrupoParametroController {
 
-    @Autowired
     private GrupoParametroService grupoParametroService;
+
+    public GrupoParametroController(GrupoParametroService grupoParametroService) {
+        this.grupoParametroService = grupoParametroService;
+    }
 
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse> registrar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
-        try {
-            Long idEntidad = grupoParametroService.crearGrupoParametro(request, userContext.getUsername());
-            //TODO Imprimir OK log auditoria
-            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION, idEntidad));
-        } catch (DataIntegrityViolationException e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, null);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        } catch (Exception e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
-        }
+        Long idEntidad = grupoParametroService.crearGrupoParametro(request, userContext.getUsername());
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION, idEntidad));
     }
 
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse> buscar(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-
-        try {
-            CustomPaginate<DetalleConsultaGrupoParametroDTO> objPegeable = grupoParametroService.buscarGrupoParametro(request, userContext.getUsername());
-            //TODO Imprimir OK log auditoria
-            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
-
-        } catch (Exception e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
-        }
-
+        CustomPaginate<DetalleConsultaGrupoParametroDTO> objPegeable = grupoParametroService.buscarGrupoParametro(request, userContext.getUsername());
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
     }
 
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse> editar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
-        try {
-            Long idGrupoParametro = grupoParametroService.editarGrupoParametro(request, userContext.getUsername());
-            //TODO Imprimir OK log auditoria
-            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idGrupoParametro));
-        } catch (DataIntegrityViolationException e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, null);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        } catch (Exception e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
-        }
+        Long idGrupoParametro = grupoParametroService.editarGrupoParametro(request, userContext.getUsername());
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idGrupoParametro));
     }
 
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse> obtener(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        try {
-            DetalleRegistroGrupoParametroDTO grupoParametroDTO = grupoParametroService.obtenerGrupoParametro(request, userContext.getUsername());
-            //TODO Imprimir OK log auditoria
-            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, grupoParametroDTO));
-        } catch (DataIntegrityViolationException e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, null);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        } catch (CannotCreateTransactionException | DataAccessException e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        } catch (Exception e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
-        }
+        DetalleRegistroGrupoParametroDTO grupoParametroDTO = grupoParametroService.obtenerGrupoParametro(request, userContext.getUsername());
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, grupoParametroDTO));
     }
 
-    @PostMapping("/eliminar")
-    public ResponseEntity<MasivasResponse> eliminar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
-        try {
-            Long idGrupoParametro = grupoParametroService.eliminarGrupoParametro(request, userContext.getUsername());
-            //TODO Imprimir OK log auditoria
-            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idGrupoParametro));
-        } catch (DataIntegrityViolationException e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, null);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        } catch (Exception e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
-        }
+    @PostMapping("/activar")
+    public ResponseEntity<MasivasResponse> activar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
+        EstadoDTO estadoDTO = grupoParametroService.cambiarEstadoGrupoParametro(request, userContext.getUsername(), ConstantesServices.ESTADO_ACTIVO);
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
+    }
+
+    @PostMapping("/desactivar")
+    public ResponseEntity<MasivasResponse> desactivar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
+        EstadoDTO estadoDTO = grupoParametroService.cambiarEstadoGrupoParametro(request, userContext.getUsername(), ConstantesServices.ESTADO_INACTIVO);
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
 }

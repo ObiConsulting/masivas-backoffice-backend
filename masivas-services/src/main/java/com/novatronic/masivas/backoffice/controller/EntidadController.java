@@ -43,9 +43,13 @@ public class EntidadController {
             //TODO Imprimir error log auditoria
             MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICO, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICO, null);
             return ResponseEntity.status(HttpStatus.OK).body(res);
+        } catch (CannotCreateTransactionException | DataAccessException e) {
+            //TODO Imprimir error log auditoria
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
@@ -58,9 +62,13 @@ public class EntidadController {
             //TODO Imprimir OK log auditoria
             return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
 
+        } catch (CannotCreateTransactionException | DataAccessException e) {
+            //TODO Imprimir error log auditoria
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
 
@@ -76,9 +84,13 @@ public class EntidadController {
             //TODO Imprimir error log auditoria
             MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICO, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICO, null);
             return ResponseEntity.status(HttpStatus.OK).body(res);
+        } catch (CannotCreateTransactionException | DataAccessException e) {
+            //TODO Imprimir error log auditoria
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
@@ -89,17 +101,13 @@ public class EntidadController {
             DetalleRegistroEntidadDTO entidadDTO = entidadService.obtenerEntidad(request, userContext.getUsername());
             //TODO Imprimir OK log auditoria
             return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, entidadDTO));
-        } catch (DataIntegrityViolationException e) {
-            //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICO, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICO, null);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (CannotCreateTransactionException | DataAccessException e) {
             //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null);
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null);
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
@@ -110,13 +118,13 @@ public class EntidadController {
             Long idEntidad = entidadService.eliminarEntidad(request, userContext.getUsername());
             //TODO Imprimir OK log auditoria
             return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idEntidad));
-        } catch (DataIntegrityViolationException e) {
+        } catch (CannotCreateTransactionException | DataAccessException e) {
             //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICO, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICO, null);
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null);
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             //TODO Imprimir error log auditoria
-            MasivasResponse res = new MasivasResponse(ConstantesServices.ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            MasivasResponse res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }

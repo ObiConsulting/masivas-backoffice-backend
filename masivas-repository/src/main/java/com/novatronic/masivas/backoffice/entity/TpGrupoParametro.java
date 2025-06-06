@@ -35,11 +35,11 @@ public class TpGrupoParametro extends ModelAudit<String> implements Serializable
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_GRUPO_PARAMETRO")
     private Long idGrupoParametro;
     @Basic(optional = false)
-    @Size(max = 20)
+    @Size(max = 4)
     @Column(name = "COD_GRUPO_PARAMETRO")
     private String codigo;
     @Basic(optional = false)
-    @Size(max = 100)
+    @Size(max = 50)
     @Column(name = "DESC_GRUPO_PARAMETRO")
     private String descripcion;
     @Basic(optional = false)

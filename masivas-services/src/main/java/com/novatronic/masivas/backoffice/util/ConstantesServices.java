@@ -48,10 +48,9 @@ public class ConstantesServices {
 
     //Codigos del Sistema
     public static final String RESPUESTA_OK_API = "0000";
-    public static final String ERROR_GENERICO = "0099";
+    public static final String CODIGO_ERROR_BD = "0098";
+    public static final String CODIGO_ERROR_GENERICO = "0099";
     public static final String ERROR_BADREQUEST = "0001";
-    public static final String CODIGO_ERROR_GENERICO = "6999";
-    public static final String ERROR_BD = "0098";
 
     public static final String CODIGO_ERROR_COD_ENTIDAD_UNICO = "0010";
     public static final String CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO = "0011";
@@ -60,14 +59,27 @@ public class ConstantesServices {
     public static final String MENSAJE_EXITO_CREAR_OPERACION = "Operación creada correctamente";
     public static final String MENSAJE_EXITO_BUSCAR_OPERACION = "Operación buscada correctamente";
     public static final String MENSAJE_EXITO_EDITAR_OPERACION = "Operación editada correctamente";
-    public static final String MENSAJE_EXITO_ANULAR_OPERACION = "Operación anulada correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_OPERACION = "Operación activada correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_OPERACIONES = "Operaciones activadas correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_OPERACION = "Operación desactivada correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_OPERACIONES = "Operaciones desactivadas correctamente";
     public static final String MENSAJE_EXITO_DESCARGAR_OPERACION = "Operación descargada correctamente";
     public static final String MENSAJE_EXITO_OBTENER_OPERACION = "Operación obtenida correctamente";
-    public static final String MENSAJE_EXITO_APROBAR_OPERACION = "Operación aprobada correctamente";
-    public static final String MENSAJE_EXITO_ENVIAR_OPERACION = "Operación enviada correctamente";
-    public static final String MENSAJE_EXITO_CONFIRMAR_OPERACION = "Operación confirmada correctamente";
 
-    public static final String MENSAJE_ERROR_GENERICO = "Error inesperado";
+    public static final String MENSAJE_ERROR_CREAR_OPERACION = "Falló al crear operación";
+    public static final String MENSAJE_ERROR_BUSCAR_OPERACION = "Falló al buscar operación";
+    public static final String MENSAJE_ERROR_EDITAR_OPERACION = "Falló al editar operación";
+    public static final String MENSAJE_ERROR_ACTIVAR_OPERACION = "Falló al activar operación";
+    public static final String MENSAJE_ERROR_ACTIVAR_OPERACIONES = "Falló al activar operaciones";
+    public static final String MENSAJE_ERROR_DESACTIVAR_OPERACION = "Falló al desactivar operación";
+    public static final String MENSAJE_ERROR_DESACTIVAR_OPERACIONES = "Falló al desactivar operaciones";
+    public static final String MENSAJE_ERROR_DESCARGAR_OPERACION = "Falló al descargar operación";
+    public static final String MENSAJE_ERROR_OBTENER_OPERACION = "Falló al obtener operación";
+
+    public static final String MENSAJE_EXITO_PARCIAL_ACTIVAR_OPERACIONES = "Se activaron %d operaciones. %d operaciones no pudieron ser activadas.";
+    public static final String MENSAJE_EXITO_PARCIAL_DESACTIVAR_OPERACIONES = "Se desactivaron %d operaciones. %d operaciones no pudieron ser desactivadas.";
+
+    public static final String MENSAJE_ERROR_GENERICO = "Se ha producido un error inesperado. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_BD = "Se ha producido un error con la base de datos. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_BAD_REQUEST = "Campos Inesperados";
     public static final String MENSAJE_ERROR_COD_ENTIDAD_UNICO = "El codigo entidad ya existe";
