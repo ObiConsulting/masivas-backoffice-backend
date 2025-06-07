@@ -54,6 +54,7 @@ public class ConstantesServices {
 
     public static final String CODIGO_ERROR_COD_ENTIDAD_UNICO = "0010";
     public static final String CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO = "0011";
+    public static final String CODIGO_ERROR_COD_PARAMETRO_UNICO = "0012";
 
     //Mensajes del Sistema
     public static final String MENSAJE_EXITO_CREAR_OPERACION = "Operación creada correctamente";
@@ -84,5 +85,6 @@ public class ConstantesServices {
     public static final String MENSAJE_BAD_REQUEST = "Campos Inesperados";
     public static final String MENSAJE_ERROR_COD_ENTIDAD_UNICO = "El codigo entidad ya existe";
     public static final String MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO = "El codigo grupo parámetro ya existe";
+    public static final String MENSAJE_ERROR_COD_PARAMETRO_UNICO = "El codigo parámetro ya existe";
 
 }

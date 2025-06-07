@@ -17,6 +17,7 @@ public class FiltroMasivasRequest {
     //IDs
     private Long idEntidad;
     private Long idGrupoParametro;
+    private Long idParametro;
 
     private String codigo;
     private String estado;
@@ -71,5 +72,9 @@ public class FiltroMasivasRequest {
 
     public Long getIdGrupoParametro() {
         return idGrupoParametro;
+    }
+
+    public Long getIdParametro() {
+        return idParametro;
     }
 }

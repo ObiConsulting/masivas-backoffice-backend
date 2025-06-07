@@ -17,6 +17,7 @@ public class MasivasRequestDTO {
     //IDs
     private Long idEntidad;
     private Long idGrupoParametro;
+    private Long idParametro;
 
     //Campos
     private String codigo;
@@ -29,5 +30,7 @@ public class MasivasRequestDTO {
     private String nombre;
     //Grupo Parametro
     private String descripcion;
+    //Parametro
+    private String valor;
 
 }

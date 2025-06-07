@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public interface GrupoParametroRepository extends JpaRepository<TpGrupoParametro, Long> {
 
     @Query("    SELECT g FROM TpGrupoParametro g\n"
-            + "    WHERE (:codigo IS NULL OR g.codigo = :codigo)\n"
+            + "    WHERE (:codigo IS NULL OR LOWER(g.codigo) LIKE LOWER(CONCAT('%', :codigo, '%')))\n"
             + "      AND (:descripcion IS NULL OR LOWER(g.descripcion) LIKE LOWER(CONCAT('%', :descripcion, '%')))\n"
             + "      AND (:estado IS NULL OR g.estado = :estado)\n")
     Page<TpGrupoParametro> buscarPorFiltros(

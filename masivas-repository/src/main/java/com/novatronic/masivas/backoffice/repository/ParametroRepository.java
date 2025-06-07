@@ -19,7 +19,7 @@ public interface ParametroRepository extends JpaRepository<TpParametro, Long> {
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaParametroDTO("
             + "p.idParametro, p.codigo, p.valor, gp.descripcion, p.estado) "
             + "FROM TpParametro p JOIN p.grupoParametro gp\n"
-            + "    WHERE (:codigo IS NULL OR p.codigo = :codigo)\n"
+            + "    WHERE (:codigo IS NULL OR LOWER(p.codigo) LIKE LOWER(CONCAT('%', :codigo, '%')))\n"
             + "      AND (:idGrupoParametro IS NULL OR gp.idGrupoParametro = :idGrupoParametro)\n"
             + "      AND (:estado IS NULL OR p.estado = :estado)\n")
     Page<DetalleConsultaParametroDTO> buscarPorFiltros(

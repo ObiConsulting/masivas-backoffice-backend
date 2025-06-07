@@ -1,21 +1,23 @@
 package com.novatronic.masivas.backoffice.service;
 
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
-import com.novatronic.masivas.backoffice.dto.DetalleConsultaEntidadDTO;
+import com.novatronic.masivas.backoffice.dto.DetalleConsultaParametroDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
-import com.novatronic.masivas.backoffice.dto.DetalleRegistroEntidadDTO;
+import com.novatronic.masivas.backoffice.dto.DetalleRegistroParametroDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
-import com.novatronic.masivas.backoffice.entity.TpEntidad;
+import com.novatronic.masivas.backoffice.entity.TpParametro;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import com.novatronic.masivas.backoffice.repository.EntidadRepository;
+import com.novatronic.masivas.backoffice.repository.ParametroRepository;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.logger.NovaLogger;
 import jakarta.transaction.RollbackException;
+import jakarta.transaction.Transactional;
 import java.util.Date;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -29,40 +31,42 @@ import org.springframework.data.domain.Sort;
  * @author Obi Consulting
  */
 @Service
-public class EntidadService {
+public class ParametroService {
 
     @Autowired
-    private final EntidadRepository entidadRepository;
+    private final ParametroRepository parametroRepository;
     private final MessageSource messageSource;
 
-    public EntidadService(EntidadRepository entidadRepository, MessageSource messageSource) {
-        this.entidadRepository = entidadRepository;
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(ParametroService.class);
+
+    public ParametroService(ParametroRepository parametroRepository, MessageSource messageSource) {
+        this.parametroRepository = parametroRepository;
         this.messageSource = messageSource;
     }
 
-    public Long crearEntidad(MasivasRequestDTO request, String usuario) {
+    public Long crearParametro(MasivasRequestDTO request, String usuario) {
 
         try {
 
-            TpEntidad entidad = new TpEntidad(
+            TpParametro parametro = new TpParametro(
                     request.getCodigo(),
-                    request.getNombre(),
+                    request.getValor(),
                     ConstantesServices.ESTADO_INACTIVO,
-                    1L,
+                    request.getIdGrupoParametro(),
                     new Date(),
                     usuario
             );
-            System.out.println("before insert: ");
-            entidad = entidadRepository.save(entidad);
-            System.out.println("result insert: " + entidad);
-            return entidad.getIdEntidad();
+            LOGGER.info("before insert: ");
+            parametro = parametroRepository.save(parametro);
+            LOGGER.info("result insert: " + parametro);
+            return parametro.getIdParametro();
 
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICO, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICO, e);
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_UNICO, e);
                 }
                 throw new DataBaseException(e);
             }
@@ -71,11 +75,10 @@ public class EntidadService {
 
     }
 
-    public CustomPaginate<DetalleConsultaEntidadDTO> buscar(FiltroMasivasRequest request, String usuario) {
+    public CustomPaginate<DetalleConsultaParametroDTO> buscarParametro(FiltroMasivasRequest request, String usuario) {
 
         try {
 
-            ModelMapper modelMapper = new ModelMapper();
             Pageable pageable = null;
 
             if (request.getCampoOrdenar().isEmpty()) {
@@ -88,20 +91,14 @@ public class EntidadService {
                 }
             }
 
-            Page<TpEntidad> objPageable = entidadRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstado(), pageable);
-
-            Page<DetalleConsultaEntidadDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaEntidadDTO.class));
+            Page<DetalleConsultaParametroDTO> objPageable = parametroRepository.buscarPorFiltros(request.getCodigo(), request.getIdGrupoParametro(), request.getEstado(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
 
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
-            CustomPaginate customPaginate = new CustomPaginate<>(
-                    totalPaginas,
-                    totalRegistros,
-                    dtoPage.getContent()
-            );
+            CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
 
             return customPaginate;
 
@@ -115,44 +112,43 @@ public class EntidadService {
 
     }
 
-    public Long editarEntidad(MasivasRequestDTO request, String usuario) {
+    public Long editarParametro(MasivasRequestDTO request, String usuario) {
 
         try {
 
-            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad()).get();
-            updateEntidad(entidad, request, usuario, ConstantesServices.OPERACION_EDITAR);
+            TpParametro parametro = parametroRepository.findById(request.getIdParametro()).get();
+            updateParametro(parametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
 
             System.out.println("before update: ");
-            TpEntidad tpEntidadSaved = entidadRepository.save(entidad);
-            System.out.println("result update: " + tpEntidadSaved);
-            return entidad.getIdEntidad();
+            TpParametro tpParametroSaved = parametroRepository.save(parametro);
+            System.out.println("result update: " + tpParametroSaved);
+            return parametro.getIdParametro();
 
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICO, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICO, e);
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_UNICO, e);
                 }
                 throw new DataBaseException(e);
             }
             throw new GenericException(e);
         }
-
     }
 
-    public DetalleRegistroEntidadDTO obtenerEntidad(FiltroMasivasRequest request, String usuario) {
+    public DetalleRegistroParametroDTO obtenerParametro(FiltroMasivasRequest request, String usuario) {
 
         try {
 
             ModelMapper modelMapper = new ModelMapper();
             System.out.println("before findById: ");
-            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad()).get();
-            System.out.println("result findById: " + entidad);
-            DetalleRegistroEntidadDTO entidadDTO = new DetalleRegistroEntidadDTO();
+            TpParametro parametro = parametroRepository.findById(request.getIdParametro()).get();
+            System.out.println("result findById: " + parametro);
+            DetalleRegistroParametroDTO parametroDTO = new DetalleRegistroParametroDTO();
 
-            modelMapper.map(entidad, entidadDTO);
-            return entidadDTO;
+            modelMapper.map(parametro, parametroDTO);
+            return parametroDTO;
 
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
@@ -161,10 +157,10 @@ public class EntidadService {
             }
             throw new GenericException(e);
         }
-
     }
 
-    public EstadoDTO cambiarEstadoEntidad(MasivasRequestDTO request, String usuario, String estado) {
+    @Transactional
+    public EstadoDTO cambiarEstadoParametro(MasivasRequestDTO request, String usuario, String estado) {
 
         try {
 
@@ -173,13 +169,13 @@ public class EntidadService {
             String mensaje;
 
             for (Long id : request.getIdsOperacion()) {
-                TpEntidad entidad = entidadRepository.findById(id).get();
+                TpParametro parametro = parametroRepository.findById(id).get();
                 request.setEstado(estado);
-                updateEntidad(entidad, request, usuario, ConstantesServices.BLANCO);
+                updateParametro(parametro, request, usuario, ConstantesServices.BLANCO);
 
                 System.out.println("before update: ");
-                TpEntidad tpEntidadSaved = entidadRepository.save(entidad);
-                System.out.println("result update: " + tpEntidadSaved);
+                TpParametro tpParametroSaved = parametroRepository.save(parametro);
+                System.out.println("result update: " + tpParametroSaved);
                 numExito++;
             }
 
@@ -211,17 +207,22 @@ public class EntidadService {
         }
     }
 
-    private void updateEntidad(TpEntidad entidad, MasivasRequestDTO request, String usuario, String operacion) {
+    private void updateParametro(TpParametro parametro, MasivasRequestDTO request, String usuario, String operacion) {
 
         if (operacion.equals(ConstantesServices.OPERACION_EDITAR)) {
-            entidad.setCodigo(request.getCodigo());
-            entidad.setNombre(request.getNombre());
+            parametro.setIdGrupoParametro(request.getIdGrupoParametro());
+            parametro.setCodigo(request.getCodigo());
+            parametro.setValor(request.getValor());
         } else {
-            entidad.setEstado(request.getEstado());
+            parametro.setEstado(request.getEstado());
         }
 
-        entidad.setFecModificacion(new Date());
-        entidad.setUsuModificacion(usuario);
+        parametro.setFecModificacion(new Date());
+        parametro.setUsuModificacion(usuario);
+    }
+
+    public void logError(String mensajeError, Exception e) {
+        LOGGER.error(mensajeError, e);
     }
 
 }

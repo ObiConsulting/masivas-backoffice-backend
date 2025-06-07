@@ -19,7 +19,7 @@ public interface EntidadRepository extends JpaRepository<TpEntidad, Long> {
     public Optional<TpEntidad> getByCodigo(String codigo);
 
     @Query("    SELECT e FROM TpEntidad e\n"
-            + "    WHERE (:codigo IS NULL OR e.codigo = :codigo)\n"
+            + "    WHERE (:codigo IS NULL OR LOWER(e.codigo) LIKE LOWER(CONCAT('%', :codigo, '%')))\n"
             + "      AND (:nombre IS NULL OR LOWER(e.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')))\n"
             + "      AND (:estado IS NULL OR e.estado = :estado)\n")
     Page<TpEntidad> buscarPorFiltros(
