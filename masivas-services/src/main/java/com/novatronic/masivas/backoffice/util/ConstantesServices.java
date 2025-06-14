@@ -46,6 +46,17 @@ public class ConstantesServices {
 
     public static final String OPERACION_EDITAR = "EDITAR";
 
+    //Para auditoria
+    public static final String ACCION_CREATE = "create";
+    public static final String ACCION_READ = "read";
+    public static final String ACCION_UPDATE = "update";
+    public static final String ACCION_DELETE = "delete";
+    public static final String ACCION_EXPORT = "export";
+    public static final String ACCION_VIEW = "view";
+    public static final String TABLA_ENTIDAD = "TP_ENTIDAD";
+    public static final String TABLA_GRUPO_PARAMETRO = "TP_GRUPO_PARAMETRO";
+    public static final String TABLA_PARAMETRO = "TS_DETALLE_PARAMETRO";
+
     //Codigos del Sistema
     public static final String RESPUESTA_OK_API = "0000";
     public static final String CODIGO_ERROR_BD = "0098";

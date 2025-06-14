@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.EntidadRepository;
+import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.logger.NovaLogger;
+import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.util.Date;
 import org.hibernate.exception.ConstraintViolationException;
@@ -34,6 +38,8 @@ public class EntidadService {
     @Autowired
     private final EntidadRepository entidadRepository;
     private final MessageSource messageSource;
+
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(EntidadService.class);
 
     public EntidadService(EntidadRepository entidadRepository, MessageSource messageSource) {
         this.entidadRepository = entidadRepository;
@@ -222,6 +228,11 @@ public class EntidadService {
 
         entidad.setFecModificacion(new Date());
         entidad.setUsuModificacion(usuario);
+    }
+
+    public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
+        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
+                null, accion, null, null, mensajeExito);
     }
 
 }

@@ -14,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.GrupoParametroRepository;
+import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.logger.NovaLogger;
+import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.Transactional;
 import java.util.Date;
@@ -230,4 +233,8 @@ public class GrupoParametroService {
         LOGGER.error(mensajeError, e);
     }
 
+    public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
+        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
+                null, accion, null, null, mensajeExito);
+    }
 }
