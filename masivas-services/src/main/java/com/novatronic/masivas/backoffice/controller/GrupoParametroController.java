@@ -1,5 +1,6 @@
 package com.novatronic.masivas.backoffice.controller;
 
+import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
@@ -13,8 +14,10 @@ import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,6 +83,12 @@ public class GrupoParametroController {
         grupoParametroService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD,
                 ConstantesServices.ACCION_DELETE, estadoDTO.getMensaje());
         return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
+    }
+
+    @GetMapping("/listar")
+    public ResponseEntity<MasivasResponse> listarGrupoParametro(@AuthenticationPrincipal UserContext userContext) {
+        List<ComboEstadoDTO> lista = grupoParametroService.listarGrupoParametro();
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, lista));
     }
 
 }

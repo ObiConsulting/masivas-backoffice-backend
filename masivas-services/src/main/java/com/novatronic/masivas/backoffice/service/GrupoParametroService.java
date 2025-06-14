@@ -1,5 +1,6 @@
 package com.novatronic.masivas.backoffice.service;
 
+import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
@@ -20,8 +21,10 @@ import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
-import jakarta.transaction.Transactional;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -168,7 +171,6 @@ public class GrupoParametroService {
         }
     }
 
-    @Transactional
     public EstadoDTO cambiarEstadoGrupoParametro(MasivasRequestDTO request, String usuario, String estado) {
 
         try {
@@ -214,6 +216,27 @@ public class GrupoParametroService {
             }
             throw new GenericException(e);
         }
+    }
+
+    public List<ComboEstadoDTO> listarGrupoParametro() {
+
+        try {
+
+            List<TpGrupoParametro> listaGrupo = grupoParametroRepository.findAll();
+
+            return listaGrupo.stream()
+                    .map(grupo -> new ComboEstadoDTO(grupo.getCodigo(), grupo.getDescripcion()))
+                    .sorted(Comparator.comparing(ComboEstadoDTO::getCodigo))
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
     }
 
     private void updateGrupoParametro(TpGrupoParametro grupoParametro, MasivasRequestDTO request, String usuario, String operacion) {

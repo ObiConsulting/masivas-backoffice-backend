@@ -36,6 +36,8 @@ public class ConstantesServices {
 
     public static final String ESTADO_INACTIVO = "0";
     public static final String ESTADO_ACTIVO = "1";
+    public static final String ESTADO_INACTIVO_DESCRIPCION = "INACTIVO";
+    public static final String ESTADO_ACTIVO_DESCRIPCION = "ACTIVO";
 
     public static final String PREFIJO_NUM_REF_HOST_LBTR = "LBTR";
     public static final String CODIGO_OK_WS = "0000";
@@ -77,6 +79,7 @@ public class ConstantesServices {
     public static final String MENSAJE_EXITO_DESACTIVAR_OPERACIONES = "Operaciones desactivadas correctamente";
     public static final String MENSAJE_EXITO_DESCARGAR_OPERACION = "Operación descargada correctamente";
     public static final String MENSAJE_EXITO_OBTENER_OPERACION = "Operación obtenida correctamente";
+    public static final String MENSAJE_EXITO_GENERICO = "Operación completada correctamente";
 
     public static final String MENSAJE_ERROR_CREAR_OPERACION = "Falló al crear operación";
     public static final String MENSAJE_ERROR_BUSCAR_OPERACION = "Falló al buscar operación";

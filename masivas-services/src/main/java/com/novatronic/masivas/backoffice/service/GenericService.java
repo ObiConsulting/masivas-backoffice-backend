@@ -1,5 +1,12 @@
 package com.novatronic.masivas.backoffice.service;
 
+import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
+import com.novatronic.masivas.backoffice.security.model.UserContext;
+import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.logger.NovaLogger;
+import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.util.Evento;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -10,63 +17,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class GenericService {
 
-    @Autowired
-    private ParametroCacheService parametroCacheService;
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(GenericService.class);
 
     @Autowired
     public GenericService() {
     }
 
-//    public List<ConceptoDTO> findConceptosByCodTransaccion(String codTransaccion) {
-//        return parametroCacheService.getConceptByTransaction(codTransaccion);
-//    }
-//
-//    public List<TaDetalleParametroDTO> getAllDocuments() {
-//        return parametroCacheService.getParameteres(ConstantesServices.ID_GRUPO_TIPO_DOCUMENTO);
-//    }
-//
-//    public List<TaDetalleParametroDTO> getAllStatus() {
-//        return parametroCacheService.getParameteres(ConstantesServices.ID_GRUPO_ESTADO);
-//    }
-//
-//    public List<TaDetalleParametroDTO> getAllParticipants() {
-//        return parametroCacheService.getParameteres(ConstantesServices.ID_GRUPO_TIPO_PARTICIPANTE);
-//    }
-//
-//    public List<TpFacilidadBcrp> getAllFacilidades() {
-//        return parametroCacheService.getAllFacilidades();
-//    }
-//
-//    public String getConceptName(String conceptCode) {
-//        List<ConceptoDTO> lista = parametroCacheService.getConceptByTransaction("ALL");
-//        String nombreConcepto;
-//        nombreConcepto = lista.stream()
-//                .filter(concepto -> concepto.getCodConcepto().equals(conceptCode))
-//                .findFirst()
-//                .map(conceptoDTO -> conceptoDTO.getDesConcepto())
-//                .orElse("");
-//        return nombreConcepto;
-//    }
-//
-//    public String getStatusName(String statusCode) {
-//        List<TaDetalleParametroDTO> lista = parametroCacheService.getParameteres(ConstantesServices.ID_GRUPO_ESTADO);
-//        String nombreEstado;
-//        nombreEstado = lista.stream()
-//                .filter(estado -> estado.getCodigo().equals(statusCode))
-//                .findFirst()
-//                .map(estadoDTO -> estadoDTO.getDescripcion())
-//                .orElse("");
-//        return nombreEstado;
-//    }
-//
-//    public String getEntityName(String entityCode) {
-//        List<TpEntidadFinancieraBcrpDTO> lista = parametroCacheService.getAllEntidadesConCuentas();
-//        String nombreEntidad;
-//        nombreEntidad = lista.stream()
-//                .filter(entidad -> entidad.getCodigo().equals(entityCode))
-//                .findFirst()
-//                .map(entidadDTO -> entidadDTO.getDescripcion())
-//                .orElse("");
-//        return nombreEntidad;
-//    }
+    public List<ComboEstadoDTO> listarEstados() {
+        return List.of(
+                new ComboEstadoDTO(ConstantesServices.ESTADO_INACTIVO, ConstantesServices.ESTADO_INACTIVO_DESCRIPCION),
+                new ComboEstadoDTO(ConstantesServices.ESTADO_ACTIVO, ConstantesServices.ESTADO_ACTIVO_DESCRIPCION)
+        );
+    }
+
+    public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
+        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
+                null, accion, null, null, mensajeExito);
+    }
 }
