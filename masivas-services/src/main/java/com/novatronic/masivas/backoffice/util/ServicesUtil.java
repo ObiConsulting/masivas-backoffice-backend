@@ -50,8 +50,6 @@ public final class ServicesUtil {
     public static final String ESTADO_OBSERVADO_VALOR = "O";
     public static final String ESTADO_APROBADO_VALOR = "A";
 
-    private static final String SDF = "dd/MM/yyyy";
-
     private ServicesUtil() {
     }
 
@@ -283,7 +281,7 @@ public final class ServicesUtil {
 
         try {
             if (strFecha != null && !strFecha.isEmpty()) {
-                resultado = new SimpleDateFormat(SDF).parse(strFecha);
+                resultado = new SimpleDateFormat(FORMAT_ddMMyyyy).parse(strFecha);
             }
         } catch (ParseException ex) {
             //Loguea Error

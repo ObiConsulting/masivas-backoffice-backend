@@ -1,6 +1,8 @@
 package com.novatronic.masivas.backoffice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +23,9 @@ public class DetalleRegistroGrupoParametroDTO implements Serializable {
     private String descripcion;
     private String estado;
 
-    private String usuCreacion;
-    private String fecCreacion;
+    @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    private LocalDateTime fecCreacion;
     private String usuModificacion;
-    private String fecModificacion;
+    @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    private LocalDateTime fecModificacion;
 }

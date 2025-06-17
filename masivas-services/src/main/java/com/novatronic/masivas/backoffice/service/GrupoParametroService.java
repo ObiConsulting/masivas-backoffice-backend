@@ -21,8 +21,8 @@ import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.hibernate.exception.ConstraintViolationException;
@@ -58,7 +58,7 @@ public class GrupoParametroService {
                     request.getCodigo(),
                     request.getDescripcion(),
                     ConstantesServices.ESTADO_INACTIVO,
-                    new Date(),
+                    LocalDateTime.now(),
                     usuario
             );
             LOGGER.info("before insert: ");
@@ -248,7 +248,7 @@ public class GrupoParametroService {
             grupoParametro.setEstado(request.getEstado());
         }
 
-        grupoParametro.setFecModificacion(new Date());
+        grupoParametro.setFecModificacion(LocalDateTime.now());
         grupoParametro.setUsuModificacion(usuario);
     }
 

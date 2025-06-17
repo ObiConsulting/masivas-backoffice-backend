@@ -17,8 +17,8 @@ public interface GrupoParametroRepository extends JpaRepository<TpGrupoParametro
 
     @Query("    SELECT g FROM TpGrupoParametro g\n"
             + "    WHERE (:codigo IS NULL OR LOWER(g.codigo) LIKE LOWER(CONCAT('%', :codigo, '%')))\n"
-            + "      AND (:descripcion IS NULL OR LOWER(g.descripcion) LIKE LOWER(CONCAT('%', :descripcion, '%')))\n"
-            + "      AND (:estado IS NULL OR g.estado = :estado)\n")
+            + "     AND (:descripcion IS NULL OR LOWER(g.descripcion) LIKE LOWER(CONCAT('%', :descripcion, '%')))\n"
+            + "     AND (:estado IS NULL OR g.estado = :estado)\n")
     Page<TpGrupoParametro> buscarPorFiltros(
             @Param("codigo") String codigo,
             @Param("descripcion") String descripcion,

@@ -20,6 +20,7 @@ import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -55,7 +56,7 @@ public class EntidadService {
                     request.getNombre(),
                     ConstantesServices.ESTADO_INACTIVO,
                     1L,
-                    new Date(),
+                    LocalDateTime.now(),
                     usuario
             );
             System.out.println("before insert: ");
@@ -226,7 +227,7 @@ public class EntidadService {
             entidad.setEstado(request.getEstado());
         }
 
-        entidad.setFecModificacion(new Date());
+        entidad.setFecModificacion(LocalDateTime.now());
         entidad.setUsuModificacion(usuario);
     }
 

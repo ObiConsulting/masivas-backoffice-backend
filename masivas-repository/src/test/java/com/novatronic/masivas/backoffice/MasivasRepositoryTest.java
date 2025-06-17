@@ -2,7 +2,7 @@ package com.novatronic.masivas.backoffice;
 
 import com.novatronic.masivas.backoffice.entity.TpEntidad;
 import com.novatronic.masivas.backoffice.repository.EntidadRepository;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class MasivasRepositoryTest {
         tpEntidad.setNombre("BANCO nuevo 159");
         tpEntidad.setEstado("0");
         tpEntidad.setIdPerfil(1L);
-        tpEntidad.setFecCreacion(new Date());
+        tpEntidad.setFecCreacion(LocalDateTime.now());
         tpEntidad.setUsuCreacion("rvargas");
 
         System.out.println("before insert: ");
@@ -57,7 +57,7 @@ public class MasivasRepositoryTest {
         if (opt.isPresent()) {
             TpEntidad tpEntidad = opt.get();
             tpEntidad.setNombre("BANCO DE CREDITO DEL PERU2");
-            tpEntidad.setFecModificacion(new Date());
+            tpEntidad.setFecModificacion(LocalDateTime.now());
             tpEntidad.setUsuModificacion("rvargas");
             TpEntidad tpEntidadSaved = entidadRepository.save(tpEntidad);
             System.out.println("result update: " + tpEntidadSaved);

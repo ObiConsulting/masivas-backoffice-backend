@@ -18,7 +18,7 @@ import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.Transactional;
-import java.util.Date;
+import java.time.LocalDateTime;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -53,7 +53,7 @@ public class ParametroService {
                     request.getValor(),
                     ConstantesServices.ESTADO_INACTIVO,
                     request.getIdGrupoParametro(),
-                    new Date(),
+                    LocalDateTime.now(),
                     usuario
             );
             LOGGER.info("before insert: ");
@@ -217,7 +217,7 @@ public class ParametroService {
             parametro.setEstado(request.getEstado());
         }
 
-        parametro.setFecModificacion(new Date());
+        parametro.setFecModificacion(LocalDateTime.now());
         parametro.setUsuModificacion(usuario);
     }
 

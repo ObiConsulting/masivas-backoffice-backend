@@ -10,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PUBLIC)
@@ -24,13 +24,13 @@ public class ModelAudit<U> {
     private String usuCreacion;
     @CreatedDate
     @Column(name = "FEC_CREACION")
-    private Date fecCreacion;
+    private LocalDateTime fecCreacion;
     @LastModifiedBy
     @Size(max = 500)
     @Column(name = "USU_MODIFICACION")
     private String usuModificacion;
     @LastModifiedDate
     @Column(name = "FEC_MODIFICACION")
-    private Date fecModificacion;
+    private LocalDateTime fecModificacion;
 
 }

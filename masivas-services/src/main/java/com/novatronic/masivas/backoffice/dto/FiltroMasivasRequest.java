@@ -1,6 +1,8 @@
 package com.novatronic.masivas.backoffice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +29,12 @@ public class FiltroMasivasRequest {
 
     //Grupo Parametro
     private String descripcion;
+
+    //Archivos
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate fechaInicioObtencion;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate fechaFinObtencion;
 
     //Campos Generales
     private String campoOrdenar;
@@ -77,4 +85,13 @@ public class FiltroMasivasRequest {
     public Long getIdParametro() {
         return idParametro;
     }
+
+    public LocalDate getFechaInicioObtencion() {
+        return fechaInicioObtencion;
+    }
+
+    public LocalDate getFechaFinObtencion() {
+        return fechaFinObtencion;
+    }
+
 }

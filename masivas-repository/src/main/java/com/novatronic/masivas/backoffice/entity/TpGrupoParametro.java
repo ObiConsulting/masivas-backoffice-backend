@@ -10,7 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,7 +47,7 @@ public class TpGrupoParametro extends ModelAudit<String> implements Serializable
     @Column(name = "ESTADO")
     private String estado;
 
-    public TpGrupoParametro(String codigo, String descripcion, String estado, Date fecCreacion, String usuCreacion) {
+    public TpGrupoParametro(String codigo, String descripcion, String estado, LocalDateTime fecCreacion, String usuCreacion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
         this.estado = estado;

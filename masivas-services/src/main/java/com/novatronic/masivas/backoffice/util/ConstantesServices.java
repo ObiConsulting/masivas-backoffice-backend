@@ -58,6 +58,7 @@ public class ConstantesServices {
     public static final String TABLA_ENTIDAD = "TP_ENTIDAD";
     public static final String TABLA_GRUPO_PARAMETRO = "TP_GRUPO_PARAMETRO";
     public static final String TABLA_PARAMETRO = "TS_DETALLE_PARAMETRO";
+    public static final String TABLA_ARCHIVO_DIRECTORIO = "TP_ARCHIVO_DIR";
 
     //Codigos del Sistema
     public static final String RESPUESTA_OK_API = "0000";

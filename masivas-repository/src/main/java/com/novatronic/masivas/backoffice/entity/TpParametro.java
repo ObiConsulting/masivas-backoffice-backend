@@ -13,7 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -56,7 +56,7 @@ public class TpParametro extends ModelAudit<String> implements Serializable {
     @JoinColumn(name = "ID_GRUPO_PARAMETRO", referencedColumnName = "ID_GRUPO_PARAMETRO", insertable = false, updatable = false)
     private TpGrupoParametro grupoParametro;
 
-    public TpParametro(String codigo, String valor, String estado, Long idGrupoParametro, Date fecCreacion, String usuCreacion) {
+    public TpParametro(String codigo, String valor, String estado, Long idGrupoParametro, LocalDateTime fecCreacion, String usuCreacion) {
         this.codigo = codigo;
         this.valor = valor;
         this.estado = estado;

@@ -10,7 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,7 +51,7 @@ public class TpEntidad extends ModelAudit<String> implements Serializable {
     @Column(name = "ID_PERFIL")
     private Long idPerfil;
 
-    public TpEntidad(String codigo, String nombre, String estado, Long idPerfil, Date fecCreacion, String usuCreacion) {
+    public TpEntidad(String codigo, String nombre, String estado, Long idPerfil, LocalDateTime fecCreacion, String usuCreacion) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.estado = estado;
