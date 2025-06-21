@@ -1,5 +1,6 @@
 package com.novatronic.masivas.backoffice.controller;
 
+import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaParametroDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
@@ -11,8 +12,10 @@ import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ParametroService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,4 +77,10 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
+    @GetMapping("/listarEstadoArchivos")
+    public ResponseEntity<MasivasResponse> listarEstadoArchivos(@AuthenticationPrincipal UserContext userContext) {
+        List<ComboEstadoDTO> listaEstado = parametroService.listarEstadoArchivos();
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
+    }
 }

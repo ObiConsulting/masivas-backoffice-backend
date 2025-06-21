@@ -2,6 +2,7 @@ package com.novatronic.masivas.backoffice.repository;
 
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaParametroDTO;
 import com.novatronic.masivas.backoffice.entity.TpParametro;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,6 +28,14 @@ public interface ParametroRepository extends JpaRepository<TpParametro, Long> {
             @Param("idGrupoParametro") Long idGrupoParametro,
             @Param("estado") String estado,
             Pageable pageable
+    );
+
+    @Query("    SELECT p FROM TpParametro p\n"
+            + "    WHERE (:listaCodigo IS NULL OR p.codigo IN :listaCodigo)\n"
+            + "      AND (:estado IS NULL OR p.estado = :estado)\n")
+    List<TpParametro> buscarEstadoArchivo(
+            @Param("listaCodigo") List<String> listaCodigo,
+            @Param("estado") String estado
     );
 
 }

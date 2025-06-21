@@ -44,6 +44,16 @@ public class TpEntidad extends ModelAudit<String> implements Serializable {
     private String nombre;
     @Basic(optional = false)
     @Size(max = 1)
+    @Column(name = "PROPIETARIO")
+    private String propietario;
+    @Basic(optional = false)
+    @Column(name = "ID_EXTENSION_BASE")
+    private Long idExtensionBase;
+    @Basic(optional = false)
+    @Column(name = "ID_EXTENSION_CONTROL")
+    private Long idExtensionControl;
+    @Basic(optional = false)
+    @Size(max = 1)
     @Column(name = "ESTADO")
     private String estado;
 
@@ -51,11 +61,14 @@ public class TpEntidad extends ModelAudit<String> implements Serializable {
     @Column(name = "ID_PERFIL")
     private Long idPerfil;
 
-    public TpEntidad(String codigo, String nombre, String estado, Long idPerfil, LocalDateTime fecCreacion, String usuCreacion) {
+    public TpEntidad(String codigo, String nombre, String estado, Long idPerfil, String propietario, Long idExtensionBase, Long idExtensionControl, LocalDateTime fecCreacion, String usuCreacion) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.estado = estado;
         this.idPerfil = idPerfil;
+        this.propietario = propietario;
+        this.idExtensionBase = idExtensionBase;
+        this.idExtensionControl = idExtensionControl;
         this.setFecCreacion(fecCreacion);
         this.setUsuCreacion(usuCreacion);
     }

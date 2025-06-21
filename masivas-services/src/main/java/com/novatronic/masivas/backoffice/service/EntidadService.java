@@ -21,7 +21,6 @@ import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -55,7 +54,10 @@ public class EntidadService {
                     request.getCodigo(),
                     request.getNombre(),
                     ConstantesServices.ESTADO_INACTIVO,
-                    1L,
+                    ConstantesServices.ID_PERFIL,
+                    ConstantesServices.NO_PROPIETARIO,
+                    ConstantesServices.ID_EXTENSION_BASE,
+                    ConstantesServices.ID_EXTENSION_CONTROL,
                     LocalDateTime.now(),
                     usuario
             );

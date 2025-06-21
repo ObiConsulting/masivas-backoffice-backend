@@ -4,7 +4,6 @@ import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaEntidadDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
-import com.novatronic.masivas.backoffice.entity.TpArchivoDirectorio;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.repository.ArchivoDirectorioRepository;
@@ -62,20 +61,14 @@ public class ArchivoDirectorioService {
             LocalDateTime fechaInicio = request.getFechaInicioObtencion().atStartOfDay();
             LocalDateTime fechaFin = request.getFechaFinObtencion().atTime(LocalTime.MAX);
 
-            Page<TpArchivoDirectorio> objPageable = archivoDirectorioRepository.buscarPorFiltros(fechaInicio, fechaFin, pageable);
-
-            Page<DetalleConsultaArchivoDirectorioDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaArchivoDirectorioDTO.class));
+            Page<DetalleConsultaArchivoDirectorioDTO> objPageable = archivoDirectorioRepository.buscarPorFiltros(fechaInicio, fechaFin, request.getEstado(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
 
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
-            CustomPaginate customPaginate = new CustomPaginate<>(
-                    totalPaginas,
-                    totalRegistros,
-                    dtoPage.getContent()
-            );
+            CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
 
             return customPaginate;
 

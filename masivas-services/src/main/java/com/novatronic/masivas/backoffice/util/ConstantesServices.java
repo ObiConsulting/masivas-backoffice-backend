@@ -34,10 +34,15 @@ public class ConstantesServices {
     public static final String NEGATIVO = "-";
     public static final String COMILLA_SIMPLE = "'";
 
+    //Para los Estados
     public static final String ESTADO_INACTIVO = "0";
     public static final String ESTADO_ACTIVO = "1";
-    public static final String ESTADO_INACTIVO_DESCRIPCION = "INACTIVO";
-    public static final String ESTADO_ACTIVO_DESCRIPCION = "ACTIVO";
+    public static final String ESTADO_INACTIVO_DESCRIPCION = "Inactivo";
+    public static final String ESTADO_ACTIVO_DESCRIPCION = "Activo";
+
+    //Para los Estados de los archivos
+    public static final String CODIGO_GRUPO_ESTADO = "050";
+    public static final String CODIGOS_ESTADOS_ARCHIVO = "0700,0701,0702,0703";
 
     public static final String PREFIJO_NUM_REF_HOST_LBTR = "LBTR";
     public static final String CODIGO_OK_WS = "0000";
@@ -47,6 +52,12 @@ public class ConstantesServices {
     public static final String TIPO_ARCHIVO_XLSX = "XLSX";
 
     public static final String OPERACION_EDITAR = "EDITAR";
+
+    //Para Entidad Financiera
+    public static final Long ID_PERFIL = 1L;
+    public static final String NO_PROPIETARIO = "0";
+    public static final Long ID_EXTENSION_BASE = 16L;
+    public static final Long ID_EXTENSION_CONTROL = 21L;
 
     //Para auditoria
     public static final String ACCION_CREATE = "create";
@@ -81,6 +92,8 @@ public class ConstantesServices {
     public static final String MENSAJE_EXITO_DESCARGAR_OPERACION = "Operación descargada correctamente";
     public static final String MENSAJE_EXITO_OBTENER_OPERACION = "Operación obtenida correctamente";
     public static final String MENSAJE_EXITO_GENERICO = "Operación completada correctamente";
+    public static final String MENSAJE_EXITO_CAMBIO_CLAVE = "Contraseña cambiada correctamente";
+    public static final String MENSAJE_EXITO_CERRAR_SESION = "Sesión cerrada correctamente";
 
     public static final String MENSAJE_ERROR_CREAR_OPERACION = "Falló al crear operación";
     public static final String MENSAJE_ERROR_BUSCAR_OPERACION = "Falló al buscar operación";

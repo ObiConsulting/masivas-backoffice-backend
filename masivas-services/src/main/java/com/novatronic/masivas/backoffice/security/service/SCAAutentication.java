@@ -7,6 +7,7 @@ import com.novatronic.components.aas.AAService;
 import com.novatronic.components.aas.AAServiceFactory;
 import com.novatronic.components.aas.exception.AASException;
 import com.novatronic.masivas.backoffice.dto.SCAResponseDto;
+import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
@@ -186,8 +187,8 @@ public class SCAAutentication {
 
             aaService.changePassword(parameters);
 
-            objRespuesta.setResponseCode("0000");
-            objRespuesta.setResponseDescription("OK");
+            objRespuesta.setResponseCode(ConstantesServices.RESPUESTA_OK_API);
+            objRespuesta.setResponseDescription(ConstantesServices.MENSAJE_EXITO_CAMBIO_CLAVE);
 
         } catch (AASException ex) {
             log.error("Error al generar token, ", ex);

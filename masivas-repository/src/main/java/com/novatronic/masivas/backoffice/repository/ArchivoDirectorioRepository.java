@@ -1,5 +1,6 @@
 package com.novatronic.masivas.backoffice.repository;
 
+import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO;
 import com.novatronic.masivas.backoffice.entity.TpArchivoDirectorio;
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +17,26 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDirectorio, Long> {
 
-    @Query("    SELECT d FROM TpArchivoDirectorio d\n"
+    @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO("
+            + "d.idArchivo, d.nombre, d.cantidadDeclarado, d.fechaObtencion,"
+            + "    CASE "
+            + "        WHEN d.estadoProcesado IS NOT NULL THEN '0703' "
+            + "        WHEN d.estadoObtencion IS NOT NULL THEN '0702' "
+            + "        ELSE 'Pendiente' "
+            + "    END)"
+            + "FROM TpArchivoDirectorio d\n"
             + "     WHERE (:fechaInicio IS NULL OR d.fechaObtencion >= :fechaInicio)\n"
-            + "      AND (:fechaFin IS NULL OR d.fechaObtencion <= :fechaFin)\n")
-    Page<TpArchivoDirectorio> buscarPorFiltros(
+            + "      AND (:fechaFin IS NULL OR d.fechaObtencion <= :fechaFin)\n"
+            + "      AND (:estado IS NULL OR "
+            + "         CASE "
+            + "            WHEN d.estadoProcesado IS NOT NULL THEN '0703' "
+            + "            WHEN d.estadoObtencion IS NOT NULL THEN '0702' "
+            + "            ELSE 'Pendiente' "
+            + "         END = :estado)")
+    Page<DetalleConsultaArchivoDirectorioDTO> buscarPorFiltros(
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin,
-            //            @Param("estado") String estado,
+            @Param("estado") String estado,
             Pageable pageable
     );
 

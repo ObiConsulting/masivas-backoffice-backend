@@ -20,9 +20,9 @@ public class DetalleConsultaArchivoDirectorioDTO implements Serializable {
 
     private Long idArchivo;
     private String nombre;
-    private String cantidadDeclarado;
-    private Long estadoObtencion;
-    private Long estadoProcesado;
+    private Long cantidadDeclarado;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime fechaObtencion;
+    private String codigoEstado;
+
 }

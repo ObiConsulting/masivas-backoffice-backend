@@ -225,8 +225,8 @@ public class GrupoParametroService {
             List<TpGrupoParametro> listaGrupo = grupoParametroRepository.findAll();
 
             return listaGrupo.stream()
-                    .map(grupo -> new ComboEstadoDTO(grupo.getCodigo(), grupo.getDescripcion()))
-                    .sorted(Comparator.comparing(ComboEstadoDTO::getCodigo))
+                    .sorted(Comparator.comparing(TpGrupoParametro::getIdGrupoParametro))
+                    .map(grupo -> new ComboEstadoDTO(grupo.getIdGrupoParametro().toString(), grupo.getDescripcion()))
                     .collect(Collectors.toList());
 
         } catch (Exception e) {

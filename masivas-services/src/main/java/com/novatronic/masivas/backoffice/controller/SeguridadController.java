@@ -83,7 +83,8 @@ public class SeguridadController {
             // Limpia el contexto de Spring (opcional, buena práctica)
             SecurityContextHolder.clearContext();
 
-            return ResponseEntity.ok(new MasivasResponse<>("200", "Sesión cerrada correctamente", null));
+//            return ResponseEntity.ok(new MasivasResponse<>("200", "Sesión cerrada correctamente", null));
+            return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CERRAR_SESION, null));
 
         } catch (Exception e) {
             res = new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
