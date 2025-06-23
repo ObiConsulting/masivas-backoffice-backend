@@ -21,30 +21,39 @@ import lombok.ToString;
  * @author Obi Consulting
  */
 @Entity
-@Table(name = "TP_ARCHIVO_DIR")
+@Table(name = "TP_ARCHIVO_TIT")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TpArchivoDirectorio extends ModelAudit<String> implements Serializable {
+public class TpArchivoTitularidad extends ModelAudit<String> implements Serializable {
 
     @Id
     @Basic(optional = false)
-    @Column(name = "ID_ARCHIVO_DIR")
-    @SequenceGenerator(name = "SEQ_TP_ARCHIVO_DIR", sequenceName = "SEQ_TP_ARCHIVO_DIR", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_ARCHIVO_DIR")
+    @Column(name = "ID_ARCHIVO_TIT")
+    @SequenceGenerator(name = "SEQ_TP_ARCHIVO_TIT", sequenceName = "SEQ_TP_ARCHIVO_TIT", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_ARCHIVO_TIT")
     private Long idArchivo;
     @Size(max = 50)
     @Column(name = "NOMBRE_CCE")
     private String nombre;
-    @Column(name = "CANT_DECLARADO_CCE")
-    private Long cantidadDeclarado;
-    @Column(name = "ESTADO_OBTENCION_CCE")
-    private Long estadoObtencion;
-//    @Column(name = "ESTADO_PROCESADO_CCE")
-    @Column(name = "ESTADO_ENVIO_CLIENTE")
-    private Long estadoProcesado;
     @Column(name = "FEC_OBTENCION_CCE")
     private LocalDateTime fechaObtencion;
+    @Column(name = "FEC_PROCESADO_CCE")
+    private LocalDateTime fechaProcesada;
+    @Column(name = "CANT_DECLARADO_CCE")
+    private Long cantidadDeclarado;
+    @Column(name = "CANT_PROCESADO_CCE")
+    private Long cantidadProcesado;
+    @Column(name = "ESTADO_OBTENCION_CLIENTE")
+    private Long estadoObtencionCliente;
+//    @Column(name = "ESTADO_PROCESADO_CLIENTE")
+    @Column(name = "ESTADO_ENVIO_CCE")
+    private Long estadoProcesadoCliente;
+    @Column(name = "ESTADO_OBTENCION_CCE")
+    private Long estadoObtencionCCE;
+//    @Column(name = "ESTADO_PROCESADO_CCE")
+    @Column(name = "ESTADO_ENVIO_CLIENTE")
+    private Long estadoProcesadoCCE;
 
 }

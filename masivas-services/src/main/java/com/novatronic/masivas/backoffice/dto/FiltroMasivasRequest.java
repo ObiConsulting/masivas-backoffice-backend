@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,9 +33,17 @@ public class FiltroMasivasRequest {
 
     //Archivos
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate fechaInicioObtencion;
+    private LocalDate fechaInicio;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate fechaFinObtencion;
+    private LocalDate fechaFin;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime fechaInicioObtencion;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime fechaFinObtencion;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime fechaInicioProcesada;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime fechaFinProcesada;
 
     //Campos Generales
     private String campoOrdenar;
@@ -86,12 +95,28 @@ public class FiltroMasivasRequest {
         return idParametro;
     }
 
-    public LocalDate getFechaInicioObtencion() {
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public LocalDateTime getFechaInicioObtencion() {
         return fechaInicioObtencion;
     }
 
-    public LocalDate getFechaFinObtencion() {
+    public LocalDateTime getFechaFinObtencion() {
         return fechaFinObtencion;
+    }
+
+    public LocalDateTime getFechaInicioProcesada() {
+        return fechaInicioProcesada;
+    }
+
+    public LocalDateTime getFechaFinProcesada() {
+        return fechaFinProcesada;
     }
 
 }
