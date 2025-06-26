@@ -51,9 +51,19 @@ public class ArchivoService {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Método que realiza la búsqueda de los archivos de tipo directorio según
+     * filtros de búsqueda
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public CustomPaginate<DetalleConsultaArchivoDirectorioDTO> buscarArchivoDirectorio(FiltroMasivasRequest request, String usuario) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ARCHIVO_DIRECTORIO, ConstantesServices.METODO_CONSULTAR, request.toStringArchivoDirectorio());
 
             Pageable pageable = null;
 
@@ -73,10 +83,11 @@ public class ArchivoService {
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
-
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
             CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
             return customPaginate;
 
@@ -90,9 +101,20 @@ public class ArchivoService {
 
     }
 
+    /**
+     * Método que realiza la búsqueda de los archivos de tipo masivas según
+     * filtros de búsqueda
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public CustomPaginate<DetalleConsultaArchivoMasivasDTO> buscarArchivoMasivas(FiltroMasivasRequest request, String usuario) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ARCHIVO_MASIVAS, ConstantesServices.METODO_CONSULTAR, request.toStringArchivoMasivas());
+
             Pageable pageable = null;
 
             if (request.getCampoOrdenar().isEmpty()) {
@@ -110,10 +132,11 @@ public class ArchivoService {
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
-
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
             CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
             return customPaginate;
 
@@ -127,9 +150,20 @@ public class ArchivoService {
 
     }
 
+    /**
+     * Método que realiza la búsqueda de los archivos de tipo titularidad según
+     * filtros de búsqueda
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public CustomPaginate<DetalleConsultaArchivoTitularidadDTO> buscarArchivoTitularidad(FiltroMasivasRequest request, String usuario) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ARCHIVO_TITULARIDAD, ConstantesServices.METODO_CONSULTAR, request.toStringArchivoTitularidad());
+
             Pageable pageable = null;
 
             if (request.getCampoOrdenar().isEmpty()) {
@@ -147,10 +181,11 @@ public class ArchivoService {
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
-
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
             CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
             return customPaginate;
 
@@ -162,6 +197,10 @@ public class ArchivoService {
             throw new GenericException(e);
         }
 
+    }
+
+    public void logEvento(String mensaje, Object... param) {
+        LOGGER.info(mensaje, param);
     }
 
     public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {

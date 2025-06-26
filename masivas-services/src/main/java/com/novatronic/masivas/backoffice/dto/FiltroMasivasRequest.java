@@ -119,4 +119,41 @@ public class FiltroMasivasRequest {
         return fechaFinProcesada;
     }
 
+    public String toStringGrupoParametro() {
+        return "{" + "codigo=" + codigo + ", estado=" + estado + '}';
+    }
+
+    public String toStringParametro() {
+        return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", estado=" + estado + '}';
+    }
+
+    public String toStringEntidad() {
+        return "{" + "codigo=" + codigo + ", nombre=" + nombre + ", estado=" + estado + '}';
+    }
+
+    public String toStringArchivoDirectorio() {
+        return "{" + "fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", estado=" + estado + '}';
+    }
+
+    public String toStringArchivoMasivas() {
+        return "{" + "fechaInicioObtencion=" + fechaInicioObtencion + ", fechaFinObtencion=" + fechaFinObtencion + "fechaInicioProcesada=" + fechaInicioProcesada
+                + ", fechaFinProcesada=" + fechaFinProcesada + ", estado=" + estado + '}';
+    }
+
+    public String toStringArchivoTitularidad() {
+        return "{" + "fechaInicioObtencion=" + fechaInicioObtencion + ", fechaFinObtencion=" + fechaFinObtencion + "fechaInicioProcesada=" + fechaInicioProcesada
+                + ", fechaFinProcesada=" + fechaFinProcesada + ", estado=" + estado + '}';
+    }
+
+    public String toStringGrupoParametroObtener() {
+        return "{" + "idGrupoParametro=" + idGrupoParametro + '}';
+    }
+
+    public String toStringParametroObtener() {
+        return "{" + "idParametro=" + idParametro + '}';
+    }
+
+    public String toStringEntidadObtener() {
+        return "{" + "idEntidad=" + idEntidad + '}';
+    }
 }

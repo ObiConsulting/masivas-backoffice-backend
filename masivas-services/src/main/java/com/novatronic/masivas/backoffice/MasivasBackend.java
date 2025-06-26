@@ -12,10 +12,10 @@ import org.springframework.context.annotation.PropertySources;
  *
  * @author Obi Consulting
  */
-//@PropertySources({
-//    @PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true),
-//    @PropertySource(value = "file:${SIXCFG}/MSVBAS/application.properties", ignoreResourceNotFound = false)
-//})
+@PropertySources({
+    @PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true),
+    @PropertySource(value = "file:${SIXCFG}/MSVBAS/application.properties", ignoreResourceNotFound = false)
+})
 @ComponentScan(basePackages = {"com.novatronic"})
 @SpringBootApplication
 public class MasivasBackend extends SpringBootServletInitializer {

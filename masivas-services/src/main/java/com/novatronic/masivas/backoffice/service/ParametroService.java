@@ -15,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.ParametroRepository;
+import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.logger.NovaLogger;
+import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -37,22 +39,31 @@ import org.springframework.data.domain.Sort;
  */
 @Service
 public class ParametroService {
-    
+
     @Autowired
     private final ParametroRepository parametroRepository;
     private final MessageSource messageSource;
-    
+
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ParametroService.class);
-    
+
     public ParametroService(ParametroRepository parametroRepository, MessageSource messageSource) {
         this.parametroRepository = parametroRepository;
         this.messageSource = messageSource;
     }
-    
+
+    /**
+     * Método que realiza la creación de un parámetro
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public Long crearParametro(MasivasRequestDTO request, String usuario) {
-        
+
         try {
-            
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_REGISTRAR, request.toStringParametro());
+
             TpParametro parametro = new TpParametro(
                     request.getCodigo(),
                     request.getValor(),
@@ -61,11 +72,9 @@ public class ParametroService {
                     LocalDateTime.now(),
                     usuario
             );
-            LOGGER.info("before insert: ");
             parametro = parametroRepository.save(parametro);
-            LOGGER.info("result insert: " + parametro);
             return parametro.getIdParametro();
-            
+
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -77,15 +86,25 @@ public class ParametroService {
             }
             throw new GenericException(e);
         }
-        
+
     }
-    
+
+    /**
+     * Método que realiza la búsqueda de los parámetros según filtros de
+     * búsqueda
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public CustomPaginate<DetalleConsultaParametroDTO> buscarParametro(FiltroMasivasRequest request, String usuario) {
-        
+
         try {
-            
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_CONSULTAR, request.toStringParametro());
+
             Pageable pageable = null;
-            
+
             if (request.getCampoOrdenar().isEmpty()) {
                 pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
             } else {
@@ -95,18 +114,19 @@ public class ParametroService {
                     pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
                 }
             }
-            
+
             Page<DetalleConsultaParametroDTO> objPageable = parametroRepository.buscarPorFiltros(request.getCodigo(), request.getIdGrupoParametro(), request.getEstado(), pageable);
-            
+
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
-            
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
-            
+
             CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
-            
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
+
             return customPaginate;
-            
+
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -114,21 +134,28 @@ public class ParametroService {
             }
             throw new GenericException(e);
         }
-        
+
     }
-    
+
+    /**
+     * Método que realiza la actualización de un parámetro
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public Long editarParametro(MasivasRequestDTO request, String usuario) {
-        
+
         try {
-            
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringParametro());
+
             TpParametro parametro = parametroRepository.findById(request.getIdParametro()).get();
             updateParametro(parametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
-            
-            System.out.println("before update: ");
-            TpParametro tpParametroSaved = parametroRepository.save(parametro);
-            System.out.println("result update: " + tpParametroSaved);
+            parametroRepository.save(parametro);
+
             return parametro.getIdParametro();
-            
+
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -141,20 +168,27 @@ public class ParametroService {
             throw new GenericException(e);
         }
     }
-    
+
+    /**
+     * Método que obtiene el registro de un parámetro según id
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public DetalleRegistroParametroDTO obtenerParametro(FiltroMasivasRequest request, String usuario) {
-        
+
         try {
-            
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_OBTENER, request.toStringParametroObtener());
+
             ModelMapper modelMapper = new ModelMapper();
-            System.out.println("before findById: ");
             TpParametro parametro = parametroRepository.findById(request.getIdParametro()).get();
-            System.out.println("result findById: " + parametro);
             DetalleRegistroParametroDTO parametroDTO = new DetalleRegistroParametroDTO();
-            
             modelMapper.map(parametro, parametroDTO);
+
             return parametroDTO;
-            
+
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -163,27 +197,33 @@ public class ParametroService {
             throw new GenericException(e);
         }
     }
-    
-    @Transactional
+
+    /**
+     * Método que realiza el cambio de estado de un parámetro
+     *
+     * @param request
+     * @param usuario
+     * @param estado
+     * @return
+     */
     public EstadoDTO cambiarEstadoParametro(MasivasRequestDTO request, String usuario, String estado) {
-        
+
         try {
-            
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
+
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
             String mensaje;
-            
+
             for (Long id : request.getIdsOperacion()) {
                 TpParametro parametro = parametroRepository.findById(id).get();
                 request.setEstado(estado);
                 updateParametro(parametro, request, usuario, ConstantesServices.BLANCO);
-                
-                System.out.println("before update: ");
-                TpParametro tpParametroSaved = parametroRepository.save(parametro);
-                System.out.println("result update: " + tpParametroSaved);
+                parametroRepository.save(parametro);
                 numExito++;
             }
-            
+
             if (numExito == totalIds) {
                 if (totalIds > 1) {
                     mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACIONES;
@@ -200,9 +240,9 @@ public class ParametroService {
                     mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACION;
                 }
             }
-            
+
             return new EstadoDTO(mensaje, numExito);
-            
+
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -211,18 +251,18 @@ public class ParametroService {
             throw new GenericException(e);
         }
     }
-    
+
     public List<ComboEstadoDTO> listarEstadoArchivos() {
-        
+
         try {
             List<String> listaCodigo = Arrays.asList(ConstantesServices.CODIGOS_ESTADOS_ARCHIVO.split(ConstantesServices.COMA));
             List<TpParametro> listaGrupo = parametroRepository.buscarEstadoArchivo(listaCodigo, ConstantesServices.ESTADO_ACTIVO);
-            
+
             return listaGrupo.stream()
                     .sorted(Comparator.comparing(TpParametro::getCodigo))
                     .map(estado -> new ComboEstadoDTO(estado.getCodigo(), estado.getValor()))
                     .collect(Collectors.toList());
-            
+
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -230,11 +270,11 @@ public class ParametroService {
             }
             throw new GenericException(e);
         }
-        
+
     }
-    
+
     private void updateParametro(TpParametro parametro, MasivasRequestDTO request, String usuario, String operacion) {
-        
+
         if (operacion.equals(ConstantesServices.OPERACION_EDITAR)) {
             parametro.setIdGrupoParametro(request.getIdGrupoParametro());
             parametro.setCodigo(request.getCodigo());
@@ -242,13 +282,21 @@ public class ParametroService {
         } else {
             parametro.setEstado(request.getEstado());
         }
-        
+
         parametro.setFecModificacion(LocalDateTime.now());
         parametro.setUsuModificacion(usuario);
     }
-    
-    public void logError(String mensajeError, Exception e) {
-        LOGGER.error(mensajeError, e);
+
+    public void logEvento(String mensaje, Object... param) {
+        LOGGER.info(mensaje, param);
     }
-    
+
+    public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
+        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
+                null, accion, null, null, mensajeExito);
+    }
+
+//    public void logError(String mensajeError, Exception e) {
+//        LOGGER.error(mensajeError, e);
+//    }
 }

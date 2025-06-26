@@ -59,6 +59,24 @@ public class ConstantesServices {
     public static final Long ID_EXTENSION_BASE = 16L;
     public static final Long ID_EXTENSION_CONTROL = 21L;
 
+    //Para log
+    public static final String MENSAJE_TRAZABILIDAD = "Procesando [{}]. Método [{}]. Valores: {}";
+    public static final String MENSAJE_TRAZABILIDAD_RESULTADOS = "Total de registros obtenidos: [{}]";
+
+    public static final String METODO_REGISTRAR = "Registrar";
+    public static final String METODO_CONSULTAR = "Consultar";
+    public static final String METODO_ACTUALIZAR = "Actualizar";
+    public static final String METODO_OBTENER = "Obtener";
+    public static final String METODO_ACTIVAR_DESACTIVAR = "Activar/Desactivar";
+    public static final String METODO_DESCARGAR = "Descargar";
+
+    public static final String GRUPO_PARAMETRO = "Grupo Parámetro";
+    public static final String PARAMETRO = "Parámetro";
+    public static final String ENTIDAD_FINANCIERA = "Entidad Financiera";
+    public static final String ARCHIVO_DIRECTORIO = "Archivo Directorio";
+    public static final String ARCHIVO_MASIVAS = "Archivo Masivas";
+    public static final String ARCHIVO_TITULARIDAD = "Archivo Titularidad";
+
     //Para auditoria
     public static final String ACCION_CREATE = "create";
     public static final String ACCION_READ = "read";

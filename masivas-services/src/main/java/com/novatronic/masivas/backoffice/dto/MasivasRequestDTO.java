@@ -33,4 +33,19 @@ public class MasivasRequestDTO {
     //Parametro
     private String valor;
 
+    public String toStringGrupoParametro() {
+        return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", descripcion=" + descripcion + '}';
+    }
+
+    public String toStringParametro() {
+        return "{" + "idParametro=" + idParametro + ", idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", valor=" + valor + '}';
+    }
+
+    public String toStringEntidad() {
+        return "{" + "codigo=" + codigo + ", nombre=" + nombre + '}';
+    }
+
+    public String toStringActivarDesactivar() {
+        return "{" + "idsOperacion=" + idsOperacion + '}';
+    }
 }

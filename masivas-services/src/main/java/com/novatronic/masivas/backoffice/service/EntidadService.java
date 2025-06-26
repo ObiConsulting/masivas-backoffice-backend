@@ -46,9 +46,18 @@ public class EntidadService {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Método que realiza la creación de una entidad financiera
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public Long crearEntidad(MasivasRequestDTO request, String usuario) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_REGISTRAR, request.toStringEntidad());
 
             TpEntidad entidad = new TpEntidad(
                     request.getCodigo(),
@@ -61,9 +70,7 @@ public class EntidadService {
                     LocalDateTime.now(),
                     usuario
             );
-            System.out.println("before insert: ");
             entidad = entidadRepository.save(entidad);
-            System.out.println("result insert: " + entidad);
             return entidad.getIdEntidad();
 
         } catch (Exception e) {
@@ -80,9 +87,19 @@ public class EntidadService {
 
     }
 
+    /**
+     * Método que realiza la búsqueda de las entidades financieras según filtros
+     * de búsqueda
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public CustomPaginate<DetalleConsultaEntidadDTO> buscar(FiltroMasivasRequest request, String usuario) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_CONSULTAR, request.toStringEntidad());
 
             ModelMapper modelMapper = new ModelMapper();
             Pageable pageable = null;
@@ -112,6 +129,8 @@ public class EntidadService {
                     dtoPage.getContent()
             );
 
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
+
             return customPaginate;
 
         } catch (Exception e) {
@@ -124,16 +143,23 @@ public class EntidadService {
 
     }
 
+    /**
+     * Método que realiza la actualización de una entidad financiera
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public Long editarEntidad(MasivasRequestDTO request, String usuario) {
 
         try {
 
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTUALIZAR, request.toStringEntidad());
+
             TpEntidad entidad = entidadRepository.findById(request.getIdEntidad()).get();
             updateEntidad(entidad, request, usuario, ConstantesServices.OPERACION_EDITAR);
+            entidadRepository.save(entidad);
 
-            System.out.println("before update: ");
-            TpEntidad tpEntidadSaved = entidadRepository.save(entidad);
-            System.out.println("result update: " + tpEntidadSaved);
             return entidad.getIdEntidad();
 
         } catch (Exception e) {
@@ -150,17 +176,24 @@ public class EntidadService {
 
     }
 
+    /**
+     * Método que obtiene el registro de una entidad financiera según id
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public DetalleRegistroEntidadDTO obtenerEntidad(FiltroMasivasRequest request, String usuario) {
 
         try {
 
-            ModelMapper modelMapper = new ModelMapper();
-            System.out.println("before findById: ");
-            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad()).get();
-            System.out.println("result findById: " + entidad);
-            DetalleRegistroEntidadDTO entidadDTO = new DetalleRegistroEntidadDTO();
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_OBTENER, request.toStringEntidadObtener());
 
+            ModelMapper modelMapper = new ModelMapper();
+            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad()).get();
+            DetalleRegistroEntidadDTO entidadDTO = new DetalleRegistroEntidadDTO();
             modelMapper.map(entidad, entidadDTO);
+
             return entidadDTO;
 
         } catch (Exception e) {
@@ -173,9 +206,19 @@ public class EntidadService {
 
     }
 
+    /**
+     * Método que realiza el cambio de estado de una entidad financiera
+     *
+     * @param request
+     * @param usuario
+     * @param estado
+     * @return
+     */
     public EstadoDTO cambiarEstadoEntidad(MasivasRequestDTO request, String usuario, String estado) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
 
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
@@ -185,10 +228,7 @@ public class EntidadService {
                 TpEntidad entidad = entidadRepository.findById(id).get();
                 request.setEstado(estado);
                 updateEntidad(entidad, request, usuario, ConstantesServices.BLANCO);
-
-                System.out.println("before update: ");
-                TpEntidad tpEntidadSaved = entidadRepository.save(entidad);
-                System.out.println("result update: " + tpEntidadSaved);
+                entidadRepository.save(entidad);
                 numExito++;
             }
 
@@ -231,6 +271,10 @@ public class EntidadService {
 
         entidad.setFecModificacion(LocalDateTime.now());
         entidad.setUsuModificacion(usuario);
+    }
+
+    public void logEvento(String mensaje, Object... param) {
+        LOGGER.info(mensaje, param);
     }
 
     public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {

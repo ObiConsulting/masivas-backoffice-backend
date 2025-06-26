@@ -50,9 +50,18 @@ public class GrupoParametroService {
         this.messageSource = messageSource;
     }
 
+    /**
+     * Método que realiza la creación de un grupo parámetro
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public Long crearGrupoParametro(MasivasRequestDTO request, String usuario) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_REGISTRAR, request.toStringGrupoParametro());
 
             TpGrupoParametro grupoParametro = new TpGrupoParametro(
                     request.getCodigo(),
@@ -61,9 +70,7 @@ public class GrupoParametroService {
                     LocalDateTime.now(),
                     usuario
             );
-            LOGGER.info("before insert: ");
             grupoParametro = grupoParametroRepository.save(grupoParametro);
-            LOGGER.info("result insert: " + grupoParametro);
             return grupoParametro.getIdGrupoParametro();
 
         } catch (Exception e) {
@@ -80,9 +87,19 @@ public class GrupoParametroService {
 
     }
 
+    /**
+     * Método que realiza la búsqueda de los grupos parámetro según filtros de
+     * búsqueda
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public CustomPaginate<DetalleConsultaGrupoParametroDTO> buscarGrupoParametro(FiltroMasivasRequest request, String usuario) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_CONSULTAR, request.toStringGrupoParametro());
 
             ModelMapper modelMapper = new ModelMapper();
             Pageable pageable = null;
@@ -103,7 +120,6 @@ public class GrupoParametroService {
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
-
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
             CustomPaginate customPaginate = new CustomPaginate<>(
@@ -111,6 +127,8 @@ public class GrupoParametroService {
                     totalRegistros,
                     dtoPage.getContent()
             );
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
             return customPaginate;
 
@@ -124,16 +142,23 @@ public class GrupoParametroService {
 
     }
 
+    /**
+     * Método que realiza la actualización de un grupo parámetro
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public Long editarGrupoParametro(MasivasRequestDTO request, String usuario) {
 
         try {
 
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringGrupoParametro());
+
             TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
             updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
+            grupoParametroRepository.save(grupoParametro);
 
-            System.out.println("before update: ");
-            TpGrupoParametro tpGrupoParametroSaved = grupoParametroRepository.save(grupoParametro);
-            System.out.println("result update: " + tpGrupoParametroSaved);
             return grupoParametro.getIdGrupoParametro();
 
         } catch (Exception e) {
@@ -149,17 +174,24 @@ public class GrupoParametroService {
         }
     }
 
+    /**
+     * Método que obtiene el registro de un grupo parámetro según id
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
     public DetalleRegistroGrupoParametroDTO obtenerGrupoParametro(FiltroMasivasRequest request, String usuario) {
 
         try {
 
-            ModelMapper modelMapper = new ModelMapper();
-            System.out.println("before findById: ");
-            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
-            System.out.println("result findById: " + grupoParametro);
-            DetalleRegistroGrupoParametroDTO grupoParametroDTO = new DetalleRegistroGrupoParametroDTO();
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_OBTENER, request.toStringGrupoParametroObtener());
 
+            ModelMapper modelMapper = new ModelMapper();
+            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
+            DetalleRegistroGrupoParametroDTO grupoParametroDTO = new DetalleRegistroGrupoParametroDTO();
             modelMapper.map(grupoParametro, grupoParametroDTO);
+
             return grupoParametroDTO;
 
         } catch (Exception e) {
@@ -171,9 +203,19 @@ public class GrupoParametroService {
         }
     }
 
+    /**
+     * Método que realiza el cambio de estado de un grupo parámetro
+     *
+     * @param request
+     * @param usuario
+     * @param estado
+     * @return
+     */
     public EstadoDTO cambiarEstadoGrupoParametro(MasivasRequestDTO request, String usuario, String estado) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
 
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
@@ -183,10 +225,7 @@ public class GrupoParametroService {
                 TpGrupoParametro grupoParametro = grupoParametroRepository.findById(id).get();
                 request.setEstado(estado);
                 updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.BLANCO);
-
-                System.out.println("before update: ");
-                TpGrupoParametro tpGrupoParametroSaved = grupoParametroRepository.save(grupoParametro);
-                System.out.println("result update: " + tpGrupoParametroSaved);
+                grupoParametroRepository.save(grupoParametro);
                 numExito++;
             }
 
@@ -252,12 +291,16 @@ public class GrupoParametroService {
         grupoParametro.setUsuModificacion(usuario);
     }
 
-    public void logError(String mensajeError, Exception e) {
-        LOGGER.error(mensajeError, e);
+    public void logEvento(String mensaje, Object... param) {
+        LOGGER.info(mensaje, param);
     }
 
     public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
         LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
                 null, accion, null, null, mensajeExito);
     }
+
+//    public void logError(String mensajeError, Exception e) {
+//        LOGGER.error(mensajeError, e);
+//    }
 }
