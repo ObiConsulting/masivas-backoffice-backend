@@ -22,7 +22,6 @@ import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -252,15 +251,53 @@ public class ParametroService {
         }
     }
 
-    public List<ComboEstadoDTO> listarEstadoArchivos() {
+    public List<ComboEstadoDTO> listarParametrosPorGrupoConsulta(Long idGrupoParametro) {
 
         try {
-            List<String> listaCodigo = Arrays.asList(ConstantesServices.CODIGOS_ESTADOS_ARCHIVO.split(ConstantesServices.COMA));
-            List<TpParametro> listaGrupo = parametroRepository.buscarEstadoArchivo(listaCodigo, ConstantesServices.ESTADO_ACTIVO);
+            List<TpParametro> listaGrupo = parametroRepository.getByIdGrupoParametro(idGrupoParametro);
 
             return listaGrupo.stream()
                     .sorted(Comparator.comparing(TpParametro::getCodigo))
                     .map(estado -> new ComboEstadoDTO(estado.getCodigo(), estado.getValor()))
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
+    }
+
+    public List<ComboEstadoDTO> listarParametrosPorGrupoFormulario(Long idGrupoParametro) {
+
+        try {
+            List<TpParametro> listaGrupo = parametroRepository.getByIdGrupoParametro(idGrupoParametro);
+
+            return listaGrupo.stream()
+                    .sorted(Comparator.comparing(TpParametro::getIdParametro))
+                    .map(estado -> new ComboEstadoDTO(estado.getIdParametro().toString(), estado.getValor()))
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
+    }
+
+    public List<ComboEstadoDTO> listarCategoriDirectorio(Long idGrupoParametro) {
+
+        try {
+            List<ComboEstadoDTO> listaCompleta = listarParametrosPorGrupoConsulta(idGrupoParametro);
+
+            return listaCompleta.stream()
+                    .filter(estado -> "1000".equals(estado.getCodigo()) || "2000".equals(estado.getCodigo()))
                     .collect(Collectors.toList());
 
         } catch (Exception e) {

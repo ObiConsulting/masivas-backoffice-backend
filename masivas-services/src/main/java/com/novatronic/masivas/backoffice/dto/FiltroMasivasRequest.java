@@ -21,6 +21,7 @@ public class FiltroMasivasRequest {
     private Long idEntidad;
     private Long idGrupoParametro;
     private Long idParametro;
+    private Long idRuta;
 
     private String codigo;
     private String estado;
@@ -44,6 +45,10 @@ public class FiltroMasivasRequest {
     private LocalDateTime fechaInicioProcesada;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime fechaFinProcesada;
+
+    //Ruta
+    private String codTipoArchivo;
+    private String codCategoriaDirectorio;
 
     //Campos Generales
     private String campoOrdenar;
@@ -95,6 +100,10 @@ public class FiltroMasivasRequest {
         return idParametro;
     }
 
+    public Long getIdRuta() {
+        return idRuta;
+    }
+
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }
@@ -117,6 +126,14 @@ public class FiltroMasivasRequest {
 
     public LocalDateTime getFechaFinProcesada() {
         return fechaFinProcesada;
+    }
+
+    public String getCodTipoArchivo() {
+        return codTipoArchivo;
+    }
+
+    public String getCodCategoriaDirectorio() {
+        return codCategoriaDirectorio;
     }
 
     public String toStringGrupoParametro() {
@@ -145,6 +162,10 @@ public class FiltroMasivasRequest {
                 + ", fechaFinProcesada=" + fechaFinProcesada + ", estado=" + estado + '}';
     }
 
+    public String toStringRuta() {
+        return "{" + "codTipoArchivo=" + codTipoArchivo + ", codCategoriaDirectorio=" + codCategoriaDirectorio + '}';
+    }
+
     public String toStringGrupoParametroObtener() {
         return "{" + "idGrupoParametro=" + idGrupoParametro + '}';
     }
@@ -155,5 +176,9 @@ public class FiltroMasivasRequest {
 
     public String toStringEntidadObtener() {
         return "{" + "idEntidad=" + idEntidad + '}';
+    }
+
+    public String toStringRutaObtener() {
+        return "{" + "idRuta=" + idRuta + '}';
     }
 }

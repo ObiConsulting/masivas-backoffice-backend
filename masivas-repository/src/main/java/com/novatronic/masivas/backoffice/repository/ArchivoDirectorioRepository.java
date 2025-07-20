@@ -20,8 +20,8 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO("
             + "d.idArchivo, d.nombre, d.cantidadDeclarado, d.fechaObtencion,"
             + "    CASE "
-            + "        WHEN d.estadoProcesado IS NOT NULL THEN '0703' "
-            + "        WHEN d.estadoObtencion IS NOT NULL THEN '0702' "
+            + "        WHEN d.estadoProcesado IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0703') "
+            + "        WHEN d.estadoObtencion IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0702')  "
             + "        ELSE 'Pendiente' "
             + "    END)"
             + "FROM TpArchivoDirectorio d\n"
@@ -29,8 +29,8 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
             + "      AND (:fechaFin IS NULL OR d.fechaObtencion <= :fechaFin)\n"
             + "      AND (:estado IS NULL OR "
             + "         CASE "
-            + "            WHEN d.estadoProcesado IS NOT NULL THEN '0703' "
-            + "            WHEN d.estadoObtencion IS NOT NULL THEN '0702' "
+            + "            WHEN d.estadoProcesado IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0703') "
+            + "            WHEN d.estadoObtencion IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0702') "
             + "            ELSE 'Pendiente' "
             + "         END = :estado)")
     Page<DetalleConsultaArchivoDirectorioDTO> buscarPorFiltros(

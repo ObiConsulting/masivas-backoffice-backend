@@ -87,7 +87,35 @@ public class ParametroController {
 
     @GetMapping("/listarEstadoArchivos")
     public ResponseEntity<MasivasResponse> listarEstadoArchivos(@AuthenticationPrincipal UserContext userContext) {
-        List<ComboEstadoDTO> listaEstado = parametroService.listarEstadoArchivos();
+        List<ComboEstadoDTO> listaEstado = parametroService.listarParametrosPorGrupoConsulta(ConstantesServices.ID_GRUPO_ESTADO_ARCHIVOS);
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
+    }
+
+    @GetMapping("/listarCategoriaDirectorio")
+    public ResponseEntity<MasivasResponse> listarCategoriaDirectorio(@AuthenticationPrincipal UserContext userContext) {
+        List<ComboEstadoDTO> listaEstado = parametroService.listarCategoriDirectorio(ConstantesServices.ID_GRUPO_CATEGORIA_DIRECTORIO);
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
+    }
+
+    @GetMapping("/listarTipoArchivo")
+    public ResponseEntity<MasivasResponse> listarTipoArchivo(@AuthenticationPrincipal UserContext userContext) {
+        List<ComboEstadoDTO> listaEstado = parametroService.listarParametrosPorGrupoConsulta(ConstantesServices.ID_GRUPO_TIPO_ARCHIVO);
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
+    }
+
+    @GetMapping("/listarExtensionBase")
+    public ResponseEntity<MasivasResponse> listarExtensionBase(@AuthenticationPrincipal UserContext userContext) {
+        List<ComboEstadoDTO> listaEstado = parametroService.listarParametrosPorGrupoFormulario(ConstantesServices.ID_GRUPO_EXTENSION_BASE);
+        //TODO Imprimir OK log auditoria
+        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
+    }
+
+    @GetMapping("/listarExtensionControl")
+    public ResponseEntity<MasivasResponse> listarExtensionControl(@AuthenticationPrincipal UserContext userContext) {
+        List<ComboEstadoDTO> listaEstado = parametroService.listarParametrosPorGrupoFormulario(ConstantesServices.ID_GRUPO_EXTENSION_CONTROL);
         //TODO Imprimir OK log auditoria
         return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }

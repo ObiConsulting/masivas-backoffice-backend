@@ -65,8 +65,8 @@ public class EntidadService {
                     ConstantesServices.ESTADO_INACTIVO,
                     ConstantesServices.ID_PERFIL,
                     ConstantesServices.NO_PROPIETARIO,
-                    ConstantesServices.ID_EXTENSION_BASE,
-                    ConstantesServices.ID_EXTENSION_CONTROL,
+                    null,//Extensión Base
+                    null,//Extensión Control
                     LocalDateTime.now(),
                     usuario
             );
@@ -265,6 +265,8 @@ public class EntidadService {
         if (operacion.equals(ConstantesServices.OPERACION_EDITAR)) {
             entidad.setCodigo(request.getCodigo());
             entidad.setNombre(request.getNombre());
+            entidad.setIdExtensionBase(request.getIdExtensionBase());
+            entidad.setIdExtensionControl(request.getIdExtensionControl());
         } else {
             entidad.setEstado(request.getEstado());
         }

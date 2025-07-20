@@ -38,4 +38,6 @@ public interface ParametroRepository extends JpaRepository<TpParametro, Long> {
             @Param("estado") String estado
     );
 
+    public List<TpParametro> getByIdGrupoParametro(Long codigo);
+
 }

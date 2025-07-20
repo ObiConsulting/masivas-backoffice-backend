@@ -24,6 +24,7 @@ public class DetalleRegistroParametroDTO implements Serializable {
     private Long idGrupoParametro;
     private String estado;
 
+    //Campos de Auditoria
     private String usuCreacion;
     @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     private LocalDateTime fecCreacion;

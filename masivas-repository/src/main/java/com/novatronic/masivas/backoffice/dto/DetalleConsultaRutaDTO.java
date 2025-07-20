@@ -14,11 +14,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DetalleConsultaEntidadDTO implements Serializable {
+public class DetalleConsultaRutaDTO implements Serializable {
 
-    private Long idEntidad;
-    private String codigo;
-    private String nombre;
-    private String estado;
-    private String propietario;
+    private Long idRuta;
+    private String categoriaDirectorio;
+    private String tipoArchivo;
+    private String ruta;
+
 }

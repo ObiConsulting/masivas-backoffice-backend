@@ -22,7 +22,11 @@ public class DetalleRegistroEntidadDTO implements Serializable {
     private String codigo;
     private String nombre;
     private String estado;
+    private String propietario;
+    private Long idExtensionBase;
+    private Long idExtensionControl;
 
+    //Campos de Auditoria
     private String usuCreacion;
     @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     private LocalDateTime fecCreacion;

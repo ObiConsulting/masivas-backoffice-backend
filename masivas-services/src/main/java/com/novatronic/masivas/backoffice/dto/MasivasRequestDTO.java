@@ -18,6 +18,7 @@ public class MasivasRequestDTO {
     private Long idEntidad;
     private Long idGrupoParametro;
     private Long idParametro;
+    private Long idRuta;
 
     //Campos
     private String codigo;
@@ -28,10 +29,14 @@ public class MasivasRequestDTO {
 
     //Entidad
     private String nombre;
+    private Long idExtensionBase;
+    private Long idExtensionControl;
     //Grupo Parametro
     private String descripcion;
     //Parametro
     private String valor;
+    //Ruta
+    private String ruta;
 
     public String toStringGrupoParametro() {
         return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", descripcion=" + descripcion + '}';
@@ -42,7 +47,11 @@ public class MasivasRequestDTO {
     }
 
     public String toStringEntidad() {
-        return "{" + "codigo=" + codigo + ", nombre=" + nombre + '}';
+        return "{" + "idEntidad=" + idEntidad + ", codigo=" + codigo + ", nombre=" + nombre + '}';
+    }
+
+    public String toStringRuta() {
+        return "{" + "idRuta=" + idRuta + ", ruta=" + ruta + '}';
     }
 
     public String toStringActivarDesactivar() {

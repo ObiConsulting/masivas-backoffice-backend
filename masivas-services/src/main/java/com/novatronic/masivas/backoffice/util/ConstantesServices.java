@@ -43,6 +43,11 @@ public class ConstantesServices {
     //Para los Estados de los archivos
     public static final String CODIGO_GRUPO_ESTADO = "050";
     public static final String CODIGOS_ESTADOS_ARCHIVO = "0700,0701,0702,0703";
+    public static final Long ID_GRUPO_CATEGORIA_DIRECTORIO = 1L;
+    public static final Long ID_GRUPO_TIPO_ARCHIVO = 3L;
+    public static final Long ID_GRUPO_ESTADO_ARCHIVOS = 8L;
+    public static final Long ID_GRUPO_EXTENSION_BASE = 4L;
+    public static final Long ID_GRUPO_EXTENSION_CONTROL = 6L;
 
     public static final String PREFIJO_NUM_REF_HOST_LBTR = "LBTR";
     public static final String CODIGO_OK_WS = "0000";
@@ -56,8 +61,6 @@ public class ConstantesServices {
     //Para Entidad Financiera
     public static final Long ID_PERFIL = 1L;
     public static final String NO_PROPIETARIO = "0";
-    public static final Long ID_EXTENSION_BASE = 16L;
-    public static final Long ID_EXTENSION_CONTROL = 21L;
 
     //Para log
     public static final String MENSAJE_TRAZABILIDAD = "Procesando [{}]. Método [{}]. Valores: {}";
@@ -76,6 +79,7 @@ public class ConstantesServices {
     public static final String ARCHIVO_DIRECTORIO = "Archivo Directorio";
     public static final String ARCHIVO_MASIVAS = "Archivo Masivas";
     public static final String ARCHIVO_TITULARIDAD = "Archivo Titularidad";
+    public static final String RUTA = "Ruta de Archivos";
 
     //Para auditoria
     public static final String ACCION_CREATE = "create";
@@ -90,6 +94,7 @@ public class ConstantesServices {
     public static final String TABLA_ARCHIVO_DIRECTORIO = "TP_ARCHIVO_DIR";
     public static final String TABLA_ARCHIVO_MASIVAS = "TP_ARCHIVO_MAS";
     public static final String TABLA_ARCHIVO_TITULARIDAD = "TP_ARCHIVO_TIT";
+    public static final String TABLA_RUTA = "TP_RUTA";
 
     //Codigos del Sistema
     public static final String RESPUESTA_OK_API = "0000";

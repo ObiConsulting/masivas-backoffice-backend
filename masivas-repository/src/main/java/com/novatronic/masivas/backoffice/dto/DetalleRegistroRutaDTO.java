@@ -16,12 +16,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DetalleRegistroGrupoParametroDTO implements Serializable {
+public class DetalleRegistroRutaDTO implements Serializable {
 
-    private Long idGrupoParametro;
-    private String codigo;
-    private String descripcion;
-    private String estado;
+    private Long idRuta;
+    private String categoriaDirectorio;
+    private String tipoArchivo;
+    private String ruta;
 
     //Campos de Auditoria
     private String usuCreacion;

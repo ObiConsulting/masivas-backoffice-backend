@@ -2,6 +2,7 @@ package com.novatronic.masivas.backoffice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,8 @@ public class DetalleConsultaArchivoMasivasDTO implements Serializable {
     private LocalDateTime fechaProcesada;
     private Long cantidadDeclarado;
     private Long cantidadProcesado;
+    private BigInteger montoTotal;
+    private BigInteger montoRechazado;
     private String estado;
 
 }

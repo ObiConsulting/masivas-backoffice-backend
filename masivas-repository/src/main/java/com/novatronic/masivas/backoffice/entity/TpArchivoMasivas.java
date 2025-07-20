@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,5 +56,9 @@ public class TpArchivoMasivas extends ModelAudit<String> implements Serializable
 //    @Column(name = "ESTADO_PROCESADO_CCE")
     @Column(name = "ESTADO_ENVIO_CLIENTE")
     private Long estadoProcesadoCCE;
+    @Column(name = "MONTO_TOTAL", precision = 16, scale = 0)
+    private BigInteger montoTotal;
+    @Column(name = "MONTO_RECHAZADO", precision = 16, scale = 0)
+    private BigInteger montoRechazado;
 
 }

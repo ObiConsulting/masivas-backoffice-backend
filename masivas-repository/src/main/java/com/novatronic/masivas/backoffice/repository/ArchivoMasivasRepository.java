@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas, Long> {
 
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoMasivasDTO("
-            + "m.idArchivo, m.nombre, m.fechaObtencion, m.fechaProcesada, m.cantidadDeclarado, m.cantidadProcesado, "
+            + "m.idArchivo, m.nombre, m.fechaObtencion, m.fechaProcesada, m.cantidadDeclarado, m.cantidadProcesado, m.montoTotal, m.montoRechazado, "
             + "    CASE "
             + "        WHEN m.estadoProcesadoCCE IS NOT NULL THEN '0703' "
             + "        WHEN m.estadoObtencionCCE IS NOT NULL THEN '0702' "
