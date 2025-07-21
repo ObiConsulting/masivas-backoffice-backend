@@ -23,9 +23,9 @@ public class GenericController {
     GenericService genericService;
 
     @GetMapping("/estados")
-    public ResponseEntity<MasivasResponse> listarEstados(@AuthenticationPrincipal UserContext userContext) {
+    public ResponseEntity<MasivasResponse<Object>> listarEstados(@AuthenticationPrincipal UserContext userContext) {
         List<ComboEstadoDTO> lista = genericService.listarEstados();
-        return ResponseEntity.ok(new MasivasResponse(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, lista));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, lista));
     }
 
 }

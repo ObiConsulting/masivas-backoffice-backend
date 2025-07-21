@@ -23,6 +23,10 @@ public class Constantes {
     public static final int CINCO = 5;
     public static final int SEIS = 6;
 
+    public static final Integer TAMANO_PAGINA_20 = 20;
+    public static final Integer TAMANO_PAGINA_10 = 10;
+    public static final Integer PAGINA_INICIAL = 0;
+
     public static final String IN_ID_APROBACION = "IN_ID_APROBACION";
     public static final String IN_COD_ENT_FINANCIERA = "IN_COD_ENT_FINANCIERA";
 
@@ -75,9 +79,7 @@ public class Constantes {
     // # VENTA MONEDA
     public static final String SPS_BUSCAR_VENTA_MONEDA = "SPS_BUSCAR_VENTA_MONEDA";
     public static final String SPS_DATA_VENTA_MONEDA = "SPS_DATA_VENTA_MONEDA";
-    
-    
-    
+
     // ## SP NAME REPOOVERNIGHT
     public static final String SPI_INSERTAR_REPOOVERNIGHT = "SPI_INSERTAR_REPOOVERNIGHT";
     public static final String SPU_MODIFICAR_REPOOVERNIGHT = "SPU_MODIFICAR_REPOOVERNIGHT";
@@ -91,7 +93,7 @@ public class Constantes {
     public static final String SPU_ANULAR_REPOINTRADIA = "SPU_ANULAR_REPOINTRADIA";
     public static final String SPS_BUSCAR_REPOINTRADIA = "SPS_BUSCAR_REPOINTRADIA";
     public static final String SPS_DATA_REPOINTRADIA = "SPS_DATA_REPOINTRADIA";
-    
+
     // ## SP NAME FACILIDADINTRADIA
     public static final String SPI_INSERTAR_FACILIDADINTRADIA = "SPI_INSERTAR_FACILIDADINTRA";
     public static final String SPU_MODIFICAR_FACILIDADINTRADIA = "SPU_MODIFICAR_FACILIDADINTRA";
@@ -105,7 +107,7 @@ public class Constantes {
     public static final String SPU_MODIFICAR_TRANSFCAVALI = "SPU_MODIFICAR_TRANSFCAVALI";
     public static final String SPS_DATA_TRANSFCAVALI = "SPS_DATA_TRANSFCAVALI";
     public static final String SPU_ANULAR_TRANSFCAVALI = "SPU_ANULAR_TRANSFCAVALI";
-    
+
     // ## SP NAME SUBASTA Y TENENCIA
     public static final String SPI_INSERTAR_SUBASTA = "SPI_INSERTAR_SUBASTA";
     public static final String SPI_INSERTAR_TENENCIA = "SPI_INSERTAR_TENENCIA";

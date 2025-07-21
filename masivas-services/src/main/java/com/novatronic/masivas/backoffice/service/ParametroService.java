@@ -10,6 +10,7 @@ import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.entity.TpParametro;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -149,12 +150,15 @@ public class ParametroService {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringParametro());
 
-            TpParametro parametro = parametroRepository.findById(request.getIdParametro()).get();
+            TpParametro parametro = parametroRepository.findById(request.getIdParametro())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateParametro(parametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
             parametroRepository.save(parametro);
 
             return parametro.getIdParametro();
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -182,12 +186,15 @@ public class ParametroService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_OBTENER, request.toStringParametroObtener());
 
             ModelMapper modelMapper = new ModelMapper();
-            TpParametro parametro = parametroRepository.findById(request.getIdParametro()).get();
+            TpParametro parametro = parametroRepository.findById(request.getIdParametro())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             DetalleRegistroParametroDTO parametroDTO = new DetalleRegistroParametroDTO();
             modelMapper.map(parametro, parametroDTO);
 
             return parametroDTO;
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -216,7 +223,8 @@ public class ParametroService {
             String mensaje;
 
             for (Long id : request.getIdsOperacion()) {
-                TpParametro parametro = parametroRepository.findById(id).get();
+                TpParametro parametro = parametroRepository.findById(id)
+                        .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
                 request.setEstado(estado);
                 updateParametro(parametro, request, usuario, ConstantesServices.BLANCO);
                 parametroRepository.save(parametro);
@@ -242,6 +250,8 @@ public class ParametroService {
 
             return new EstadoDTO(mensaje, numExito);
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -254,6 +264,9 @@ public class ParametroService {
     public List<ComboEstadoDTO> listarParametrosPorGrupoConsulta(Long idGrupoParametro) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LISTAR_PARAMETROS, "{" + ConstantesServices.AUDIT_CAMPO_GRUPO_PARAMETRO + idGrupoParametro + "}");
+
             List<TpParametro> listaGrupo = parametroRepository.getByIdGrupoParametro(idGrupoParametro);
 
             return listaGrupo.stream()
@@ -274,6 +287,9 @@ public class ParametroService {
     public List<ComboEstadoDTO> listarParametrosPorGrupoFormulario(Long idGrupoParametro) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LISTAR_PARAMETROS, "{" + ConstantesServices.AUDIT_CAMPO_GRUPO_PARAMETRO + idGrupoParametro + "}");
+
             List<TpParametro> listaGrupo = parametroRepository.getByIdGrupoParametro(idGrupoParametro);
 
             return listaGrupo.stream()
@@ -291,9 +307,12 @@ public class ParametroService {
 
     }
 
-    public List<ComboEstadoDTO> listarCategoriDirectorio(Long idGrupoParametro) {
+    public List<ComboEstadoDTO> listarCategoriaDirectorio(Long idGrupoParametro) {
 
         try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LISTAR_PARAMETROS, "{" + ConstantesServices.AUDIT_CAMPO_GRUPO_PARAMETRO + idGrupoParametro + "}");
+
             List<ComboEstadoDTO> listaCompleta = listarParametrosPorGrupoConsulta(idGrupoParametro);
 
             return listaCompleta.stream()

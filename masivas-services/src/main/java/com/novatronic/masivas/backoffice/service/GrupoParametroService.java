@@ -10,6 +10,7 @@ import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.entity.TpGrupoParametro;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -132,6 +133,8 @@ public class GrupoParametroService {
 
             return customPaginate;
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -155,12 +158,15 @@ public class GrupoParametroService {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringGrupoParametro());
 
-            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
+            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
             grupoParametroRepository.save(grupoParametro);
 
             return grupoParametro.getIdGrupoParametro();
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -188,12 +194,15 @@ public class GrupoParametroService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_OBTENER, request.toStringGrupoParametroObtener());
 
             ModelMapper modelMapper = new ModelMapper();
-            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro()).get();
+            TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             DetalleRegistroGrupoParametroDTO grupoParametroDTO = new DetalleRegistroGrupoParametroDTO();
             modelMapper.map(grupoParametro, grupoParametroDTO);
 
             return grupoParametroDTO;
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -222,7 +231,8 @@ public class GrupoParametroService {
             String mensaje;
 
             for (Long id : request.getIdsOperacion()) {
-                TpGrupoParametro grupoParametro = grupoParametroRepository.findById(id).get();
+                TpGrupoParametro grupoParametro = grupoParametroRepository.findById(id)
+                        .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
                 request.setEstado(estado);
                 updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.BLANCO);
                 grupoParametroRepository.save(grupoParametro);
@@ -248,6 +258,8 @@ public class GrupoParametroService {
 
             return new EstadoDTO(mensaje, numExito);
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {

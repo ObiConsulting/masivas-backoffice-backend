@@ -2,12 +2,10 @@ package com.novatronic.masivas.backoffice.config;
 
 import com.hazelcast.config.*;
 import com.novatronic.novalog.audit.logger.NovaLogger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-//import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +14,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-//import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 /**
  *
@@ -24,16 +24,13 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
  */
 @Configuration
 @EnableScheduling
-//@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class ApplicationConfig {
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ApplicationConfig.class);
 
     private static final String CLASSPATH_FILE = "aas.properties";
     private static final String EXTERNAL_FILE_RELATIVE = "/MSVBAS/aas.properties";
-
-    @Autowired
-    private Environment env;
 
     @Value("#{'${cache.config.ips}'.split(',')}")
     private List<String> ips;
@@ -50,19 +47,28 @@ public class ApplicationConfig {
     @Value("${instanceName:tam_gkn_prod}")
     private String instanceName;
 
-    public String getProperty(String pPropertyKey) {
-        return env.getProperty(pPropertyKey);
+    @Value("${lbtr.captcha.connecttimeout}")
+    private int connectionTimeout;
+
+    @Value("${lbtr.captcha.readtimeout}")
+    private int readTimeout;
+
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return (AuditorAware<String>) new AuditorAwareImpl();
     }
 
-//    @Bean
-//    public AuditorAware<String> auditorProvider() {
-//        return new AuditorAwareImpl();
-//    }
+    @Bean
+    public RestTemplate restTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(connectionTimeout);
+        factory.setReadTimeout(readTimeout);
+        return new RestTemplate(factory);
+    }
 
     @Bean
     public Config hazelcastConfig() throws IOException {
         Config config = new Config();
-        //SubZero.useAsGlobalSerializer(config);
         NetworkConfig network = config.getNetworkConfig();
         JoinConfig join = network.getJoin();
         join.getMulticastConfig().setEnabled(false);

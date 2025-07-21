@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.handler;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.logger.NovaLogger;
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse(ex.getErrorCode(), ex.getMessage(), null));
     }
 
+    @ExceptionHandler(NoOperationExistsException.class)
+    public ResponseEntity<MasivasResponse> NoSuchElementException(NoOperationExistsException ex) {
+        LOGGER.error(ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse(ex.getErrorCode(), ex.getMessage(), null));
+    }
+
     @ExceptionHandler(DataBaseException.class)
     public ResponseEntity<MasivasResponse> handleDataBaseException(DataBaseException ex) {
         LOGGER.error(ConstantesServices.MENSAJE_ERROR_BD, ex);
@@ -48,4 +55,5 @@ public class GlobalExceptionHandler {
         LOGGER.error(ConstantesServices.MENSAJE_ERROR_GENERICO, ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null));
     }
+
 }

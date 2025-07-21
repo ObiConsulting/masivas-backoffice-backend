@@ -1,7 +1,7 @@
 package com.novatronic.masivas.backoffice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.Constantes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -57,11 +57,11 @@ public class FiltroMasivasRequest {
     private Integer registrosPorPagina;
 
     public Integer getNumeroPagina() {
-        return numeroPagina != null ? Math.max(numeroPagina - 1, 0) : ConstantesServices.PAGINA_INICIAL;
+        return numeroPagina != null ? Math.max(numeroPagina - 1, 0) : Constantes.PAGINA_INICIAL;
     }
 
     public Integer getRegistrosPorPagina() {
-        return registrosPorPagina != null ? registrosPorPagina : ConstantesServices.TAMANO_PAGINA_10;
+        return registrosPorPagina != null ? registrosPorPagina : Constantes.TAMANO_PAGINA_10;
     }
 
     public String getSentidoOrdenar() {

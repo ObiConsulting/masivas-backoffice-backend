@@ -9,6 +9,7 @@ import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.entity.TpEntidad;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -156,12 +157,15 @@ public class EntidadService {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTUALIZAR, request.toStringEntidad());
 
-            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad()).get();
+            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateEntidad(entidad, request, usuario, ConstantesServices.OPERACION_EDITAR);
             entidadRepository.save(entidad);
 
             return entidad.getIdEntidad();
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -190,12 +194,15 @@ public class EntidadService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_OBTENER, request.toStringEntidadObtener());
 
             ModelMapper modelMapper = new ModelMapper();
-            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad()).get();
+            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             DetalleRegistroEntidadDTO entidadDTO = new DetalleRegistroEntidadDTO();
             modelMapper.map(entidad, entidadDTO);
 
             return entidadDTO;
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -225,7 +232,9 @@ public class EntidadService {
             String mensaje;
 
             for (Long id : request.getIdsOperacion()) {
-                TpEntidad entidad = entidadRepository.findById(id).get();
+                TpEntidad entidad = entidadRepository.findById(id)
+                        .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
+
                 request.setEstado(estado);
                 updateEntidad(entidad, request, usuario, ConstantesServices.BLANCO);
                 entidadRepository.save(entidad);
@@ -251,6 +260,8 @@ public class EntidadService {
 
             return new EstadoDTO(mensaje, numExito);
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {

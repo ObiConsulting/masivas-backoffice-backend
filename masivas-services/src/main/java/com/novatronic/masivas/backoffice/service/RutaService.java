@@ -8,6 +8,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleRegistroRutaDTO;
 import com.novatronic.masivas.backoffice.entity.TpRuta;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -102,12 +103,15 @@ public class RutaService {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_ACTUALIZAR, request.toStringRuta());
 
-            TpRuta ruta = rutaRepository.findById(request.getIdRuta()).get();
+            TpRuta ruta = rutaRepository.findById(request.getIdRuta())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateRuta(ruta, request, usuario, ConstantesServices.OPERACION_EDITAR);
             rutaRepository.save(ruta);
 
             return ruta.getIdRuta();
 
+        } catch (NoOperationExistsException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
