@@ -1,20 +1,18 @@
 package com.novatronic.masivas.backoffice.config;
 
 import com.novatronic.masivas.backoffice.security.model.UserContext;
-//import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.util.Optional;
+import org.springframework.data.domain.AuditorAware;
 
 /**
  *
  * @author Obi Consulting
  */
-//public class AuditorAwareImpl implements AuditorAware<String> {
-public class AuditorAwareImpl {
+public class AuditorAwareImpl implements AuditorAware<String> {
 
-//    @Override
+    @Override
     public Optional<String> getCurrentAuditor() {
         // your custom logic
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

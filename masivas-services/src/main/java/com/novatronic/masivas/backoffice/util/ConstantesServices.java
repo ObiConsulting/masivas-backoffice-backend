@@ -83,6 +83,7 @@ public class ConstantesServices {
     public static final String ARCHIVO_MASIVAS = "Archivo Masivas";
     public static final String ARCHIVO_TITULARIDAD = "Archivo Titularidad";
     public static final String RUTA = "Ruta de Archivos";
+    public static final String PROCESO = "Scheduler de procesos";
 
     //Para auditoria
     public static final String ACCION_CREATE = "create";
@@ -98,6 +99,7 @@ public class ConstantesServices {
     public static final String TABLA_ARCHIVO_MASIVAS = "TP_ARCHIVO_MAS";
     public static final String TABLA_ARCHIVO_TITULARIDAD = "TP_ARCHIVO_TIT";
     public static final String TABLA_RUTA = "TP_RUTA";
+    public static final String TABLA_PROCESO = "TP_PROCESO";
 
     public static final String AUDIT_CAMPO_GRUPO_PARAMETRO = "idGrupoParametro=";
 

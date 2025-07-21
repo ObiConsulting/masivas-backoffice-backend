@@ -53,64 +53,6 @@ public final class ServicesUtil {
     private ServicesUtil() {
     }
 
-    /**
-     * Validar el CCI
-     *
-     * @param cci
-     * @param bancoCliente
-     * @return
-     */
-    public static boolean isCCIValido(String cci, String bancoCliente) {
-        String codigoBancoPlaza = null;
-        String numeroCuenta = null;
-
-        if (!cci.matches("\\d{" + LONGITUD_CCI + "}$")) {
-            //LOGGER.info("Longitud de numero de cci no valido");
-            return false;
-        }
-
-        if (!cci.startsWith(bancoCliente.substring(1))) {
-            //LOGGER.info("CCI "+mask.maskCuentaCCI(cci)+" no pertenece al banco " + bancoCliente);
-            return false;
-        }
-
-        codigoBancoPlaza = cci.substring(0, 6);
-        //LOGGER.info("codigoBancoPlaza = " + codigoBancoPlaza);
-        numeroCuenta = cci.substring(6, 18);
-        int checkPlaza = cci.charAt(18) - '0';
-        //LOGGER.info("checkPlaza = " + checkPlaza);
-        int checkCuenta = cci.charAt(19) - '0';
-        //LOGGER.info("checkCuenta = " + checkCuenta);
-        //LOGGER.info("cci = " + mask.maskCuentaCCI(cci));
-
-        if (isModulo10(codigoBancoPlaza, checkPlaza)) {
-            return isModulo10(numeroCuenta, checkCuenta);
-        }
-
-        return false;
-    }
-
-    /**
-     * Metodo que valida el CCI utilizando el algoritmo Modulo 10 (Luhn)
-     *
-     * @return
-     */
-    private static boolean isModulo10(String numeroCci, int check) {
-        final int[][] sumTable = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, {0, 2, 4, 6, 8, 1, 3, 5, 7, 9}};
-        int suma = 0;
-        int flip = 0;
-        int rest = 0;
-
-        for (int i = 0; i < numeroCci.length(); i++, flip++) {
-            suma += sumTable[flip & 0x1][numeroCci.charAt(i) - '0'];
-        }
-
-        rest = suma % 10;
-        rest = (rest > 0) ? (10 - rest) : 0;
-
-        return rest == check;
-    }
-
     public static String validateNull(String clave) {
         return clave == null ? "" : clave;
     }
@@ -289,4 +231,5 @@ public final class ServicesUtil {
 
         return resultado;
     }
+
 }

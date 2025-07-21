@@ -50,6 +50,9 @@ public class FiltroMasivasRequest {
     private String codTipoArchivo;
     private String codCategoriaDirectorio;
 
+    //Scheduler
+    private String codOperacion;
+
     //Campos Generales
     private String campoOrdenar;
     private String sentidoOrdenar;
@@ -136,6 +139,10 @@ public class FiltroMasivasRequest {
         return codCategoriaDirectorio;
     }
 
+    public String getCodOperacion() {
+        return codOperacion != null ? codOperacion : "";
+    }
+
     public String toStringGrupoParametro() {
         return "{" + "codigo=" + codigo + ", estado=" + estado + '}';
     }
@@ -180,5 +187,9 @@ public class FiltroMasivasRequest {
 
     public String toStringRutaObtener() {
         return "{" + "idRuta=" + idRuta + '}';
+    }
+
+    public String toStringSchedulerObtener() {
+        return "{" + "codOperacion=" + codOperacion + '}';
     }
 }

@@ -55,7 +55,7 @@ public class ApplicationConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
-        return (AuditorAware<String>) new AuditorAwareImpl();
+        return new AuditorAwareImpl();
     }
 
     @Bean
