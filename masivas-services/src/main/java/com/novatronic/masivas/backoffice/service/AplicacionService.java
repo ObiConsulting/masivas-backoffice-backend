@@ -1,20 +1,20 @@
 package com.novatronic.masivas.backoffice.service;
 
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
-import com.novatronic.masivas.backoffice.dto.DetalleConsultaEntidadDTO;
+import com.novatronic.masivas.backoffice.dto.DetalleConsultaAplicacionDTO;
+import com.novatronic.masivas.backoffice.dto.DetalleRegistroAplicacionDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
-import com.novatronic.masivas.backoffice.dto.DetalleRegistroEntidadDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
-import com.novatronic.masivas.backoffice.entity.TpEntidad;
+import com.novatronic.masivas.backoffice.entity.TpAplicacion;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
+import com.novatronic.masivas.backoffice.repository.AplicacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import com.novatronic.masivas.backoffice.repository.EntidadRepository;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.logger.NovaLogger;
@@ -34,52 +34,48 @@ import org.springframework.data.domain.Sort;
  * @author Obi Consulting
  */
 @Service
-public class EntidadService {
+public class AplicacionService {
 
     @Autowired
-    private final EntidadRepository entidadRepository;
+    private final AplicacionRepository aplicacionRepository;
     private final MessageSource messageSource;
 
-    private static final NovaLogger LOGGER = NovaLogger.getLogger(EntidadService.class);
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(AplicacionService.class);
 
-    public EntidadService(EntidadRepository entidadRepository, MessageSource messageSource) {
-        this.entidadRepository = entidadRepository;
+    public AplicacionService(AplicacionRepository aplicacionRepository, MessageSource messageSource) {
+        this.aplicacionRepository = aplicacionRepository;
         this.messageSource = messageSource;
     }
 
     /**
-     * Método que realiza la creación de una entidad financiera
+     * Método que realiza la creación de una aplicación
      *
      * @param request
      * @param usuario
      * @return
      */
-    public Long crearEntidad(MasivasRequestDTO request, String usuario) {
+    public Long crearAplicacion(MasivasRequestDTO request, String usuario) {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_REGISTRAR, request.toStringEntidad());
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_REGISTRAR, request.toStringAplicacion());
 
-            TpEntidad entidad = new TpEntidad(
+            TpAplicacion aplicacion = new TpAplicacion(
                     request.getCodigo(),
                     request.getNombre(),
                     ConstantesServices.ESTADO_INACTIVO,
-                    ConstantesServices.ID_PERFIL,
-                    ConstantesServices.NO_PROPIETARIO,
-                    null,//Extensión Base
-                    null,//Extensión Control
                     LocalDateTime.now(),
                     usuario
             );
-            entidad = entidadRepository.save(entidad);
-            return entidad.getIdEntidad();
+            aplicacion = aplicacionRepository.save(aplicacion);
+            return aplicacion.getIdAplicacion();
 
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA, e);
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA, ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA, e);
                 }
                 throw new DataBaseException(e);
             }
@@ -89,18 +85,18 @@ public class EntidadService {
     }
 
     /**
-     * Método que realiza la búsqueda de las entidades financieras según filtros
-     * de búsqueda
+     * Método que realiza la búsqueda de las aplicaciones según filtros de
+     * búsqueda
      *
      * @param request
      * @param usuario
      * @return
      */
-    public CustomPaginate<DetalleConsultaEntidadDTO> buscar(FiltroMasivasRequest request, String usuario) {
+    public CustomPaginate<DetalleConsultaAplicacionDTO> buscarAplicacion(FiltroMasivasRequest request, String usuario) {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_CONSULTAR, request.toStringEntidadAplicacion());
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_CONSULTAR, request.toStringEntidadAplicacion());
 
             ModelMapper modelMapper = new ModelMapper();
             Pageable pageable = null;
@@ -115,9 +111,9 @@ public class EntidadService {
                 }
             }
 
-            Page<TpEntidad> objPageable = entidadRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstado(), pageable);
+            Page<TpAplicacion> objPageable = aplicacionRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstado(), pageable);
 
-            Page<DetalleConsultaEntidadDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaEntidadDTO.class));
+            Page<DetalleConsultaAplicacionDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaAplicacionDTO.class));
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
@@ -145,24 +141,24 @@ public class EntidadService {
     }
 
     /**
-     * Método que realiza la actualización de una entidad financiera
+     * Método que realiza la actualización de una aplicación
      *
      * @param request
      * @param usuario
      * @return
      */
-    public Long editarEntidad(MasivasRequestDTO request, String usuario) {
+    public Long editarAplicacion(MasivasRequestDTO request, String usuario) {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTUALIZAR, request.toStringEntidad());
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_ACTUALIZAR, request.toStringAplicacion());
 
-            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad())
+            TpAplicacion aplicacion = aplicacionRepository.findById(request.getIdAplicacion())
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
-            updateEntidad(entidad, request, usuario, ConstantesServices.OPERACION_EDITAR);
-            entidadRepository.save(entidad);
+            updateAplicacion(aplicacion, request, usuario, ConstantesServices.OPERACION_EDITAR);
+            aplicacionRepository.save(aplicacion);
 
-            return entidad.getIdEntidad();
+            return aplicacion.getIdAplicacion();
 
         } catch (NoOperationExistsException e) {
             throw e;
@@ -171,7 +167,7 @@ public class EntidadService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA, e);
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA, ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA, e);
                 }
                 throw new DataBaseException(e);
             }
@@ -181,25 +177,25 @@ public class EntidadService {
     }
 
     /**
-     * Método que obtiene el registro de una entidad financiera según id
+     * Método que obtiene el registro de una aplicación según id
      *
      * @param request
      * @param usuario
      * @return
      */
-    public DetalleRegistroEntidadDTO obtenerEntidad(FiltroMasivasRequest request, String usuario) {
+    public DetalleRegistroAplicacionDTO obtenerAplicacion(FiltroMasivasRequest request, String usuario) {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_OBTENER, request.toStringEntidadObtener());
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_OBTENER, request.toStringAplicacionObtener());
 
             ModelMapper modelMapper = new ModelMapper();
-            TpEntidad entidad = entidadRepository.findById(request.getIdEntidad())
+            TpAplicacion aplicacion = aplicacionRepository.findById(request.getIdAplicacion())
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
-            DetalleRegistroEntidadDTO entidadDTO = new DetalleRegistroEntidadDTO();
-            modelMapper.map(entidad, entidadDTO);
+            DetalleRegistroAplicacionDTO aplicacionDTO = new DetalleRegistroAplicacionDTO();
+            modelMapper.map(aplicacion, aplicacionDTO);
 
-            return entidadDTO;
+            return aplicacionDTO;
 
         } catch (NoOperationExistsException e) {
             throw e;
@@ -214,30 +210,30 @@ public class EntidadService {
     }
 
     /**
-     * Método que realiza el cambio de estado de una entidad financiera
+     * Método que realiza el cambio de estado de una aplicacion
      *
      * @param request
      * @param usuario
      * @param estado
      * @return
      */
-    public EstadoDTO cambiarEstadoEntidad(MasivasRequestDTO request, String usuario, String estado) {
+    public EstadoDTO cambiarEstadoAplicacion(MasivasRequestDTO request, String usuario, String estado) {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
 
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
             String mensaje;
 
             for (Long id : request.getIdsOperacion()) {
-                TpEntidad entidad = entidadRepository.findById(id)
+                TpAplicacion aplicacion = aplicacionRepository.findById(id)
                         .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
 
                 request.setEstado(estado);
-                updateEntidad(entidad, request, usuario, ConstantesServices.BLANCO);
-                entidadRepository.save(entidad);
+                updateAplicacion(aplicacion, request, usuario, ConstantesServices.BLANCO);
+                aplicacionRepository.save(aplicacion);
                 numExito++;
             }
 
@@ -271,19 +267,17 @@ public class EntidadService {
         }
     }
 
-    private void updateEntidad(TpEntidad entidad, MasivasRequestDTO request, String usuario, String operacion) {
+    private void updateAplicacion(TpAplicacion aplicacion, MasivasRequestDTO request, String usuario, String operacion) {
 
         if (operacion.equals(ConstantesServices.OPERACION_EDITAR)) {
-            entidad.setCodigo(request.getCodigo());
-            entidad.setNombre(request.getNombre());
-            entidad.setIdExtensionBase(request.getIdExtensionBase());
-            entidad.setIdExtensionControl(request.getIdExtensionControl());
+            aplicacion.setCodigo(request.getCodigo());
+            aplicacion.setNombre(request.getNombre());
         } else {
-            entidad.setEstado(request.getEstado());
+            aplicacion.setEstado(request.getEstado());
         }
 
-        entidad.setFecModificacion(LocalDateTime.now());
-        entidad.setUsuModificacion(usuario);
+        aplicacion.setFecModificacion(LocalDateTime.now());
+        aplicacion.setUsuModificacion(usuario);
     }
 
     public void logEvento(String mensaje, Object... param) {

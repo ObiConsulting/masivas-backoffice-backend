@@ -34,6 +34,8 @@ public class ConstantesServices {
     public static final String NEGATIVO = "-";
     public static final String COMILLA_SIMPLE = "'";
 
+    public static final String CRONTAB_JAVA = "0";
+
     //Para los Estados
     public static final String ESTADO_INACTIVO = "0";
     public static final String ESTADO_ACTIVO = "1";
@@ -84,6 +86,7 @@ public class ConstantesServices {
     public static final String ARCHIVO_TITULARIDAD = "Archivo Titularidad";
     public static final String RUTA = "Ruta de Archivos";
     public static final String PROCESO = "Scheduler de procesos";
+    public static final String APLICACION = "Aplicación";
 
     //Para auditoria
     public static final String ACCION_CREATE = "create";
@@ -111,10 +114,11 @@ public class ConstantesServices {
     public static final String RESPUESTA_ERROR_9999 = "9999";
 //    public static final String CODIGO_ERROR_GENERICO = "6999";
 
-    public static final String CODIGO_ERROR_COD_ENTIDAD_UNICO = "0010";
+    public static final String CODIGO_ERROR_COD_ENTIDAD_UNICA = "0010";
     public static final String CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO = "0011";
     public static final String CODIGO_ERROR_COD_PARAMETRO_UNICO = "0012";
     public static final String CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA = "0013";
+    public static final String CODIGO_ERROR_COD_APLICACION_UNICA = "0014";
 
     //Mensajes del Sistema
     public static final String MENSAJE_EXITO_CREAR_OPERACION = "Operación creada correctamente";
@@ -147,9 +151,10 @@ public class ConstantesServices {
     public static final String MENSAJE_ERROR_GENERICO = "Se ha producido un error inesperado. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_BD = "Se ha producido un error con la base de datos. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_BAD_REQUEST = "Campos Inesperados";
-    public static final String MENSAJE_ERROR_COD_ENTIDAD_UNICO = "El codigo entidad ya existe";
+    public static final String MENSAJE_ERROR_COD_ENTIDAD_UNICA = "El codigo entidad ya existe";
     public static final String MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO = "El codigo grupo parámetro ya existe";
     public static final String MENSAJE_ERROR_COD_PARAMETRO_UNICO = "El codigo parámetro ya existe";
     public static final String MENSAJE_ERROR_OPERACION_NO_ENCONTRADA = "Operación no encontrada";
+    public static final String MENSAJE_ERROR_COD_APLICACION_UNICA = "El codigo aplicación ya existe";
 
 }

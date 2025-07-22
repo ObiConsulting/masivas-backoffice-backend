@@ -48,16 +48,14 @@ public class TpArchivoMasivas extends ModelAudit<String> implements Serializable
     private Long cantidadProcesado;
     @Column(name = "ESTADO_OBTENCION_CLIENTE")
     private Long estadoObtencionCliente;
-//    @Column(name = "ESTADO_PROCESADO_CLIENTE")
     @Column(name = "ESTADO_ENVIO_CCE")
     private Long estadoProcesadoCliente;
     @Column(name = "ESTADO_OBTENCION_CCE")
     private Long estadoObtencionCCE;
-//    @Column(name = "ESTADO_PROCESADO_CCE")
     @Column(name = "ESTADO_ENVIO_CLIENTE")
     private Long estadoProcesadoCCE;
-    @Column(name = "MONTO_TOTAL", precision = 16, scale = 0)
-    private BigInteger montoTotal;
+    @Column(name = "MONTO_PROCESADO_CLIENTE", precision = 16, scale = 0)
+    private BigInteger montoProcesado;
     @Column(name = "MONTO_RECHAZADO", precision = 16, scale = 0)
     private BigInteger montoRechazado;
 

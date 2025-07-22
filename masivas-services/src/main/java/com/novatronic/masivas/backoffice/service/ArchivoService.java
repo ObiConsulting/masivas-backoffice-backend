@@ -21,6 +21,7 @@ import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -188,6 +189,39 @@ public class ArchivoService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
             return customPaginate;
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
+    }
+
+    /**
+     * Método que realiza la búsqueda de los archivos de tipo titularidad según
+     * filtros de búsqueda
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
+    public List<Object[]> buscarTotales(FiltroMasivasRequest request, String usuario) {
+
+        try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ARCHIVO_TITULARIDAD, ConstantesServices.METODO_CONSULTAR, request.toStringArchivoTitularidad());
+
+            LocalDateTime fechaInicio = request.getFecha().atStartOfDay();
+            LocalDateTime fechaFin = request.getFecha().atTime(LocalTime.MAX);
+
+            List<Object[]> listaTotal = archivoDirectorioRepository.totalesPorEstado(fechaInicio, fechaFin);
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, listaTotal.size());
+
+            return listaTotal;
 
         } catch (Exception e) {
             Throwable excepcion = e.getCause();

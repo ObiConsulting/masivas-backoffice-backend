@@ -22,6 +22,7 @@ public class FiltroMasivasRequest {
     private Long idGrupoParametro;
     private Long idParametro;
     private Long idRuta;
+    private Long idAplicacion;
 
     private String codigo;
     private String estado;
@@ -58,6 +59,10 @@ public class FiltroMasivasRequest {
     private String sentidoOrdenar;
     private Integer numeroPagina;
     private Integer registrosPorPagina;
+
+    //Reporte
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate fecha;
 
     public Integer getNumeroPagina() {
         return numeroPagina != null ? Math.max(numeroPagina - 1, 0) : Constantes.PAGINA_INICIAL;
@@ -143,6 +148,14 @@ public class FiltroMasivasRequest {
         return codOperacion != null ? codOperacion : "";
     }
 
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public Long getIdAplicacion() {
+        return idAplicacion;
+    }
+
     public String toStringGrupoParametro() {
         return "{" + "codigo=" + codigo + ", estado=" + estado + '}';
     }
@@ -151,7 +164,7 @@ public class FiltroMasivasRequest {
         return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", estado=" + estado + '}';
     }
 
-    public String toStringEntidad() {
+    public String toStringEntidadAplicacion() {
         return "{" + "codigo=" + codigo + ", nombre=" + nombre + ", estado=" + estado + '}';
     }
 
@@ -191,5 +204,9 @@ public class FiltroMasivasRequest {
 
     public String toStringSchedulerObtener() {
         return "{" + "codOperacion=" + codOperacion + '}';
+    }
+
+    public String toStringAplicacionObtener() {
+        return "{" + "idAplicacion=" + idAplicacion + '}';
     }
 }

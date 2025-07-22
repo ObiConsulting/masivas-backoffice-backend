@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.controller;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
+import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ProcesoService;
@@ -39,6 +40,14 @@ public class ProcesoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION, objPegeable));
     }
 
+    @PostMapping("/editar")
+    public ResponseEntity<MasivasResponse<Object>> editarProceso(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
+        Long idProceso = procesoService.editarProceso(request, userContext.getUsername());
+        procesoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PROCESO,
+                ConstantesServices.ACCION_UPDATE, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idProceso));
+    }
+
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Map<String, List<DetalleRegistroProcesoDTO>> objPegeable = procesoService.obtenerProceso(request);
@@ -47,19 +56,4 @@ public class ProcesoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, objPegeable));
     }
 
-//    @PostMapping("/editar")
-//    public ResponseEntity<MasivasResponse<Object>> editarRuta(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
-//        Long idEntidad = rutaService.editarRuta(request, userContext.getUsername());
-//        rutaService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_RUTA,
-//                ConstantesServices.ACCION_UPDATE, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION);
-//        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idEntidad));
-//    }
-//
-//    @PostMapping("/obtener")
-//    public ResponseEntity<MasivasResponse<Object>> obtenerRuta(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-//        DetalleRegistroRutaDTO entidadDTO = rutaService.obtenerRuta(request, userContext.getUsername());
-//        rutaService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_RUTA,
-//                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
-//        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, entidadDTO));
-//    }
 }

@@ -3,9 +3,11 @@ package com.novatronic.masivas.backoffice.service;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
+import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.entity.TpProceso;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.repository.ProcesoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -16,6 +18,7 @@ import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +66,7 @@ public class ProcesoService {
                                     (TpProceso proceso) -> new DetalleConsultaProcesoDTO(
                                             proceso.getCodServer(),
                                             proceso.getCodigoAccion(),
-                                            proceso.getHorario()
+                                            proceso.getHorario().substring(2)
                                     ),
                                     Collectors.toList() // Los valores serán una lista de DetalleProcesoDTO
                             )
@@ -77,6 +80,37 @@ public class ProcesoService {
             throw new GenericException(e);
         }
 
+    }
+
+    /**
+     * Método que realiza la actualización de una ruta
+     *
+     * @param request
+     * @param usuario
+     * @return
+     */
+    public Long editarProceso(MasivasRequestDTO request, String usuario) {
+
+        try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PROCESO, ConstantesServices.METODO_ACTUALIZAR, request.toStringRuta());
+
+            TpProceso proceso = procesoRepository.findById(request.getIdProceso())
+                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
+            updateProceso(proceso, request, usuario, ConstantesServices.OPERACION_EDITAR);
+            procesoRepository.save(proceso);
+
+            return proceso.getIdProceso();
+
+        } catch (NoOperationExistsException e) {
+            throw e;
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
     }
 
     /**
@@ -104,7 +138,7 @@ public class ProcesoService {
                                             proceso.getIdProceso(),
                                             proceso.getCodServer(),
                                             proceso.getCodigoAccion(),
-                                            proceso.getHorario(),
+                                            proceso.getHorario().substring(2),
                                             proceso.getUsuCreacion(),
                                             proceso.getFecCreacion(),
                                             proceso.getUsuModificacion(),
@@ -124,74 +158,15 @@ public class ProcesoService {
 
     }
 
-//    /**
-//     * Método que realiza la actualización de una ruta
-//     *
-//     * @param request
-//     * @param usuario
-//     * @return
-//     */
-//    public Long editarRuta(MasivasRequestDTO request, String usuario) {
-//
-//        try {
-//
-//            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_ACTUALIZAR, request.toStringRuta());
-//
-//            TpRuta ruta = rutaRepository.findById(request.getIdRuta())
-//                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
-//            updateRuta(ruta, request, usuario, ConstantesServices.OPERACION_EDITAR);
-//            rutaRepository.save(ruta);
-//
-//            return ruta.getIdRuta();
-//
-//        } catch (NoOperationExistsException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            Throwable excepcion = e.getCause();
-//            if (excepcion instanceof RollbackException) {
-//                excepcion = excepcion.getCause();
-//                throw new DataBaseException(e);
-//            }
-//            throw new GenericException(e);
-//        }
-//    }
-//
-//    /**
-//     * Método que obtiene el registro de una ruta según id
-//     *
-//     * @param request
-//     * @param usuario
-//     * @return
-//     */
-//    public DetalleRegistroRutaDTO obtenerRuta(FiltroMasivasRequest request, String usuario) {
-//
-//        try {
-//
-//            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_OBTENER, request.toStringRutaObtener());
-//            DetalleRegistroRutaDTO rutaDTO = rutaRepository.buscarPorId(request.getIdRuta());
-//
-//            return rutaDTO;
-//
-//        } catch (Exception e) {
-//            Throwable excepcion = e.getCause();
-//            if (excepcion instanceof RollbackException) {
-//                throw new DataBaseException(e);
-//            }
-//            throw new GenericException(e);
-//        }
-//    }
-//
-//    private void updateRuta(TpRuta ruta, MasivasRequestDTO request, String usuario, String operacion) {
-//
-//        if (operacion.equals(ConstantesServices.OPERACION_EDITAR)) {
-//            ruta.setRuta(request.getRuta());
-//        } else {
-//            ruta.setEstado(request.getEstado());
-//        }
-//
-//        ruta.setFecModificacion(LocalDateTime.now());
-//        ruta.setUsuModificacion(usuario);
-//    }
+    private void updateProceso(TpProceso ruta, MasivasRequestDTO request, String usuario, String operacion) {
+
+        if (operacion.equals(ConstantesServices.OPERACION_EDITAR)) {
+            ruta.setHorario(ConstantesServices.CRONTAB_JAVA + ConstantesServices.BLANCO + request.getHorario());
+        }
+        ruta.setFecModificacion(LocalDateTime.now());
+        ruta.setUsuModificacion(usuario);
+    }
+
     public void logEvento(String mensaje, Object... param) {
         LOGGER.info(mensaje, param);
     }

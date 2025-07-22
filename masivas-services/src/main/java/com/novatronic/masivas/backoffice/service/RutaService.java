@@ -115,7 +115,6 @@ public class RutaService {
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
-                excepcion = excepcion.getCause();
                 throw new DataBaseException(e);
             }
             throw new GenericException(e);

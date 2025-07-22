@@ -19,6 +19,7 @@ public class MasivasRequestDTO {
     private Long idGrupoParametro;
     private Long idParametro;
     private Long idRuta;
+    private Long idAplicacion;
 
     //Campos
     private String codigo;
@@ -37,6 +38,9 @@ public class MasivasRequestDTO {
     private String valor;
     //Ruta
     private String ruta;
+    //Proceso
+    private Long idProceso;
+    private String horario;
 
     public String toStringGrupoParametro() {
         return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", descripcion=" + descripcion + '}';
@@ -52,6 +56,14 @@ public class MasivasRequestDTO {
 
     public String toStringRuta() {
         return "{" + "idRuta=" + idRuta + ", ruta=" + ruta + '}';
+    }
+
+    public String toStringProceso() {
+        return "{" + "idProceso=" + idRuta + '}';
+    }
+
+    public String toStringAplicacion() {
+        return "{" + "idAplicacion=" + idAplicacion + ", codigo=" + codigo + ", nombre=" + nombre + '}';
     }
 
     public String toStringActivarDesactivar() {
