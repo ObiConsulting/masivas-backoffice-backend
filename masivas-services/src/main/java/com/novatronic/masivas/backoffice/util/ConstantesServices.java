@@ -91,6 +91,7 @@ public class ConstantesServices {
     public static final String RUTA = "Ruta de Archivos";
     public static final String PROCESO = "Scheduler de procesos";
     public static final String APLICACION = "Aplicación";
+    public static final String DETALLE_MASIVAS = "Detalle de Archivos Masivas";
     public static final String REPORTE_CIERRE = "Reporte Cierre";
     public static final String REPORTE_TOTALIZADO = "Reporte Totalizado";
 
@@ -113,6 +114,7 @@ public class ConstantesServices {
     public static final String TABLA_ARCHIVO_TITULARIDAD = "TP_ARCHIVO_TIT";
     public static final String TABLA_RUTA = "TP_RUTA";
     public static final String TABLA_PROCESO = "TP_PROCESO";
+    public static final String TABLA_DETALLE_MASIVAS = "TP_DETALLE_MASIVAS";
     public static final String INTEGRACION_SCA = "SCA";
 
     public static final String AUDIT_CAMPO_GRUPO_PARAMETRO = "idGrupoParametro=";

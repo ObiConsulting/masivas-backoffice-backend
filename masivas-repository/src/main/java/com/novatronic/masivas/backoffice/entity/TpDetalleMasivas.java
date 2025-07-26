@@ -7,7 +7,10 @@ import java.io.Serializable;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -49,7 +52,7 @@ public class TpDetalleMasivas extends ModelAudit<String> implements Serializable
     private String cuentaDestino;
     @Basic(optional = false)
     @Column(name = "MONTO", precision = 15, scale = 0)
-    private String importe;
+    private Long importe;
     @Basic(optional = false)
     @Size(max = 1)
     @Column(name = "COD_TRANSACCION_EXTENDIDA")
@@ -66,4 +69,7 @@ public class TpDetalleMasivas extends ModelAudit<String> implements Serializable
     @Column(name = "DESC_RESPUESTA")
     private String mensajeRespuesta;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_ARCHIVO_MAS", referencedColumnName = "ID_ARCHIVO_MAS", insertable = false, updatable = false)
+    private TpArchivoMasivas archivoMasivas;
 }

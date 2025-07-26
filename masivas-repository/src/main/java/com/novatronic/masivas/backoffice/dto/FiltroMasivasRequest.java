@@ -54,6 +54,17 @@ public class FiltroMasivasRequest {
     //Scheduler
     private String codOperacion;
 
+    //Detalle Masivas
+    private String nombreArchivo;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate fechaObtencion;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate fechaProcesada;
+    private String cuentaOrigen;
+    private String cuentaDestino;
+    private String motivoRechazo;
+    private String tipoTransaccion;
+
     //Campos Generales
     private String campoOrdenar;
     private String sentidoOrdenar;
@@ -156,6 +167,34 @@ public class FiltroMasivasRequest {
         return idAplicacion;
     }
 
+    public String getNombreArchivo() {
+        return nombreArchivo != null ? nombreArchivo : "";
+    }
+
+    public LocalDate getFechaObtencion() {
+        return fechaObtencion;
+    }
+
+    public LocalDate getFechaProcesada() {
+        return fechaProcesada;
+    }
+
+    public String getCuentaOrigen() {
+        return cuentaOrigen != null ? cuentaOrigen : "";
+    }
+
+    public String getCuentaDestino() {
+        return cuentaDestino != null ? cuentaDestino : "";
+    }
+
+    public String getMotivoRechazo() {
+        return motivoRechazo != null ? motivoRechazo : "";
+    }
+
+    public String getTipoTransaccion() {
+        return tipoTransaccion != null ? tipoTransaccion : "";
+    }
+
     public String toStringGrupoParametro() {
         return "{" + "codigo=" + codigo + ", estado=" + estado + '}';
     }
@@ -212,5 +251,10 @@ public class FiltroMasivasRequest {
 
     public String toStringAplicacionObtener() {
         return "{" + "idAplicacion=" + idAplicacion + '}';
+    }
+
+    public String toStringDetalleMasivas() {
+        return "{" + "nombreArchivo=" + nombreArchivo + ", fechaObtencion=" + fechaObtencion + "fechaProcesada=" + fechaProcesada + ", cuentaOrigen=" + cuentaOrigen
+                + ", cuentaDestino=" + cuentaDestino + ", motivoRechazo=" + motivoRechazo + ", tipoTransaccion=" + tipoTransaccion + '}';
     }
 }

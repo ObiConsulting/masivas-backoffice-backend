@@ -1,6 +1,7 @@
 package com.novatronic.masivas.backoffice.controller;
 
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
+import com.novatronic.masivas.backoffice.dto.DetalleConsultaAplicacionDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoMasivasDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoTitularidadDTO;
@@ -8,6 +9,7 @@ import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ArchivoService;
+import com.novatronic.masivas.backoffice.service.DetalleMasivasService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
@@ -30,6 +32,8 @@ public class ArchivoController {
 
     @Autowired
     private ArchivoService archivoService;
+    @Autowired
+    private DetalleMasivasService detalleMasivasService;
 
     @PostMapping("/directorio/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoDirectorio(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
@@ -55,4 +59,11 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
     }
 
+    @PostMapping("/masivas/detalle/buscar")
+    public ResponseEntity<MasivasResponse<Object>> buscarDetalleMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        CustomPaginate<DetalleConsultaAplicacionDTO> objPegeable = detalleMasivasService.buscarDetalleMasivas(request, userContext.getUsername());
+        archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS,
+                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+    }
 }
