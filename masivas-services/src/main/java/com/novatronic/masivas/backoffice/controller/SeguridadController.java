@@ -9,6 +9,8 @@ import com.novatronic.masivas.backoffice.security.model.LoginResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.SeguridadService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.util.Evento;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
@@ -35,26 +37,47 @@ public class SeguridadController {
 
     @RequestMapping(value = "/acceso", method = RequestMethod.POST)
     public ResponseEntity<MasivasResponse<LoginResponse>> acceso(@RequestBody @Valid AuthRequest authRequest) throws Exception {
-        MasivasResponse<LoginResponse> res;
+
+        MasivasResponse<LoginResponse> respuesta;
         try {
-            res = seguridadService.authenticate(authRequest.getUsername(), authRequest.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(res);
+
+            respuesta = seguridadService.authenticate(authRequest.getUsername(), authRequest.getPassword(), authRequest.getCaptchaId(), authRequest.getUserInput());
+
+            seguridadService.logEvento(respuesta.getMensaje());
+//            seguridadService.logAuditoria(authRequest, Evento.EV_LOGIN_USUARIO, Estado.ESTADO_EXITO, userContext, ConstantesServices.SCA, ConstantesServices.ACCION_LOGIN, respuesta.getMensaje());
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+
         } catch (Exception e) {
-            res = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+
+            seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
+//            seguridadService.logAuditoria(authRequest, Evento.EV_LOGIN_USUARIO, Estado.ESTADO_FRACASO, userContext, ConstantesServices.SCA, ConstantesServices.ACCION_LOGIN, ConstantesServices.MENSAJE_ERROR_GENERICO);
+
+            respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 
     @RequestMapping(value = "/cambiarClavePrimeraVez", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('PRIMER_LOGIN')")
     public ResponseEntity<MasivasResponse<LoginResponse>> cambiarClavePrimeraVez(@RequestBody @Valid ChangePassRequest authRequest) throws Exception {
-        MasivasResponse<LoginResponse> res;
+
+        MasivasResponse<LoginResponse> respuesta;
         try {
-            res = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
-            return ResponseEntity.status(HttpStatus.OK).body(res);
+
+            respuesta = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
+
+            seguridadService.logEvento(respuesta.getMensaje());
+//            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, authRequest.getUsername(), ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD, respuesta.getMensaje());
+
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+
         } catch (Exception e) {
-            res = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+
+            seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
+//            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_FRACASO, user, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD, ConstantesServices.MENSAJE_ERROR_GENERICO);
+
+            respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 
@@ -64,9 +87,18 @@ public class SeguridadController {
             List<String> valores = userContext.getAuthoritiesList();
 
             CustomPaginate customPaginate = new CustomPaginate<>(1, valores.size(), valores);
-            return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, "Operación correcta", customPaginate));
+            MasivasResponse<CustomPaginate<String>> respuesta = new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, "Operación correcta", customPaginate);
+
+            seguridadService.logEvento(respuesta.getMensaje());
+            seguridadService.logAuditoria(userContext, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_PERMISSION, respuesta.getMensaje());
+
+            return ResponseEntity.ok(respuesta);
 
         } catch (Exception e) {
+
+            seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
+            seguridadService.logAuditoria(userContext, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_FRACASO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_PERMISSION, ConstantesServices.MENSAJE_ERROR_GENERICO);
+
             MasivasResponse<CustomPaginate<String>> res = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
@@ -75,30 +107,50 @@ public class SeguridadController {
     @GetMapping("/cerrarsesion")
     public ResponseEntity<MasivasResponse<Void>> cerrarSesion(@AuthenticationPrincipal UserContext userContext) throws Exception {
 
+        MasivasResponse<Void> respuesta;
         try {
-            // Elimina del Hazelcast
-            hazelcastInstance.getMap(ConstantesServices.MAP_LOGUEADOS).remove(userContext.getUsername());
-            // Limpia el contexto de Spring (opcional, buena práctica)
-            SecurityContextHolder.clearContext();
 
-//            return ResponseEntity.ok(new MasivasResponse<>("200", "Sesión cerrada correctamente", null));
-            return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CERRAR_SESION, null));
+            seguridadService.logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LOGOUT, "{" + "usuario=" + userContext.getUsername() + '}');
+
+            hazelcastInstance.getMap(ConstantesServices.MAP_LOGUEADOS).remove(userContext.getUsername());
+            SecurityContextHolder.clearContext();
+            respuesta = new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CERRAR_SESION, null);
+
+            seguridadService.logEvento(respuesta.getMensaje());
+            seguridadService.logAuditoria(userContext, Evento.EV_LOGOFF_USUARIO, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_LOGOUT, respuesta.getMensaje());
+
+            return ResponseEntity.ok(respuesta);
 
         } catch (Exception e) {
-            MasivasResponse<Void> res = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+
+            seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
+            seguridadService.logAuditoria(userContext, Evento.EV_LOGOFF_USUARIO, Estado.ESTADO_FRACASO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_LOGOUT, ConstantesServices.MENSAJE_ERROR_GENERICO);
+
+            respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 
     @RequestMapping(value = "/cambiarClave", method = RequestMethod.POST)
-    public ResponseEntity<MasivasResponse<LoginResponse>> cambiarClave(@RequestBody @Valid ChangePassRequest authRequest) throws Exception {
-        MasivasResponse<LoginResponse> res;
+    public ResponseEntity<MasivasResponse<LoginResponse>> cambiarClave(@RequestBody @Valid ChangePassRequest authRequest, @AuthenticationPrincipal UserContext userContext) throws Exception {
+
+        MasivasResponse<LoginResponse> respuesta;
         try {
-            res = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
-            return ResponseEntity.status(HttpStatus.OK).body(res);
+
+            respuesta = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
+
+            seguridadService.logEvento(respuesta.getMensaje());
+            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD, respuesta.getMensaje());
+
+            return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+
         } catch (Exception e) {
-            res = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+
+            seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
+            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_FRACASO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD, ConstantesServices.MENSAJE_ERROR_GENERICO);
+
+            respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 }

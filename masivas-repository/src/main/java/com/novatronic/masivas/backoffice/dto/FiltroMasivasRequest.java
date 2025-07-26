@@ -206,6 +206,10 @@ public class FiltroMasivasRequest {
         return "{" + "codOperacion=" + codOperacion + '}';
     }
 
+    public String toStringReporteCierreObtener() {
+        return "{" + "fecha=" + fecha + '}';
+    }
+
     public String toStringAplicacionObtener() {
         return "{" + "idAplicacion=" + idAplicacion + '}';
     }

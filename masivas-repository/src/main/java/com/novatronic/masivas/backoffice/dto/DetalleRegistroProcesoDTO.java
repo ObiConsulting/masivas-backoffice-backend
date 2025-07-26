@@ -30,4 +30,8 @@ public class DetalleRegistroProcesoDTO implements Serializable {
     private String usuModificacion;
     @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     private LocalDateTime fecModificacion;
+
+    public String toStringProceso() {
+        return "{" + "idProceso=" + idProceso + ", horario=" + horario + '}';
+    }
 }

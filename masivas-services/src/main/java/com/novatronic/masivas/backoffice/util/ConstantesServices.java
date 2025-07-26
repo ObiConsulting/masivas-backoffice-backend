@@ -68,6 +68,7 @@ public class ConstantesServices {
     public static final String MENSAJE_TRAZABILIDAD = "Procesando [{}]. Método [{}]. Valores: {}";
     public static final String MENSAJE_TRAZABILIDAD_ACCION = "Procesando [{}]. Valores: {}";
     public static final String MENSAJE_TRAZABILIDAD_RESULTADOS = "Total de registros obtenidos: [{}]";
+    public static final String MENSAJE_TRAZABILIDAD_RESULTADOS_REPORTE = "Total de registros obtenidos {}: [{}]";
 
     public static final String METODO_REGISTRAR = "Registrar";
     public static final String METODO_CONSULTAR = "Consultar";
@@ -78,6 +79,9 @@ public class ConstantesServices {
 
     public static final String LISTAR_PARAMETROS = "Listar Parámetros por grupo";
 
+    public static final String LOGIN = "Login";
+    public static final String LOGOUT = "Logout";
+    public static final String CAMBIAR_CONTRASENA = "Cambiar Contraseña";
     public static final String GRUPO_PARAMETRO = "Grupo Parámetro";
     public static final String PARAMETRO = "Parámetro";
     public static final String ENTIDAD_FINANCIERA = "Entidad Financiera";
@@ -87,6 +91,8 @@ public class ConstantesServices {
     public static final String RUTA = "Ruta de Archivos";
     public static final String PROCESO = "Scheduler de procesos";
     public static final String APLICACION = "Aplicación";
+    public static final String REPORTE_CIERRE = "Reporte Cierre";
+    public static final String REPORTE_TOTALIZADO = "Reporte Totalizado";
 
     //Para auditoria
     public static final String ACCION_CREATE = "create";
@@ -95,6 +101,10 @@ public class ConstantesServices {
     public static final String ACCION_DELETE = "delete";
     public static final String ACCION_EXPORT = "export";
     public static final String ACCION_VIEW = "view";
+    public static final String ACCION_LOGIN = "login";
+    public static final String ACCION_LOGOUT = "logout";
+    public static final String ACCION_CHANGE_PASSWORD = "changePassword";
+    public static final String ACCION_PERMISSION = "permission";
     public static final String TABLA_ENTIDAD = "TP_ENTIDAD";
     public static final String TABLA_GRUPO_PARAMETRO = "TP_GRUPO_PARAMETRO";
     public static final String TABLA_PARAMETRO = "TS_DETALLE_PARAMETRO";
@@ -103,8 +113,11 @@ public class ConstantesServices {
     public static final String TABLA_ARCHIVO_TITULARIDAD = "TP_ARCHIVO_TIT";
     public static final String TABLA_RUTA = "TP_RUTA";
     public static final String TABLA_PROCESO = "TP_PROCESO";
+    public static final String INTEGRACION_SCA = "SCA";
 
     public static final String AUDIT_CAMPO_GRUPO_PARAMETRO = "idGrupoParametro=";
+    public static final String AUDIT_CAMPO_USUARIO = "usuario=";
+    public static final String AUDIT_CAMPO_PASSWORD = ",password=";
 
     //Codigos del Sistema
     public static final String RESPUESTA_OK_API = "0000";
@@ -156,5 +169,6 @@ public class ConstantesServices {
     public static final String MENSAJE_ERROR_COD_PARAMETRO_UNICO = "El codigo parámetro ya existe";
     public static final String MENSAJE_ERROR_OPERACION_NO_ENCONTRADA = "Operación no encontrada";
     public static final String MENSAJE_ERROR_COD_APLICACION_UNICA = "El codigo aplicación ya existe";
+    public static final String MENSAJE_ERROR_EXCEPTION = "Se ha producido un error. Por favor, inténtalo de nuevo en unos minutos.";
 
 }

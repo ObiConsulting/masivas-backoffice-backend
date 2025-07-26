@@ -37,7 +37,8 @@ public class TpArchivoTitularidad extends ModelAudit<String> implements Serializ
     @Size(max = 50)
     @Column(name = "NOMBRE_CCE")
     private String nombre;
-    @Column(name = "FEC_OBTENCION_CCE")
+//    @Column(name = "FEC_OBTENCION_CCE")
+    @Column(name = "FEC_OBTENCION_CLIENTE")
     private LocalDateTime fechaObtencion;
     @Column(name = "FEC_PROCESADO_CCE")
     private LocalDateTime fechaProcesada;
@@ -46,14 +47,16 @@ public class TpArchivoTitularidad extends ModelAudit<String> implements Serializ
     @Column(name = "CANT_PROCESADO_CCE")
     private Long cantidadProcesado;
     @Column(name = "ESTADO_OBTENCION_CLIENTE")
-    private Long estadoObtencionCliente;
-//    @Column(name = "ESTADO_PROCESADO_CLIENTE")
-    @Column(name = "ESTADO_ENVIO_CCE")
+    private Long estadoObtenidoCliente;
+    @Column(name = "ESTADO_PROCESADO_CLIENTE")
     private Long estadoProcesadoCliente;
+    @Column(name = "ESTADO_ENVIO_CCE")
+    private Long estadoEnviadoCCE;
     @Column(name = "ESTADO_OBTENCION_CCE")
-    private Long estadoObtencionCCE;
-//    @Column(name = "ESTADO_PROCESADO_CCE")
-    @Column(name = "ESTADO_ENVIO_CLIENTE")
+    private Long estadoObtenidoCCE;
+    @Column(name = "ESTADO_PROCESADO_CCE")
     private Long estadoProcesadoCCE;
+    @Column(name = "ESTADO_ENVIO_CLIENTE")
+    private Long estadoEnviadoCliente;
 
 }

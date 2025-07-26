@@ -27,8 +27,8 @@ public class DetalleConsultaArchivoMasivasDTO implements Serializable {
     private LocalDateTime fechaProcesada;
     private Long cantidadDeclarado;
     private Long cantidadProcesado;
-    private BigInteger montoProcesado;
-    private BigInteger montoRechazado;
+    private Long montoProcesado;
+    private Long montoRechazado;
     private String estado;
 
 }

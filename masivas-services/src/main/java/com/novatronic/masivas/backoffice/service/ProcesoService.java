@@ -3,7 +3,6 @@ package com.novatronic.masivas.backoffice.service;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
-import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.entity.TpProceso;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
@@ -89,18 +88,21 @@ public class ProcesoService {
      * @param usuario
      * @return
      */
-    public Long editarProceso(MasivasRequestDTO request, String usuario) {
+    public Long editarProceso(List<DetalleRegistroProcesoDTO> request, String usuario) {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PROCESO, ConstantesServices.METODO_ACTUALIZAR, request.toStringRuta());
+            for (DetalleRegistroProcesoDTO procesoDetalle : request) {
 
-            TpProceso proceso = procesoRepository.findById(request.getIdProceso())
-                    .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
-            updateProceso(proceso, request, usuario, ConstantesServices.OPERACION_EDITAR);
-            procesoRepository.save(proceso);
+                logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PROCESO, ConstantesServices.METODO_ACTUALIZAR, procesoDetalle.toStringProceso());
 
-            return proceso.getIdProceso();
+                TpProceso proceso = procesoRepository.findById(procesoDetalle.getIdProceso())
+                        .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
+                updateProceso(proceso, procesoDetalle, usuario, ConstantesServices.OPERACION_EDITAR);
+                procesoRepository.save(proceso);
+            }
+//            return proceso.getIdProceso();
+            return 1L;
 
         } catch (NoOperationExistsException e) {
             throw e;
@@ -158,7 +160,7 @@ public class ProcesoService {
 
     }
 
-    private void updateProceso(TpProceso ruta, MasivasRequestDTO request, String usuario, String operacion) {
+    private void updateProceso(TpProceso ruta, DetalleRegistroProcesoDTO request, String usuario, String operacion) {
 
         if (operacion.equals(ConstantesServices.OPERACION_EDITAR)) {
             ruta.setHorario(ConstantesServices.CRONTAB_JAVA + ConstantesServices.BLANCO + request.getHorario());

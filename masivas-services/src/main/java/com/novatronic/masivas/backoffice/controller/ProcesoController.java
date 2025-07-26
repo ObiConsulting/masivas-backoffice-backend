@@ -41,7 +41,7 @@ public class ProcesoController {
     }
 
     @PostMapping("/editar")
-    public ResponseEntity<MasivasResponse<Object>> editarProceso(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
+    public ResponseEntity<MasivasResponse<Object>> editarProceso(@Valid @RequestBody List<DetalleRegistroProcesoDTO> request, @AuthenticationPrincipal UserContext userContext) {
         Long idProceso = procesoService.editarProceso(request, userContext.getUsername());
         procesoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PROCESO,
                 ConstantesServices.ACCION_UPDATE, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION);

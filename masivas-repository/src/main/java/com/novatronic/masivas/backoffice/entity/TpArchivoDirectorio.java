@@ -40,7 +40,9 @@ public class TpArchivoDirectorio extends ModelAudit<String> implements Serializa
     @Column(name = "CANT_DECLARADO_CCE")
     private Long cantidadDeclarado;
     @Column(name = "ESTADO_OBTENCION_CCE")
-    private Long estadoObtencion;
+    private Long estadoObtenido;
+    @Column(name = "ESTADO_PROCESADO_CCE")
+    private Long estadoProcesado;
     @Column(name = "ESTADO_ENVIO_CLIENTE")
     private Long estadoEnviado;
     @Column(name = "FEC_OBTENCION_CCE")

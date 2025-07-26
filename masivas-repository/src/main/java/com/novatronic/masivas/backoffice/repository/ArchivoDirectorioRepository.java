@@ -22,7 +22,7 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
             + "d.idArchivo, d.nombre, d.cantidadDeclarado, d.fechaObtencion,"
             + "    CASE "
             + "        WHEN d.estadoEnviado IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0703') "
-            + "        WHEN d.estadoObtencion IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0702')  "
+            + "        WHEN d.estadoObtenido IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0702')  "
             + "        ELSE 'Pendiente' "
             + "    END)"
             + "FROM TpArchivoDirectorio d\n"
@@ -31,7 +31,7 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
             + "      AND (:estado IS NULL OR "
             + "         CASE "
             + "            WHEN d.estadoEnviado IS NOT NULL THEN '0703' "
-            + "            WHEN d.estadoObtencion IS NOT NULL THEN '0702' "
+            + "            WHEN d.estadoObtenido IS NOT NULL THEN '0702' "
             + "            ELSE 'Pendiente' "
             + "         END = :estado)")
     Page<DetalleConsultaArchivoDirectorioDTO> buscarPorFiltros(
@@ -43,8 +43,9 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
 
     @Query("SELECT "
             + "CASE "
-            + "    WHEN d.estadoEnviado IS NOT NULL THEN '0703' "
-            + "    WHEN d.estadoObtencion IS NOT NULL THEN '0702' "
+            + "    WHEN d.estadoEnviado IS NOT NULL THEN 'Enviado Cliente' "
+            + "    WHEN d.estadoProcesado IS NOT NULL THEN 'Obtenido CCE' "
+            + "    WHEN d.estadoObtenido IS NOT NULL THEN 'Obtenido CCE' "
             + "    ELSE 'Pendiente' "
             + "END, "
             + "COUNT(d.idArchivo) "
@@ -53,8 +54,9 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
             + "AND (:fechaFin IS NULL OR d.fechaObtencion <= :fechaFin) "
             + "GROUP BY "
             + "CASE "
-            + "    WHEN d.estadoEnviado IS NOT NULL THEN '0703' "
-            + "    WHEN d.estadoObtencion IS NOT NULL THEN '0702' "
+            + "    WHEN d.estadoEnviado IS NOT NULL THEN 'Enviado Cliente' "
+            + "    WHEN d.estadoProcesado IS NOT NULL THEN 'Obtenido CCE' "
+            + "    WHEN d.estadoObtenido IS NOT NULL THEN 'Obtenido CCE' "
             + "    ELSE 'Pendiente' "
             + "END")
     List<Object[]> totalesPorEstado(

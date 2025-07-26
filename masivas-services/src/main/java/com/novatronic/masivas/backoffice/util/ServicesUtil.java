@@ -1,6 +1,7 @@
 package com.novatronic.masivas.backoffice.util;
 
 import com.novatronic.novalog.audit.logger.NovaLogger;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -38,17 +39,13 @@ public final class ServicesUtil {
     public static final String MENSAJE_INSERTAR_ERROR = ".insertar.error";
     public static final String MENSAJE_LIMITE_ERROR = ".sinlimite.error";
 
-    public static final String PREFIJO_SIN_LIMITE = "Ingresar un monto entre: No definido";
-
-    private static final NovaLogger LOGGER = NovaLogger.getLogger(ServicesUtil.class);
-    private static final int LONGITUD_CCI = 20;
-    //private static final NovaMask mask = new NovaMask();
-
     public static final String ESTADO_REGISTRADO_VALOR = "R";
     public static final String ESTADO_FINALIZADO_VALOR = "4";
     public static final String ESTADO_EN_COLA_VALOR = "3";
     public static final String ESTADO_OBSERVADO_VALOR = "O";
     public static final String ESTADO_APROBADO_VALOR = "A";
+
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(ServicesUtil.class);
 
     private ServicesUtil() {
     }
@@ -168,43 +165,42 @@ public final class ServicesUtil {
         return hoy.format(formatter);
     }
 
-    public static String getMensajeProcedure(MessageSource messageSource, String codigo, String mensaje, String prefijo, String operacion) {
-        String mensajeRetornar = "";
-
-        if (COD_APROBAR.contains(codigo)) {
-            if (!"80".equals(codigo)) {
-                mensaje = messageSource.getMessage(prefijo + "." + codigo, null, Locale.getDefault());
-            }
-            return mensaje;
-        }
-        if (CODIGO_LIMITE.equals(codigo)) {
-            mensaje = getMensajeLimite(messageSource, mensaje);
-            if (mensaje.equals(PREFIJO_SIN_LIMITE)) {
-                mensaje = messageSource.getMessage(prefijo + MENSAJE_LIMITE_ERROR, null, Locale.getDefault());
-            }
-        } else {
-
-            //Validacion temporal, luego hay que mejorar el armado de los mensajes de error
-//            if (!mensaje.isEmpty() && !mensaje.contains(Constantes.PUNTO) && !mensaje.contains("existe")) {
-            if (!mensaje.isEmpty() && !mensaje.contains(".") && !mensaje.contains("existe")) {
-                return mensaje;
-            } else {
-//                String key = prefijo + Constantes.PUNTO + codigo;
-                String key = prefijo + "." + codigo;
-                mensaje = messageSource.getMessage(key, null, Locale.getDefault());
-                if (mensaje == null || mensaje.isEmpty()) {
-                    if (operacion.equals(MODIFICAR)) {
-                        mensaje = messageSource.getMessage(prefijo + MENSAJE_MODIFICAR_ERROR, null, Locale.getDefault());
-                    } else if (operacion.equals(INSERTAR)) {
-                        mensaje = messageSource.getMessage(prefijo + MENSAJE_INSERTAR_ERROR, null, Locale.getDefault());
-                    }
-
-                }
-            }
-        }
-        return mensaje;
-    }
-
+//    public static String getMensajeProcedure(MessageSource messageSource, String codigo, String mensaje, String prefijo, String operacion) {
+//        String mensajeRetornar = "";
+//
+//        if (COD_APROBAR.contains(codigo)) {
+//            if (!"80".equals(codigo)) {
+//                mensaje = messageSource.getMessage(prefijo + "." + codigo, null, Locale.getDefault());
+//            }
+//            return mensaje;
+//        }
+//        if (CODIGO_LIMITE.equals(codigo)) {
+//            mensaje = getMensajeLimite(messageSource, mensaje);
+//            if (mensaje.equals(PREFIJO_SIN_LIMITE)) {
+//                mensaje = messageSource.getMessage(prefijo + MENSAJE_LIMITE_ERROR, null, Locale.getDefault());
+//            }
+//        } else {
+//
+//            //Validacion temporal, luego hay que mejorar el armado de los mensajes de error
+////            if (!mensaje.isEmpty() && !mensaje.contains(Constantes.PUNTO) && !mensaje.contains("existe")) {
+//            if (!mensaje.isEmpty() && !mensaje.contains(".") && !mensaje.contains("existe")) {
+//                return mensaje;
+//            } else {
+////                String key = prefijo + Constantes.PUNTO + codigo;
+//                String key = prefijo + "." + codigo;
+//                mensaje = messageSource.getMessage(key, null, Locale.getDefault());
+//                if (mensaje == null || mensaje.isEmpty()) {
+//                    if (operacion.equals(MODIFICAR)) {
+//                        mensaje = messageSource.getMessage(prefijo + MENSAJE_MODIFICAR_ERROR, null, Locale.getDefault());
+//                    } else if (operacion.equals(INSERTAR)) {
+//                        mensaje = messageSource.getMessage(prefijo + MENSAJE_INSERTAR_ERROR, null, Locale.getDefault());
+//                    }
+//
+//                }
+//            }
+//        }
+//        return mensaje;
+//    }
     public static String getMensajeLimite(MessageSource messageSource, String mensaje) {
         return messageSource.getMessage(CODIGO_LIMITE, null, Locale.getDefault()) + mensaje.replaceAll(PATTERN, "$2");
     }
@@ -230,6 +226,19 @@ public final class ServicesUtil {
         }
 
         return resultado;
+    }
+
+    public static BigDecimal convertirABigDecimal(Object valor) {
+        if (valor == null) {
+            return BigDecimal.ZERO;
+        } else if (valor instanceof BigDecimal bigDecimal) {
+            return bigDecimal;
+        } else if (valor instanceof Long long1) {
+            return BigDecimal.valueOf(long1);
+        }
+        // Si llega aquí, es un tipo inesperado
+        LOGGER.error("Advertencia: Tipo de dato inesperado para la suma: " + valor.getClass().getName());
+        return BigDecimal.ZERO;
     }
 
 }

@@ -10,7 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +37,8 @@ public class TpArchivoMasivas extends ModelAudit<String> implements Serializable
     @Size(max = 50)
     @Column(name = "NOMBRE_CCE")
     private String nombre;
-    @Column(name = "FEC_OBTENCION_CCE")
+//    @Column(name = "FEC_OBTENCION_CCE")
+    @Column(name = "FEC_OBTENCION_CLIENTE")
     private LocalDateTime fechaObtencion;
     @Column(name = "FEC_PROCESADO_CCE")
     private LocalDateTime fechaProcesada;
@@ -47,16 +47,20 @@ public class TpArchivoMasivas extends ModelAudit<String> implements Serializable
     @Column(name = "CANT_PROCESADO_CCE")
     private Long cantidadProcesado;
     @Column(name = "ESTADO_OBTENCION_CLIENTE")
-    private Long estadoObtencionCliente;
-    @Column(name = "ESTADO_ENVIO_CCE")
+    private Long estadoObtenidoCliente;
+    @Column(name = "ESTADO_PROCESADO_CLIENTE")
     private Long estadoProcesadoCliente;
+    @Column(name = "ESTADO_ENVIO_CCE")
+    private Long estadoEnviadoCCE;
     @Column(name = "ESTADO_OBTENCION_CCE")
-    private Long estadoObtencionCCE;
-    @Column(name = "ESTADO_ENVIO_CLIENTE")
+    private Long estadoObtenidoCCE;
+    @Column(name = "ESTADO_PROCESADO_CCE")
     private Long estadoProcesadoCCE;
-    @Column(name = "MONTO_PROCESADO_CLIENTE", precision = 16, scale = 0)
-    private BigInteger montoProcesado;
+    @Column(name = "ESTADO_ENVIO_CLIENTE")
+    private Long estadoEnviadoCliente;
+    @Column(name = "MONTO_PROCESADO_CCE", precision = 16, scale = 0)
+    private Long montoProcesado;
     @Column(name = "MONTO_RECHAZADO", precision = 16, scale = 0)
-    private BigInteger montoRechazado;
+    private Long montoRechazado;
 
 }
