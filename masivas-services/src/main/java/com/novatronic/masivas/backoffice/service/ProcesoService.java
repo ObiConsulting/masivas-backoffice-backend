@@ -9,7 +9,6 @@ import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.repository.ProcesoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -32,13 +31,11 @@ public class ProcesoService {
 
     @Autowired
     private final ProcesoRepository procesoRepository;
-    private final MessageSource messageSource;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ProcesoService.class);
 
-    public ProcesoService(ProcesoRepository procesoRepository, MessageSource messageSource) {
+    public ProcesoService(ProcesoRepository procesoRepository) {
         this.procesoRepository = procesoRepository;
-        this.messageSource = messageSource;
     }
 
     /**
@@ -101,8 +98,7 @@ public class ProcesoService {
                 updateProceso(proceso, procesoDetalle, usuario, ConstantesServices.OPERACION_EDITAR);
                 procesoRepository.save(proceso);
             }
-//            return proceso.getIdProceso();
-            return 1L;
+            return 1l;
 
         } catch (NoOperationExistsException e) {
             throw e;

@@ -102,9 +102,7 @@ public class AplicacionService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_CONSULTAR, request.toStringEntidadAplicacion());
 
             ModelMapper modelMapper = new ModelMapper();
-            Pageable pageable = null;
-
-            pageable = ServicesUtil.configurarPageSort(request);
+            Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             Page<TpAplicacion> objPageable = aplicacionRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstado(), pageable);
 

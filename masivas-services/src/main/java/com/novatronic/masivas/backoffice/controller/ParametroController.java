@@ -51,10 +51,10 @@ public class ParametroController {
 
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscar(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaParametroDTO> objPegeable = parametroService.buscarParametro(request, userContext.getUsername());
+        CustomPaginate<DetalleConsultaParametroDTO> objPageable = parametroService.buscarParametro(request);
         parametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
     @PostMapping("/editar")
@@ -67,7 +67,7 @@ public class ParametroController {
 
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtener(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        DetalleRegistroParametroDTO parametroDTO = parametroService.obtenerParametro(request, userContext.getUsername());
+        DetalleRegistroParametroDTO parametroDTO = parametroService.obtenerParametro(request);
         parametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
                 ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, parametroDTO));

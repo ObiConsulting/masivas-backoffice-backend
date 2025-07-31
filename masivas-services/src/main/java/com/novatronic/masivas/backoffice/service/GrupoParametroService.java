@@ -99,19 +99,16 @@ public class GrupoParametroService {
      * búsqueda
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public CustomPaginate<DetalleConsultaGrupoParametroDTO> buscarGrupoParametro(FiltroMasivasRequest request, String usuario) {
+    public CustomPaginate<DetalleConsultaGrupoParametroDTO> buscarGrupoParametro(FiltroMasivasRequest request) {
 
         try {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_CONSULTAR, request.toStringGrupoParametro());
 
             ModelMapper modelMapper = new ModelMapper();
-            Pageable pageable = null;
-
-            pageable = ServicesUtil.configurarPageSort(request);
+            Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             Page<TpGrupoParametro> objPageable = grupoParametroRepository.buscarPorFiltros(request.getCodigo(), request.getDescripcion(), request.getEstado(), pageable);
 
@@ -121,11 +118,7 @@ public class GrupoParametroService {
             long totalRegistrosLong = objPageable.getTotalElements();
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
-            CustomPaginate customPaginate = new CustomPaginate<>(
-                    totalPaginas,
-                    totalRegistros,
-                    dtoPage.getContent()
-            );
+            CustomPaginate<DetalleConsultaGrupoParametroDTO> customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, dtoPage.getContent());
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
@@ -185,10 +178,9 @@ public class GrupoParametroService {
      * Método que obtiene el registro de un grupo parámetro según id
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public DetalleRegistroGrupoParametroDTO obtenerGrupoParametro(FiltroMasivasRequest request, String usuario) {
+    public DetalleRegistroGrupoParametroDTO obtenerGrupoParametro(FiltroMasivasRequest request) {
 
         try {
 
@@ -274,7 +266,7 @@ public class GrupoParametroService {
             request.setRegistrosPorPagina(0);
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_DESCARGAR, request.toStringGrupoParametro());
-            CustomPaginate<DetalleConsultaGrupoParametroDTO> resultado = buscarGrupoParametro(request, usuario);
+            CustomPaginate<DetalleConsultaGrupoParametroDTO> resultado = buscarGrupoParametro(request);
 
             HashMap<String, Object> parameters = new HashMap<>();
             //Filtros
@@ -317,7 +309,4 @@ public class GrupoParametroService {
                 null, accion, null, null, mensajeExito);
     }
 
-//    public void logError(String mensajeError, Exception e) {
-//        LOGGER.error(mensajeError, e);
-//    }
 }

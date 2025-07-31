@@ -106,9 +106,7 @@ public class EntidadService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_CONSULTAR, request.toStringEntidadAplicacion());
 
             ModelMapper modelMapper = new ModelMapper();
-            Pageable pageable = null;
-
-            pageable = ServicesUtil.configurarPageSort(request);
+            Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             Page<TpEntidad> objPageable = entidadRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstado(), pageable);
 

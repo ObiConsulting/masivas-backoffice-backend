@@ -26,6 +26,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -49,13 +50,10 @@ public class SeguridadService {
 
     @Value("${masivas.captcha.active}")
     private String captchaActive;
-
     @Value("${masivas.captcha.url}")
     private String captchaUrl;
-
     @Value("${masivas.sca.empresa}")
     private String empresa;
-
     @Value("${masivas.sca.aplicacion}")
     private String aplicacion;
 
@@ -63,7 +61,6 @@ public class SeguridadService {
 
     public SeguridadService(HazelcastInstance hazelcastInstance,
             HttpServletRequest request,
-            ParametroCacheService parametroCacheService,
             SCAAutentication scaAutentication,
             JwtUtil jwtUtil,
             RestTemplate restTemplate) {
@@ -218,7 +215,7 @@ public class SeguridadService {
             // Timeout o problema de red
             LOGGER.error(ConstantesServices.MENSAJE_ERROR_EXCEPTION, e);
             return null;
-        } catch (Exception e) {
+        } catch (RestClientException e) {
             LOGGER.error(ConstantesServices.MENSAJE_ERROR_EXCEPTION, e);
             return null;
 

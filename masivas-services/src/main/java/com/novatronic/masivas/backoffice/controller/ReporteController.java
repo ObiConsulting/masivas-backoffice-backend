@@ -34,7 +34,7 @@ public class ReporteController {
 
     @PostMapping("/cierre/buscar")
     public ResponseEntity<MasivasResponse<Object>> reporteCierre(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        DetalleConsultaReporteCierreDTO reporte = reporteService.reporteCierre(request, userContext.getUsername());
+        DetalleConsultaReporteCierreDTO reporte = reporteService.reporteCierre(request);
         reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CIERRE,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_GENERICO);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));
@@ -42,7 +42,7 @@ public class ReporteController {
 
     @PostMapping("/totalizado")
     public ResponseEntity<MasivasResponse<Object>> reporteTotalizado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        DetalleConsultaReporteTotalizadoDTO reporte = reporteService.reporteTotalizado(request, userContext.getUsername());
+        DetalleConsultaReporteTotalizadoDTO reporte = reporteService.reporteTotalizado(request);
         reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_TOTALIZADO,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_GENERICO);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));

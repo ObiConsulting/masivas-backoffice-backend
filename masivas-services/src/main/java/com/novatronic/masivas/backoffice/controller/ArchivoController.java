@@ -38,34 +38,34 @@ public class ArchivoController {
 
     @PostMapping("/directorio/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoDirectorio(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaArchivoDirectorioDTO> objPegeable = archivoService.buscarArchivoDirectorio(request);
+        CustomPaginate<DetalleConsultaArchivoDirectorioDTO> objPageable = archivoService.buscarArchivoDirectorio(request);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_DIRECTORIO,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
     @PostMapping("/masivas/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaArchivoMasivasDTO> objPegeable = archivoService.buscarArchivoMasivas(request);
+        CustomPaginate<DetalleConsultaArchivoMasivasDTO> objPageable = archivoService.buscarArchivoMasivas(request);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_MASIVAS,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
     @PostMapping("/titularidad/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoTitularidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaArchivoTitularidadDTO> objPegeable = archivoService.buscarArchivoTitularidad(request);
+        CustomPaginate<DetalleConsultaArchivoTitularidadDTO> objPageable = archivoService.buscarArchivoTitularidad(request);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_TITULARIDAD,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
     @PostMapping("/masivas/detalle/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarDetalleMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleRegistroArchivoMasivasDTO> objPegeable = detalleMasivasService.buscarDetalleMasivas(request);
+        CustomPaginate<DetalleRegistroArchivoMasivasDTO> objPageable = detalleMasivasService.buscarDetalleMasivas(request);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
     @PostMapping("/directorio/descargarPDF")

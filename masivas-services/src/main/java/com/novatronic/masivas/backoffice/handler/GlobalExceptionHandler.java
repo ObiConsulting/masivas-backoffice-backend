@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoOperationExistsException.class)
-    public ResponseEntity<MasivasResponse<Object>> NoSuchElementException(NoOperationExistsException ex) {
+    public ResponseEntity<MasivasResponse<Object>> noSuchElementException(NoOperationExistsException ex) {
         LOGGER.error(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ex.getErrorCode(), ex.getMessage(), null));
     }

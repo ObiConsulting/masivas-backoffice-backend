@@ -34,10 +34,10 @@ public class RutaController {
 
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarRuta(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaRutaDTO> objPegeable = rutaService.buscarRuta(request, userContext.getUsername());
+        CustomPaginate<DetalleConsultaRutaDTO> objPageable = rutaService.buscarRuta(request);
         rutaService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_RUTA,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
     @PostMapping("/editar")
@@ -50,7 +50,7 @@ public class RutaController {
 
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerRuta(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        DetalleRegistroRutaDTO entidadDTO = rutaService.obtenerRuta(request, userContext.getUsername());
+        DetalleRegistroRutaDTO entidadDTO = rutaService.obtenerRuta(request);
         rutaService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_RUTA,
                 ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, entidadDTO));

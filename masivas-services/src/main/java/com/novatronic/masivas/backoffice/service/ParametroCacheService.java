@@ -50,14 +50,13 @@ public class ParametroCacheService {
     @PostConstruct
     public void initCache() throws IOException {
 
-        Properties novaProps = new Properties();
+        Properties novaProps;
 
         Resource classpathResource = new ClassPathResource(CLASSPATH_FILE);
         // 1. Intentar cargar desde classpath
         if (classpathResource.exists()) {
             LOGGER.info("Cargando archivo de configuración desde classpath: {}", CLASSPATH_FILE);
             novaProps = PropertiesLoaderUtils.loadProperties(classpathResource);
-            //return properties;
         } else {
             // 2. Si no existe en classpath, intentar desde ruta externa
             String configPath = System.getenv("SIXCFG");

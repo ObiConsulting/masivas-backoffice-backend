@@ -22,11 +22,9 @@ public class CustomCorsFilter extends CorsFilter {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(corsConfig.getAllowedOrigins());
         config.setAllowedHeaders(corsConfig.getAllowedHeaders());
-//        config.addExposedHeader("X-XSRF-TOKEN");
-//        config.addExposedHeader("X-SET-COOKIE");
         config.setExposedHeaders(corsConfig.getExposedHeaders());
         config.setMaxAge(corsConfig.getMaxAge());
-        //config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
+//        config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedMethods(corsConfig.getAllowedMethods());
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration(corsConfig.getPath(), config);

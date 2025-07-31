@@ -3,7 +3,6 @@ package com.novatronic.masivas.backoffice.controller;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
-import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ProcesoService;
@@ -34,10 +33,10 @@ public class ProcesoController {
 
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        Map<String, List<DetalleConsultaProcesoDTO>> objPegeable = procesoService.buscarProceso(request);
+        Map<String, List<DetalleConsultaProcesoDTO>> objPageable = procesoService.buscarProceso(request);
         procesoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PROCESO,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION, objPageable));
     }
 
     @PostMapping("/editar")
@@ -50,10 +49,10 @@ public class ProcesoController {
 
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        Map<String, List<DetalleRegistroProcesoDTO>> objPegeable = procesoService.obtenerProceso(request);
+        Map<String, List<DetalleRegistroProcesoDTO>> objPageable = procesoService.obtenerProceso(request);
         procesoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PROCESO,
                 ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, objPageable));
     }
 
 }

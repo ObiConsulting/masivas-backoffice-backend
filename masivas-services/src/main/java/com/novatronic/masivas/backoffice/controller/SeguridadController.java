@@ -31,12 +31,11 @@ public class SeguridadController {
 
     @Autowired
     SeguridadService seguridadService;
-
     @Autowired
     HazelcastInstance hazelcastInstance;
 
-    @RequestMapping(value = "/acceso", method = RequestMethod.POST)
-    public ResponseEntity<MasivasResponse<LoginResponse>> acceso(@RequestBody @Valid AuthRequest authRequest) throws Exception {
+    @PostMapping("/acceso")
+    public ResponseEntity<MasivasResponse<LoginResponse>> acceso(@RequestBody @Valid AuthRequest authRequest) {
 
         MasivasResponse<LoginResponse> respuesta;
         try {
@@ -57,9 +56,9 @@ public class SeguridadController {
         }
     }
 
-    @RequestMapping(value = "/cambiarClavePrimeraVez", method = RequestMethod.POST)
+    @PostMapping("/cambiarClavePrimeraVez")
     @PreAuthorize("hasAuthority('PRIMER_LOGIN')")
-    public ResponseEntity<MasivasResponse<LoginResponse>> cambiarClavePrimeraVez(@RequestBody @Valid ChangePassRequest authRequest) throws Exception {
+    public ResponseEntity<MasivasResponse<LoginResponse>> cambiarClavePrimeraVez(@RequestBody @Valid ChangePassRequest authRequest) {
 
         MasivasResponse<LoginResponse> respuesta;
         try {
@@ -82,7 +81,7 @@ public class SeguridadController {
     }
 
     @GetMapping("/permisos")
-    public ResponseEntity<MasivasResponse<CustomPaginate<String>>> permisos(@AuthenticationPrincipal UserContext userContext) throws Exception {
+    public ResponseEntity<MasivasResponse<CustomPaginate<String>>> permisos(@AuthenticationPrincipal UserContext userContext) {
         try {
             List<String> valores = userContext.getAuthoritiesList();
 
@@ -105,7 +104,7 @@ public class SeguridadController {
     }
 
     @GetMapping("/cerrarsesion")
-    public ResponseEntity<MasivasResponse<Void>> cerrarSesion(@AuthenticationPrincipal UserContext userContext) throws Exception {
+    public ResponseEntity<MasivasResponse<Void>> cerrarSesion(@AuthenticationPrincipal UserContext userContext) {
 
         MasivasResponse<Void> respuesta;
         try {
@@ -131,8 +130,8 @@ public class SeguridadController {
         }
     }
 
-    @RequestMapping(value = "/cambiarClave", method = RequestMethod.POST)
-    public ResponseEntity<MasivasResponse<LoginResponse>> cambiarClave(@RequestBody @Valid ChangePassRequest authRequest, @AuthenticationPrincipal UserContext userContext) throws Exception {
+    @PostMapping("/cambiarClave")
+    public ResponseEntity<MasivasResponse<LoginResponse>> cambiarClave(@RequestBody @Valid ChangePassRequest authRequest, @AuthenticationPrincipal UserContext userContext) {
 
         MasivasResponse<LoginResponse> respuesta;
         try {

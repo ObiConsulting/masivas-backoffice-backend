@@ -43,10 +43,10 @@ public class EntidadController {
 
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarEntidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaEntidadDTO> objPegeable = entidadService.buscarEntidad(request);
+        CustomPaginate<DetalleConsultaEntidadDTO> objPageable = entidadService.buscarEntidad(request);
         entidadService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
     @PostMapping("/editar")

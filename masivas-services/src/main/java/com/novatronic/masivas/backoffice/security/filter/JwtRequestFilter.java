@@ -55,23 +55,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         return;
                     }
 
-                    UserContext userContext = (UserContext) hazelcastInstance
-                            .getMap(ConstantesServices.MAP_LOGUEADOS)
-                            .get(username);
+                    UserContext userContext = (UserContext) hazelcastInstance.getMap(ConstantesServices.MAP_LOGUEADOS).get(username);
 
                     if (userContext == null) {
                         sendUnauthorizedResponse(response, "401", "Sesión expirada o no encontrada");
                         return;
                     }
-//                    List<GrantedAuthority> authorities = userContext.getAuthorities().stream()
-//                            .map(SimpleGrantedAuthority::new)
-//                            .collect(Collectors.toList());
 
-                    Authentication auth = new UsernamePasswordAuthenticationToken(
-                            userContext,
-                            null,
-                            userContext.getAuthorities()
-                    );
+                    Authentication auth = new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }

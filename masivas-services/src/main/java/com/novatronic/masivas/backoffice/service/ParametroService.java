@@ -102,18 +102,15 @@ public class ParametroService {
      * búsqueda
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public CustomPaginate<DetalleConsultaParametroDTO> buscarParametro(FiltroMasivasRequest request, String usuario) {
+    public CustomPaginate<DetalleConsultaParametroDTO> buscarParametro(FiltroMasivasRequest request) {
 
         try {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_CONSULTAR, request.toStringParametro());
 
-            Pageable pageable = null;
-
-            pageable = ServicesUtil.configurarPageSort(request);
+            Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             Page<DetalleConsultaParametroDTO> objPageable = parametroRepository.buscarPorFiltros(request.getCodigo(), request.getIdGrupoParametro(), request.getEstado(), pageable);
 
@@ -121,7 +118,7 @@ public class ParametroService {
             long totalRegistrosLong = objPageable.getTotalElements();
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
-            CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
+            CustomPaginate<DetalleConsultaParametroDTO> customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
@@ -179,10 +176,9 @@ public class ParametroService {
      * Método que obtiene el registro de un parámetro según id
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public DetalleRegistroParametroDTO obtenerParametro(FiltroMasivasRequest request, String usuario) {
+    public DetalleRegistroParametroDTO obtenerParametro(FiltroMasivasRequest request) {
 
         try {
 
@@ -268,7 +264,7 @@ public class ParametroService {
             request.setRegistrosPorPagina(0);
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_DESCARGAR, request.toStringParametro());
-            CustomPaginate<DetalleConsultaParametroDTO> resultado = buscarParametro(request, usuario);
+            CustomPaginate<DetalleConsultaParametroDTO> resultado = buscarParametro(request);
 
             HashMap<String, Object> parameters = new HashMap<>();
             //Filtros

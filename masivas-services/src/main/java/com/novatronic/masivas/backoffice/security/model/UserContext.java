@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class UserContext implements Serializable, UserDetails {
 
     private final String username;
-    //private final List<GrantedAuthority> authorities;
     private final List<String> authorities;
     private final Map<String, Serializable> attributes;
     private final int expirationMinute;

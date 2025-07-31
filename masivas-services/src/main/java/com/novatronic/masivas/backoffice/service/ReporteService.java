@@ -62,10 +62,9 @@ public class ReporteService {
      * Método que realiza el reporte de cierre diario
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public DetalleConsultaReporteCierreDTO reporteCierre(FiltroMasivasRequest request, String usuario) {
+    public DetalleConsultaReporteCierreDTO reporteCierre(FiltroMasivasRequest request) {
 
         try {
 
@@ -107,10 +106,9 @@ public class ReporteService {
      * Método que realiza el reporte de cierre diario
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public DetalleConsultaReporteTotalizadoDTO reporteTotalizado(FiltroMasivasRequest request, String usuario) {
+    public DetalleConsultaReporteTotalizadoDTO reporteTotalizado(FiltroMasivasRequest request) {
 
         try {
 

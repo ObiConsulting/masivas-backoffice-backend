@@ -6,6 +6,9 @@ package com.novatronic.masivas.backoffice.util;
  */
 public class ConstantesServices {
 
+    private ConstantesServices() {
+    }
+
     public static final String MAP_LOGUEADOS = "loginCache";
     public static final String MAP_PARAMETROS = "parametrosPorGrupo";
     public static final String MAP_GRUPO_PARAMETROS = "grupoParametroCache";

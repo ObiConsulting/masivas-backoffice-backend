@@ -9,8 +9,8 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -39,7 +39,7 @@ public class GenerarReporte {
     private GenerarReporte() {
     }
 
-    public static <T> ReporteDTO generarReporte(List<T> datos, HashMap<String, Object> parameters, String usuario, String tipoArchivo, String nombreReporte, String nombreArchivo, String logo) throws IOException {
+    public static <T> ReporteDTO generarReporte(List<T> datos, Map<String, Object> parameters, String usuario, String tipoArchivo, String nombreReporte, String nombreArchivo, String logo) throws IOException {
 
         InputStream imgLogo = new ClassPathResource(logo).getInputStream();
 
@@ -57,7 +57,7 @@ public class GenerarReporte {
 
     }
 
-    public static ReporteDTO exportJasper(String jasperFile, HashMap<String, Object> parameters, String fileName, String tipoArchivo) {
+    public static ReporteDTO exportJasper(String jasperFile, Map<String, Object> parameters, String fileName, String tipoArchivo) {
 
         try {
 

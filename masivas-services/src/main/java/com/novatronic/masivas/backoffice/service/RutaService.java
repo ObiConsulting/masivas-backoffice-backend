@@ -12,7 +12,6 @@ import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.RutaRepository;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
@@ -39,16 +38,14 @@ public class RutaService {
     @Autowired
     private final RutaRepository rutaRepository;
     private final GenericService genericService;
-    private final MessageSource messageSource;
 
     @Value("${reporte.logo}")
     private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(RutaService.class);
 
-    public RutaService(RutaRepository rutaRepository, MessageSource messageSource, GenericService genericService) {
+    public RutaService(RutaRepository rutaRepository, GenericService genericService) {
         this.rutaRepository = rutaRepository;
-        this.messageSource = messageSource;
         this.genericService = genericService;
     }
 
@@ -56,18 +53,15 @@ public class RutaService {
      * Método que realiza la búsqueda de las rutas según filtros de búsqueda
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public CustomPaginate<DetalleConsultaRutaDTO> buscarRuta(FiltroMasivasRequest request, String usuario) {
+    public CustomPaginate<DetalleConsultaRutaDTO> buscarRuta(FiltroMasivasRequest request) {
 
         try {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_CONSULTAR, request.toStringRuta());
 
-            Pageable pageable = null;
-
-            pageable = ServicesUtil.configurarPageSort(request);
+            Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             Page<DetalleConsultaRutaDTO> objPageable = rutaRepository.buscarPorFiltros(request.getCodTipoArchivo(), request.getCodCategoriaDirectorio(), pageable);
 
@@ -75,7 +69,7 @@ public class RutaService {
             long totalRegistrosLong = objPageable.getTotalElements();
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
-            CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
+            CustomPaginate<DetalleConsultaRutaDTO> customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
@@ -126,17 +120,14 @@ public class RutaService {
      * Método que obtiene el registro de una ruta según id
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public DetalleRegistroRutaDTO obtenerRuta(FiltroMasivasRequest request, String usuario) {
+    public DetalleRegistroRutaDTO obtenerRuta(FiltroMasivasRequest request) {
 
         try {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_OBTENER, request.toStringRutaObtener());
-            DetalleRegistroRutaDTO rutaDTO = rutaRepository.buscarPorId(request.getIdRuta());
-
-            return rutaDTO;
+            return rutaRepository.buscarPorId(request.getIdRuta());
 
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
@@ -163,7 +154,7 @@ public class RutaService {
             request.setRegistrosPorPagina(0);
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_DESCARGAR, request.toStringRuta());
-            CustomPaginate<DetalleConsultaRutaDTO> resultado = buscarRuta(request, usuario);
+            CustomPaginate<DetalleConsultaRutaDTO> resultado = buscarRuta(request);
 
             HashMap<String, Object> parameters = new HashMap<>();
             //Filtros

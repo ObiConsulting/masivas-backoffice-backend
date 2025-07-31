@@ -1,6 +1,5 @@
 package com.novatronic.masivas.backoffice.security.util;
 
-import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
@@ -22,13 +21,9 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
 
-    private static final NovaLogger LOGGER = NovaLogger.getLogger(JwtUtil.class);
-
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-//    @Value("${jwt.expiration-time}")
-//    private long expirationTime;
     private final HttpServletRequest request;
 
     public JwtUtil(HttpServletRequest request) {
@@ -53,7 +48,6 @@ public class JwtUtil {
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("scopes", scope.stream().map(s -> s.toString()).collect(Collectors.toList()));
-        //claims.put("attributes", userContext.getAttributes());
         claims.put("ip", clientIp);
         claims.put("tiempoSesion", tiempoExpiracion);
 

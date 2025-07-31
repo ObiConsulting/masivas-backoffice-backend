@@ -113,7 +113,7 @@ public class GenericService {
         genericName = lista.stream()
                 .filter(parameter -> parameter.getCodigo().equals(genericCode))
                 .findFirst()
-                .map(parameterDTO -> parameterDTO.getDescripcion())
+                .map(ParametroDTO::getDescripcion)
                 .orElse("");
         return genericName;
     }
