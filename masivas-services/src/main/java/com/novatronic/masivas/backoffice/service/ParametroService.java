@@ -1,37 +1,36 @@
 package com.novatronic.masivas.backoffice.service;
 
-import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaParametroDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroParametroDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.entity.TpParametro;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.ParametroRepository;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.GenerarReporte;
+import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashMap;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -42,13 +41,18 @@ public class ParametroService {
 
     @Autowired
     private final ParametroRepository parametroRepository;
-    private final MessageSource messageSource;
+    private final GenericService genericService;
+    private final ParametroCacheService parametroCacheService;
+
+    @Value("${reporte.logo}")
+    private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ParametroService.class);
 
-    public ParametroService(ParametroRepository parametroRepository, MessageSource messageSource) {
+    public ParametroService(ParametroRepository parametroRepository, ParametroCacheService parametroCacheService, GenericService genericService) {
         this.parametroRepository = parametroRepository;
-        this.messageSource = messageSource;
+        this.parametroCacheService = parametroCacheService;
+        this.genericService = genericService;
     }
 
     /**
@@ -73,6 +77,10 @@ public class ParametroService {
                     usuario
             );
             parametro = parametroRepository.save(parametro);
+
+            //Actualizamos cache
+            parametroCacheService.loadParametersInCache();
+
             return parametro.getIdParametro();
 
         } catch (Exception e) {
@@ -105,15 +113,7 @@ public class ParametroService {
 
             Pageable pageable = null;
 
-            if (request.getCampoOrdenar().isEmpty()) {
-                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
-            } else {
-                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).ascending());
-                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
-                }
-            }
+            pageable = ServicesUtil.configurarPageSort(request);
 
             Page<DetalleConsultaParametroDTO> objPageable = parametroRepository.buscarPorFiltros(request.getCodigo(), request.getIdGrupoParametro(), request.getEstado(), pageable);
 
@@ -154,6 +154,9 @@ public class ParametroService {
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateParametro(parametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
             parametroRepository.save(parametro);
+
+            //Actualizamos cache
+            parametroCacheService.loadParametersInCache();
 
             return parametro.getIdParametro();
 
@@ -231,22 +234,10 @@ public class ParametroService {
                 numExito++;
             }
 
-            if (numExito == totalIds) {
-                if (totalIds > 1) {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACIONES;
-                } else {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACION;
-                }
-            } else if (numExito > 0 && numExito < totalIds) {
-                mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_OPERACIONES;
-                mensaje = String.format(mensaje, numExito, totalIds - numExito);
-            } else {
-                if (totalIds > 1) {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACIONES;
-                } else {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACION;
-                }
-            }
+            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado);
+
+            //Actualizamos cache
+            parametroCacheService.loadParametersInCache();
 
             return new EstadoDTO(mensaje, numExito);
 
@@ -261,64 +252,34 @@ public class ParametroService {
         }
     }
 
-    public List<ComboEstadoDTO> listarParametrosPorGrupoConsulta(Long idGrupoParametro) {
+    /**
+     * Método que realiza la búsqueda de los parámetros según filtros de
+     * búsqueda y los exporta a un archivo pdf/xlsx
+     *
+     * @param request
+     * @param usuario
+     * @param tipoArchivo
+     * @return
+     */
+    public ReporteDTO descargarParametro(FiltroMasivasRequest request, String usuario, String tipoArchivo) {
 
         try {
+            request.setNumeroPagina(0);
+            request.setRegistrosPorPagina(0);
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LISTAR_PARAMETROS, "{" + ConstantesServices.AUDIT_CAMPO_GRUPO_PARAMETRO + idGrupoParametro + "}");
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_DESCARGAR, request.toStringParametro());
+            CustomPaginate<DetalleConsultaParametroDTO> resultado = buscarParametro(request, usuario);
 
-            List<TpParametro> listaGrupo = parametroRepository.getByIdGrupoParametro(idGrupoParametro);
+            HashMap<String, Object> parameters = new HashMap<>();
+            //Filtros
+            parameters.put("IN_GRUPO_PARAMETRO", genericService.getNombreGrupoParametro(request.getIdGrupoParametro()));
+            parameters.put("IN_CODIGO", request.getCodigo());
+            parameters.put("IN_ESTADO", request.getEstado());
 
-            return listaGrupo.stream()
-                    .sorted(Comparator.comparing(TpParametro::getCodigo))
-                    .map(estado -> new ComboEstadoDTO(estado.getCodigo(), estado.getValor()))
-                    .collect(Collectors.toList());
+            return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteParametro.jrxml", "parametro", logo);
 
-        } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
-            throw new GenericException(e);
-        }
-
-    }
-
-    public List<ComboEstadoDTO> listarParametrosPorGrupoFormulario(Long idGrupoParametro) {
-
-        try {
-
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LISTAR_PARAMETROS, "{" + ConstantesServices.AUDIT_CAMPO_GRUPO_PARAMETRO + idGrupoParametro + "}");
-
-            List<TpParametro> listaGrupo = parametroRepository.getByIdGrupoParametro(idGrupoParametro);
-
-            return listaGrupo.stream()
-                    .sorted(Comparator.comparing(TpParametro::getIdParametro))
-                    .map(estado -> new ComboEstadoDTO(estado.getIdParametro().toString(), estado.getValor()))
-                    .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
-            throw new GenericException(e);
-        }
-
-    }
-
-    public List<ComboEstadoDTO> listarCategoriaDirectorio(Long idGrupoParametro) {
-
-        try {
-
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LISTAR_PARAMETROS, "{" + ConstantesServices.AUDIT_CAMPO_GRUPO_PARAMETRO + idGrupoParametro + "}");
-
-            List<ComboEstadoDTO> listaCompleta = listarParametrosPorGrupoConsulta(idGrupoParametro);
-
-            return listaCompleta.stream()
-                    .filter(estado -> "1000".equals(estado.getCodigo()) || "2000".equals(estado.getCodigo()))
-                    .collect(Collectors.toList());
-
+        } catch (JasperReportException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -352,7 +313,4 @@ public class ParametroService {
                 null, accion, null, null, mensajeExito);
     }
 
-//    public void logError(String mensajeError, Exception e) {
-//        LOGGER.error(mensajeError, e);
-//    }
 }

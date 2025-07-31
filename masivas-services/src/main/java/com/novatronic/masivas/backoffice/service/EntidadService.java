@@ -6,28 +6,31 @@ import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroEntidadDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.entity.TpEntidad;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.EntidadRepository;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.GenerarReporte;
+import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -38,13 +41,14 @@ public class EntidadService {
 
     @Autowired
     private final EntidadRepository entidadRepository;
-    private final MessageSource messageSource;
+
+    @Value("${reporte.logo}")
+    private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(EntidadService.class);
 
-    public EntidadService(EntidadRepository entidadRepository, MessageSource messageSource) {
+    public EntidadService(EntidadRepository entidadRepository) {
         this.entidadRepository = entidadRepository;
-        this.messageSource = messageSource;
     }
 
     /**
@@ -93,10 +97,9 @@ public class EntidadService {
      * de búsqueda
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public CustomPaginate<DetalleConsultaEntidadDTO> buscar(FiltroMasivasRequest request, String usuario) {
+    public CustomPaginate<DetalleConsultaEntidadDTO> buscarEntidad(FiltroMasivasRequest request) {
 
         try {
 
@@ -105,15 +108,7 @@ public class EntidadService {
             ModelMapper modelMapper = new ModelMapper();
             Pageable pageable = null;
 
-            if (request.getCampoOrdenar().isEmpty()) {
-                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
-            } else {
-                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).ascending());
-                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
-                }
-            }
+            pageable = ServicesUtil.configurarPageSort(request);
 
             Page<TpEntidad> objPageable = entidadRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstado(), pageable);
 
@@ -124,7 +119,7 @@ public class EntidadService {
 
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
-            CustomPaginate customPaginate = new CustomPaginate<>(
+            CustomPaginate<DetalleConsultaEntidadDTO> customPaginate = new CustomPaginate<>(
                     totalPaginas,
                     totalRegistros,
                     dtoPage.getContent()
@@ -184,10 +179,9 @@ public class EntidadService {
      * Método que obtiene el registro de una entidad financiera según id
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public DetalleRegistroEntidadDTO obtenerEntidad(FiltroMasivasRequest request, String usuario) {
+    public DetalleRegistroEntidadDTO obtenerEntidad(FiltroMasivasRequest request) {
 
         try {
 
@@ -241,22 +235,7 @@ public class EntidadService {
                 numExito++;
             }
 
-            if (numExito == totalIds) {
-                if (totalIds > 1) {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACIONES;
-                } else {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACION;
-                }
-            } else if (numExito > 0 && numExito < totalIds) {
-                mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_OPERACIONES;
-                mensaje = String.format(mensaje, numExito, totalIds - numExito);
-            } else {
-                if (totalIds > 1) {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACIONES;
-                } else {
-                    mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACION;
-                }
-            }
+            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado);
 
             return new EstadoDTO(mensaje, numExito);
 
@@ -269,6 +248,44 @@ public class EntidadService {
             }
             throw new GenericException(e);
         }
+    }
+
+    /**
+     * Método que realiza la búsqueda de las entidades financieras según filtros
+     * de búsqueda y las exporta a un archivo pdf/xlsx
+     *
+     * @param request
+     * @param usuario
+     * @param tipoArchivo
+     * @return
+     */
+    public ReporteDTO descargarEntidades(FiltroMasivasRequest request, String usuario, String tipoArchivo) {
+
+        try {
+            request.setNumeroPagina(0);
+            request.setRegistrosPorPagina(0);
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_DESCARGAR, request.toStringEntidadAplicacion());
+            CustomPaginate<DetalleConsultaEntidadDTO> resultado = buscarEntidad(request);
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            //Filtros
+            parameters.put("IN_CODIGO", request.getCodigo());
+            parameters.put("IN_NOMBRE", request.getNombre());
+            parameters.put("IN_ESTADO", request.getEstado());
+
+            return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteEntidadesFinancieras.jrxml", "entidadesFinancieras", logo);
+
+        } catch (JasperReportException e) {
+            throw e;
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
     }
 
     private void updateEntidad(TpEntidad entidad, MasivasRequestDTO request, String usuario, String operacion) {

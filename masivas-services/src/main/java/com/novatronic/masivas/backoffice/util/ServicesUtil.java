@@ -1,5 +1,6 @@
 package com.novatronic.masivas.backoffice.util;
 
+import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -16,6 +17,9 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -23,9 +27,9 @@ import org.springframework.context.MessageSource;
  */
 public final class ServicesUtil {
 
-    private static final String FORMAT_HHmmSSsss = "HHmmssSSS";
-    private static final String FORMAT_ddMMyyyy = "dd/MM/yyyy";
-    private static final String FORMAT_fechaConHora = "dd/MM/yyyy hh:mm:ss";
+    private static final String FORMAT_HORA_MILISEGUNDOS = "HHmmssSSS";
+    private static final String FORMAT_FECHA = "dd/MM/yyyy";
+    private static final String FORMAT_FECHA_HORA = "dd/MM/yyyy HH:mm:ss";
     private static final String PATTERN = "(.+\\{)(.+)(\\})";
     public static final String CODIGO_LIMITE = "02";
     public static final String CODIGO_DUPLICADO = "10";
@@ -72,7 +76,7 @@ public final class ServicesUtil {
      */
     public static String obtenerFechaActual() {
         LocalDate hoy = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_HHmmSSsss);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_HORA_MILISEGUNDOS);
         return hoy.format(formatter);
     }
 
@@ -92,7 +96,7 @@ public final class ServicesUtil {
      * @return String representacion de la fecha segun formato
      */
     public static String hourToStringActual() {
-        return dateToString(new Date(), new SimpleDateFormat(FORMAT_HHmmSSsss));
+        return dateToString(new Date(), new SimpleDateFormat(FORMAT_HORA_MILISEGUNDOS));
     }
 
     /**
@@ -103,7 +107,7 @@ public final class ServicesUtil {
      * @return String representacion de la fecha segun formato
      */
     public static String dateToStringActual() {
-        return dateToString(new Date(), new SimpleDateFormat(FORMAT_ddMMyyyy));
+        return dateToString(new Date(), new SimpleDateFormat(FORMAT_FECHA));
     }
 
     /**
@@ -149,7 +153,7 @@ public final class ServicesUtil {
             fecha = xMLGregorianDate.toGregorianCalendar().getTime();
         }
 
-        return dateToString(fecha, new SimpleDateFormat(FORMAT_fechaConHora));
+        return dateToString(fecha, new SimpleDateFormat(FORMAT_FECHA_HORA));
     }
 
     /**
@@ -161,7 +165,7 @@ public final class ServicesUtil {
      */
     public static String obtenerFechaActualConHora() {
         LocalDateTime hoy = LocalDateTime.now(); // 🛠️ usa LocalDateTime, no LocalDate hoy = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_fechaConHora);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_FECHA_HORA);
         return hoy.format(formatter);
     }
 
@@ -219,7 +223,7 @@ public final class ServicesUtil {
 
         try {
             if (strFecha != null && !strFecha.isEmpty()) {
-                resultado = new SimpleDateFormat(FORMAT_ddMMyyyy).parse(strFecha);
+                resultado = new SimpleDateFormat(FORMAT_FECHA).parse(strFecha);
             }
         } catch (ParseException ex) {
             //Loguea Error
@@ -239,6 +243,93 @@ public final class ServicesUtil {
         // Si llega aquí, es un tipo inesperado
         LOGGER.error("Advertencia: Tipo de dato inesperado para la suma: " + valor.getClass().getName());
         return BigDecimal.ZERO;
+    }
+
+    public static Pageable configurarPageSort(FiltroMasivasRequest request) {
+
+        Pageable pageable = null;
+
+        // 1. Determinar si se requiere ordenamiento
+        boolean necesitaOrdenar = !request.getCampoOrdenar().isEmpty();
+        Sort sort = Sort.unsorted(); // Inicializar con un Sort sin ordenar
+
+        if (necesitaOrdenar) {
+            if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
+                sort = Sort.by(request.getCampoOrdenar()).ascending();
+            } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
+                sort = Sort.by(request.getCampoOrdenar()).descending();
+            }
+        }
+
+        // 2. Determinar si se requiere paginación
+        boolean necesitaPaginacion = request.getRegistrosPorPagina() > 0; // O > valor_minimo_valido_para_pagina
+
+        if (necesitaPaginacion) {
+            pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), sort);
+        } else {
+            pageable = Pageable.unpaged(sort);
+        }
+        return pageable;
+    }
+
+    public static String formatearLocalDateToString(LocalDate fecha) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_FECHA);
+        return fecha.format(formatter);
+    }
+
+    public static String formatearLocalDateTimeToString(LocalDateTime fecha) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_FECHA_HORA);
+        return fecha.format(formatter);
+    }
+
+    public static String obtenerMensajeRespuestaCambioEstado(int numExito, int totalIds, String estado) {
+
+        boolean esMultiplesIds = totalIds > 1;
+        boolean esEstadoActivo = ConstantesServices.ESTADO_ACTIVO.equals(estado);
+        String mensaje;
+
+        if (numExito == totalIds) {
+            mensaje = obtenerMensajeRespuesta(true, esMultiplesIds, esEstadoActivo);
+        } else if (numExito > 0 && numExito < totalIds) {
+            mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_OPERACIONES;
+            mensaje = String.format(mensaje, numExito, totalIds - numExito);
+        } else {
+            mensaje = obtenerMensajeRespuesta(false, esMultiplesIds, esEstadoActivo);
+        }
+        return mensaje;
+    }
+
+    public static String obtenerMensajeRespuesta(boolean esExitoTotal, boolean esMultiplesIds, boolean esEstadoActivo) {
+        String mensaje;
+
+        if (esExitoTotal) {
+            mensaje = obtenerMensajeExito(esMultiplesIds, esEstadoActivo);
+        } else {
+            mensaje = obtenerMensajeError(esMultiplesIds, esEstadoActivo);
+        }
+        return mensaje;
+    }
+
+    public static String obtenerMensajeExito(boolean esMultiplesIds, boolean esEstadoActivo) {
+        String mensaje;
+        // Mensajes para éxito total
+        if (esMultiplesIds) {
+            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACIONES;
+        } else {
+            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACION;
+        }
+        return mensaje;
+    }
+
+    public static String obtenerMensajeError(boolean esMultiplesIds, boolean esEstadoActivo) {
+        String mensaje;
+        // Mensajes para error total
+        if (esMultiplesIds) {
+            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACIONES;
+        } else {
+            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACION;
+        }
+        return mensaje;
     }
 
 }

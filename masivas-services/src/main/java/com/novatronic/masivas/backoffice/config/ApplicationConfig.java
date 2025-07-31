@@ -47,10 +47,10 @@ public class ApplicationConfig {
     @Value("${instanceName:tam_gkn_prod}")
     private String instanceName;
 
-    @Value("${lbtr.captcha.connecttimeout}")
+    @Value("${masivas.captcha.connecttimeout}")
     private int connectionTimeout;
 
-    @Value("${lbtr.captcha.readtimeout}")
+    @Value("${masivas.captcha.readtimeout}")
     private int readTimeout;
 
     @Bean

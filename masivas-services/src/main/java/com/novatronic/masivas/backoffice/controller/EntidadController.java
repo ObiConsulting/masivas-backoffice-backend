@@ -7,6 +7,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroEntidadDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.EntidadService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -42,7 +43,7 @@ public class EntidadController {
 
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarEntidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaEntidadDTO> objPegeable = entidadService.buscar(request, userContext.getUsername());
+        CustomPaginate<DetalleConsultaEntidadDTO> objPegeable = entidadService.buscarEntidad(request);
         entidadService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
@@ -58,7 +59,7 @@ public class EntidadController {
 
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerEntidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        DetalleRegistroEntidadDTO entidadDTO = entidadService.obtenerEntidad(request, userContext.getUsername());
+        DetalleRegistroEntidadDTO entidadDTO = entidadService.obtenerEntidad(request);
         entidadService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD,
                 ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, entidadDTO));
@@ -78,6 +79,22 @@ public class EntidadController {
         entidadService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD,
                 ConstantesServices.ACCION_DELETE, estadoDTO.getMensaje());
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
+    }
+
+    @PostMapping("/descargarPDF")
+    public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        ReporteDTO reporteDTO = entidadService.descargarEntidades(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
+        entidadService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD,
+                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
+    }
+
+    @PostMapping("/descargarXLSX")
+    public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        ReporteDTO reporteDTO = entidadService.descargarEntidades(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
+        entidadService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD,
+                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
 }

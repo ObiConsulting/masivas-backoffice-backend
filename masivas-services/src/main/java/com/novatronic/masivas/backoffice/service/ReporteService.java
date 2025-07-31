@@ -2,16 +2,21 @@ package com.novatronic.masivas.backoffice.service;
 
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaReporteCierreDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaReporteTotalizadoDTO;
+import com.novatronic.masivas.backoffice.dto.DetalleReporteConsolidadoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.repository.ArchivoDirectorioRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoMasivasRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoTitularidadRepository;
+import com.novatronic.masivas.backoffice.repository.DetalleArchivoMasivasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.GenerarReporte;
 import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
@@ -20,7 +25,9 @@ import jakarta.transaction.RollbackException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  *
@@ -35,13 +42,20 @@ public class ReporteService {
     private final ArchivoMasivasRepository archivoMasivasRepository;
     @Autowired
     private final ArchivoTitularidadRepository archivoTitularidadRepository;
+    @Autowired
+    private final DetalleArchivoMasivasRepository detalleArchivoMasivasRepository;
+
+    @Value("${reporte.logo}")
+    private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ReporteService.class);
 
-    public ReporteService(ArchivoDirectorioRepository archivoDirectorioRepository, ArchivoMasivasRepository archivoMasivasRepository, ArchivoTitularidadRepository archivoTitularidadRepository) {
+    public ReporteService(ArchivoDirectorioRepository archivoDirectorioRepository, ArchivoMasivasRepository archivoMasivasRepository, ArchivoTitularidadRepository archivoTitularidadRepository,
+            DetalleArchivoMasivasRepository detalleArchivoMasivasRepository) {
         this.archivoDirectorioRepository = archivoDirectorioRepository;
         this.archivoMasivasRepository = archivoMasivasRepository;
         this.archivoTitularidadRepository = archivoTitularidadRepository;
+        this.detalleArchivoMasivasRepository = detalleArchivoMasivasRepository;
     }
 
     /**
@@ -125,6 +139,74 @@ public class ReporteService {
 
     }
 
+    /**
+     * Método que realiza el reporte consolidado por entidad destino según la
+     * fecha indicada
+     *
+     * @param request
+     * @return
+     */
+    public List<DetalleReporteConsolidadoDTO> reporteConsolidadoPorEntidadDestino(FiltroMasivasRequest request) {
+
+        try {
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.REPORTE_CONSOLIDADO, request.toStringReporteCierreObtener());
+
+            LocalDateTime fechaInicio = request.getFecha().atStartOfDay();
+            LocalDateTime fechaFin = request.getFecha().atTime(LocalTime.MAX);
+
+            List<DetalleReporteConsolidadoDTO> listaReporte = detalleArchivoMasivasRepository.totalesPorEntidadDestino(fechaInicio, fechaFin);
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, listaReporte.size());
+
+            return listaReporte;
+
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
+    }
+
+    /**
+     * Método que realiza el reporte consolidado por entidad destino según
+     * filtros de búsqueda y lo exporta a un archivo pdf/xlsx
+     *
+     * @param request
+     * @param usuario
+     * @param tipoArchivo
+     * @return
+     */
+    public ReporteDTO descargarConsolidado(FiltroMasivasRequest request, String usuario, String tipoArchivo) {
+
+        try {
+            request.setNumeroPagina(0);
+            request.setRegistrosPorPagina(0);
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.REPORTE_CONSOLIDADO, ConstantesServices.METODO_DESCARGAR, request.toStringReporteCierreObtener());
+            List<DetalleReporteConsolidadoDTO> resultado = reporteConsolidadoPorEntidadDestino(request);
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            //Filtros
+            parameters.put("IN_FECHA", ServicesUtil.formatearLocalDateToString(request.getFecha()));
+
+            return GenerarReporte.generarReporte(resultado, parameters, usuario, tipoArchivo, "reportes/reporteConsolidado.jrxml", "reporteConsolidado", logo);
+
+        } catch (JasperReportException e) {
+            throw e;
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
+    }
+
     private void calcularTotales(DetalleConsultaReporteCierreDTO reporte, List<Object[]> listaArchivo) {
 
         listaArchivo.forEach((Object[] resultado) -> {
@@ -142,6 +224,8 @@ public class ReporteService {
                     reporte.setTotalObtenidoCCE(reporte.getTotalObtenidoCCE() + cantidad);
                 case "Enviado Cliente" ->
                     reporte.setTotalEnviadoCliente(reporte.getTotalEnviadoCliente() + cantidad);
+                default ->
+                    logError("Estado no mapeado", null);
             }
 
         });
@@ -165,7 +249,8 @@ public class ReporteService {
                 }
                 case "Pendiente por Procesar" ->
                     reporte.setTotalPendiente(reporte.getTotalPendiente() + cantidad);
-
+                default ->
+                    logError("Estado no mapeado", null);
             }
 
         });
@@ -178,6 +263,10 @@ public class ReporteService {
     public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
         LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
                 null, accion, null, null, mensajeExito);
+    }
+
+    public void logError(String mensajeError, Exception e) {
+        LOGGER.error(mensajeError, e);
     }
 
 }

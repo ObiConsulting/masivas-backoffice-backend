@@ -6,11 +6,10 @@ package com.novatronic.masivas.backoffice.util;
  */
 public class ConstantesServices {
 
-    public static final String MAP_PARAMETROS = "parametrosPorGrupo";
-    public static final String MAP_CONCEPTOS = "conceptosCache";
-    public static final String MAP_FACILIDADES = "facilidadesCache";
-    public static final String MAP_CODIGOSRESPUESTA = "codigoRespuestaCache";
     public static final String MAP_LOGUEADOS = "loginCache";
+    public static final String MAP_PARAMETROS = "parametrosPorGrupo";
+    public static final String MAP_GRUPO_PARAMETROS = "grupoParametroCache";
+    public static final String MAP_ENTIDADES = "entidadesCache";
 
     public static final String PERMISO_PRIMER_LOGIN = "PRIMER_LOGIN";
     public static final String PERMISO_USUARIO_VALIDO = "USUARIO_VALIDO";
@@ -45,11 +44,13 @@ public class ConstantesServices {
     //Para los Estados de los archivos
     public static final String CODIGO_GRUPO_ESTADO = "050";
     public static final String CODIGOS_ESTADOS_ARCHIVO = "0700,0701,0702,0703";
-    public static final Long ID_GRUPO_CATEGORIA_DIRECTORIO = 1L;
-    public static final Long ID_GRUPO_TIPO_ARCHIVO = 3L;
-    public static final Long ID_GRUPO_ESTADO_ARCHIVOS = 8L;
-    public static final Long ID_GRUPO_EXTENSION_BASE = 4L;
-    public static final Long ID_GRUPO_EXTENSION_CONTROL = 6L;
+    public static final String ID_GRUPO_CATEGORIA_DIRECTORIO = "1";
+    public static final String ID_GRUPO_TIPO_ARCHIVO = "3";
+    public static final String ID_GRUPO_EXTENSION_BASE = "4";
+    public static final String ID_GRUPO_EXTENSION_CONTROL = "6";
+    public static final String ID_GRUPO_ESTADO_ARCHIVOS = "8";
+    public static final String ID_MOTIVO_RECHAZO = "15";
+    public static final String ID_TIPO_TRANSACCION = "15";
 
     public static final String PREFIJO_NUM_REF_HOST_LBTR = "LBTR";
     public static final String CODIGO_OK_WS = "0000";
@@ -94,6 +95,10 @@ public class ConstantesServices {
     public static final String DETALLE_MASIVAS = "Detalle de Archivos Masivas";
     public static final String REPORTE_CIERRE = "Reporte Cierre";
     public static final String REPORTE_TOTALIZADO = "Reporte Totalizado";
+    public static final String REPORTE_CONSOLIDADO = "Reporte Consolidado por Entidad Destino";
+
+    //Para reporte
+    public static final String PARAM_IN_ESTADO = "IN_ESTADO";
 
     //Para auditoria
     public static final String ACCION_CREATE = "create";
@@ -115,6 +120,7 @@ public class ConstantesServices {
     public static final String TABLA_RUTA = "TP_RUTA";
     public static final String TABLA_PROCESO = "TP_PROCESO";
     public static final String TABLA_DETALLE_MASIVAS = "TP_DETALLE_MASIVAS";
+    public static final String TABLA_APLICACION = "TP_APLICACION";
     public static final String INTEGRACION_SCA = "SCA";
 
     public static final String AUDIT_CAMPO_GRUPO_PARAMETRO = "idGrupoParametro=";
@@ -127,7 +133,7 @@ public class ConstantesServices {
     public static final String CODIGO_ERROR_GENERICO = "0099";
     public static final String ERROR_BADREQUEST = "0001";
     public static final String RESPUESTA_ERROR_9999 = "9999";
-//    public static final String CODIGO_ERROR_GENERICO = "6999";
+    public static final String CODIGO_ERROR_JASPER = "0097";
 
     public static final String CODIGO_ERROR_COD_ENTIDAD_UNICA = "0010";
     public static final String CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO = "0011";
@@ -171,6 +177,7 @@ public class ConstantesServices {
     public static final String MENSAJE_ERROR_COD_PARAMETRO_UNICO = "El codigo parámetro ya existe";
     public static final String MENSAJE_ERROR_OPERACION_NO_ENCONTRADA = "Operación no encontrada";
     public static final String MENSAJE_ERROR_COD_APLICACION_UNICA = "El codigo aplicación ya existe";
+    public static final String MENSAJE_ERROR_JASPER = "Se ha producido un error al generar el archivo jasper. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_EXCEPTION = "Se ha producido un error. Por favor, inténtalo de nuevo en unos minutos.";
 
 }

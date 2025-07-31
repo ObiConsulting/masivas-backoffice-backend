@@ -5,9 +5,11 @@ import com.novatronic.masivas.backoffice.dto.DetalleConsultaRutaDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroRutaDTO;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.entity.TpRuta;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -15,15 +17,17 @@ import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.repository.RutaRepository;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.GenerarReporte;
+import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -34,13 +38,18 @@ public class RutaService {
 
     @Autowired
     private final RutaRepository rutaRepository;
+    private final GenericService genericService;
     private final MessageSource messageSource;
+
+    @Value("${reporte.logo}")
+    private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(RutaService.class);
 
-    public RutaService(RutaRepository rutaRepository, MessageSource messageSource) {
+    public RutaService(RutaRepository rutaRepository, MessageSource messageSource, GenericService genericService) {
         this.rutaRepository = rutaRepository;
         this.messageSource = messageSource;
+        this.genericService = genericService;
     }
 
     /**
@@ -58,15 +67,7 @@ public class RutaService {
 
             Pageable pageable = null;
 
-            if (request.getCampoOrdenar().isEmpty()) {
-                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
-            } else {
-                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).ascending());
-                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
-                }
-            }
+            pageable = ServicesUtil.configurarPageSort(request);
 
             Page<DetalleConsultaRutaDTO> objPageable = rutaRepository.buscarPorFiltros(request.getCodTipoArchivo(), request.getCodCategoriaDirectorio(), pageable);
 
@@ -144,6 +145,43 @@ public class RutaService {
             }
             throw new GenericException(e);
         }
+    }
+
+    /**
+     * Método que realiza la búsqueda de las rutas según filtros de búsqueda y
+     * las exporta a un archivo pdf/xlsx
+     *
+     * @param request
+     * @param usuario
+     * @param tipoArchivo
+     * @return
+     */
+    public ReporteDTO descargarRutas(FiltroMasivasRequest request, String usuario, String tipoArchivo) {
+
+        try {
+            request.setNumeroPagina(0);
+            request.setRegistrosPorPagina(0);
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_DESCARGAR, request.toStringRuta());
+            CustomPaginate<DetalleConsultaRutaDTO> resultado = buscarRuta(request, usuario);
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            //Filtros
+            parameters.put("IN_CATEGORIA", genericService.getNombreCategoriaDirectorio(request.getCodCategoriaDirectorio()));
+            parameters.put("IN_TIPO_ARCHIVO", genericService.getNombreTipoArchivo(request.getCodTipoArchivo()));
+
+            return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteRutaArchivos.jrxml", "rutaArchivo", logo);
+
+        } catch (JasperReportException e) {
+            throw e;
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
     }
 
     private void updateRuta(TpRuta ruta, MasivasRequestDTO request, String usuario, String operacion) {

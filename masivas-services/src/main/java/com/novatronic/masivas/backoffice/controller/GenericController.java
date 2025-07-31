@@ -1,6 +1,6 @@
 package com.novatronic.masivas.backoffice.controller;
 
-import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.GenericService;
@@ -24,7 +24,7 @@ public class GenericController {
 
     @GetMapping("/estados")
     public ResponseEntity<MasivasResponse<Object>> listarEstados(@AuthenticationPrincipal UserContext userContext) {
-        List<ComboEstadoDTO> lista = genericService.listarEstados();
+        List<ParametroDTO> lista = genericService.listarEstados();
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, lista));
     }
 

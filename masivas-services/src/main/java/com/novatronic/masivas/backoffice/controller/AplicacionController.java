@@ -7,6 +7,7 @@ import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.AplicacionService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -35,15 +36,15 @@ public class AplicacionController {
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse<Object>> registrarAplicacion(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idAplicacion = aplicacionService.crearAplicacion(request, userContext.getUsername());
-        aplicacionService.logAuditoria(request, Evento.EV_REGISTRO_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.APLICACION,
+        aplicacionService.logAuditoria(request, Evento.EV_REGISTRO_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
                 ConstantesServices.ACCION_CREATE, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION, idAplicacion));
     }
 
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarAplicacion(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        CustomPaginate<DetalleConsultaAplicacionDTO> objPegeable = aplicacionService.buscarAplicacion(request, userContext.getUsername());
-        aplicacionService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.APLICACION,
+        CustomPaginate<DetalleConsultaAplicacionDTO> objPegeable = aplicacionService.buscarAplicacion(request);
+        aplicacionService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPegeable));
     }
@@ -51,15 +52,15 @@ public class AplicacionController {
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarAplicacion(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idAplicacion = aplicacionService.editarAplicacion(request, userContext.getUsername());
-        aplicacionService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.APLICACION,
+        aplicacionService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
                 ConstantesServices.ACCION_UPDATE, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idAplicacion));
     }
 
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerAplicacion(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
-        DetalleRegistroAplicacionDTO aplicacionDTO = aplicacionService.obtenerAplicacion(request, userContext.getUsername());
-        aplicacionService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.APLICACION,
+        DetalleRegistroAplicacionDTO aplicacionDTO = aplicacionService.obtenerAplicacion(request);
+        aplicacionService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
                 ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, aplicacionDTO));
     }
@@ -67,7 +68,7 @@ public class AplicacionController {
     @PostMapping("/activar")
     public ResponseEntity<MasivasResponse<Object>> activar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = aplicacionService.cambiarEstadoAplicacion(request, userContext.getUsername(), ConstantesServices.ESTADO_ACTIVO);
-        aplicacionService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.APLICACION,
+        aplicacionService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
                 ConstantesServices.ACCION_DELETE, estadoDTO.getMensaje());
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
@@ -75,9 +76,25 @@ public class AplicacionController {
     @PostMapping("/desactivar")
     public ResponseEntity<MasivasResponse<Object>> desactivar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = aplicacionService.cambiarEstadoAplicacion(request, userContext.getUsername(), ConstantesServices.ESTADO_INACTIVO);
-        aplicacionService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.APLICACION,
+        aplicacionService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
                 ConstantesServices.ACCION_DELETE, estadoDTO.getMensaje());
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
+    }
+
+    @PostMapping("/descargarPDF")
+    public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        ReporteDTO reporteDTO = aplicacionService.descargarAplicacion(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
+        aplicacionService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
+                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
+    }
+
+    @PostMapping("/descargarXLSX")
+    public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        ReporteDTO reporteDTO = aplicacionService.descargarAplicacion(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
+        aplicacionService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_APLICACION,
+                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
 }

@@ -1,8 +1,10 @@
 package com.novatronic.masivas.backoffice.repository;
 
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroArchivoMasivasDTO;
+import com.novatronic.masivas.backoffice.dto.DetalleReporteConsolidadoDTO;
 import com.novatronic.masivas.backoffice.entity.TpDetalleMasivas;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,4 +51,20 @@ public interface DetalleArchivoMasivasRepository extends JpaRepository<TpDetalle
             Pageable pageable
     );
 
+    @Query("SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleReporteConsolidadoDTO("
+            + "d.codEntidadDestino, "
+            + "COUNT(d.idArchivo), "
+            + "CAST(SUM(CASE WHEN d.codigoRespuesta = '00' THEN d.importe ELSE 0 END) AS java.math.BigDecimal), "
+            + "CAST(SUM(CASE WHEN d.codigoRespuesta = '05' THEN d.importe ELSE 0 END) AS java.math.BigDecimal) "
+            + ") "
+            + "FROM TpDetalleMasivas d "
+            //            + "FROM TpDetalleMasivas d JOIN d.entidad e "
+            + "WHERE (:fechaInicio IS NULL OR d.fechaTransaccion >= :fechaInicio) "
+            + "AND (:fechaFin IS NULL OR d.fechaTransaccion <= :fechaFin) "
+            + "GROUP BY d.codEntidadDestino")
+//            + "GROUP BY CONCAT(d.cuentaDestino, ' - ', e.nombre)")
+    List<DetalleReporteConsolidadoDTO> totalesPorEntidadDestino(
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin
+    );
 }

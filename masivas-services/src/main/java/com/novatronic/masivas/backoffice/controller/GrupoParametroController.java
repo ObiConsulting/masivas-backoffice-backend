@@ -1,6 +1,6 @@
 package com.novatronic.masivas.backoffice.controller;
 
-import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
@@ -8,7 +8,9 @@ import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
+import com.novatronic.masivas.backoffice.service.GenericService;
 import com.novatronic.masivas.backoffice.service.GrupoParametroService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.util.Estado;
@@ -32,9 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class GrupoParametroController {
 
     private final GrupoParametroService grupoParametroService;
+    private final GenericService genericService;
 
-    public GrupoParametroController(GrupoParametroService grupoParametroService) {
+    public GrupoParametroController(GrupoParametroService grupoParametroService, GenericService genericService) {
         this.grupoParametroService = grupoParametroService;
+        this.genericService = genericService;
     }
 
     @PostMapping("/crear")
@@ -85,9 +89,25 @@ public class GrupoParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
+    @PostMapping("/descargarPDF")
+    public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        ReporteDTO reporteDTO = grupoParametroService.descargarGrupoParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
+        grupoParametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_GRUPO_PARAMETRO,
+                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
+    }
+
+    @PostMapping("/descargarXLSX")
+    public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        ReporteDTO reporteDTO = grupoParametroService.descargarGrupoParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
+        grupoParametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_GRUPO_PARAMETRO,
+                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
+    }
+
     @GetMapping("/listar")
     public ResponseEntity<MasivasResponse<Object>> listarGrupoParametro(@AuthenticationPrincipal UserContext userContext) {
-        List<ComboEstadoDTO> lista = grupoParametroService.listarGrupoParametro();
+        List<ParametroDTO> lista = genericService.getAllGrupoParametro();
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, lista));
     }
 

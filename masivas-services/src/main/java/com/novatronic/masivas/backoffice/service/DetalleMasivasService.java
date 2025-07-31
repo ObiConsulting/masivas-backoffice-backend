@@ -1,28 +1,29 @@
 package com.novatronic.masivas.backoffice.service;
 
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
-import com.novatronic.masivas.backoffice.dto.DetalleConsultaAplicacionDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroArchivoMasivasDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
+import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
+import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.repository.DetalleArchivoMasivasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.GenerarReporte;
+import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.modelmapper.ModelMapper;
+import java.util.HashMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -33,40 +34,29 @@ public class DetalleMasivasService {
 
     @Autowired
     private final DetalleArchivoMasivasRepository detalleArchivoMasivasRepository;
-    private final MessageSource messageSource;
+    @Value("${reporte.logo}")
+    private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(DetalleMasivasService.class);
 
-    public DetalleMasivasService(DetalleArchivoMasivasRepository detalleArchivoMasivasRepository, MessageSource messageSource) {
+    public DetalleMasivasService(DetalleArchivoMasivasRepository detalleArchivoMasivasRepository) {
         this.detalleArchivoMasivasRepository = detalleArchivoMasivasRepository;
-        this.messageSource = messageSource;
     }
 
     /**
-     * Método que realiza la búsqueda del detalles de los archivos de tipo
+     * Método que realiza la búsqueda del detalle de los archivos de tipo
      * masivas según filtros de búsqueda
      *
      * @param request
-     * @param usuario
      * @return
      */
-    public CustomPaginate<DetalleConsultaAplicacionDTO> buscarDetalleMasivas(FiltroMasivasRequest request, String usuario) {
+    public CustomPaginate<DetalleRegistroArchivoMasivasDTO> buscarDetalleMasivas(FiltroMasivasRequest request) {
 
         try {
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.DETALLE_MASIVAS, ConstantesServices.METODO_CONSULTAR, request.toStringDetalleMasivas());
 
-            Pageable pageable = null;
-
-            if (request.getCampoOrdenar().isEmpty()) {
-                pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina());
-            } else {
-                if (ConstantesServices.ORDEN_ASC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).ascending());
-                } else if (ConstantesServices.ORDEN_DESC.equals(request.getSentidoOrdenar())) {
-                    pageable = PageRequest.of(request.getNumeroPagina(), request.getRegistrosPorPagina(), Sort.by(request.getCampoOrdenar()).descending());
-                }
-            }
+            Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             LocalDateTime fechaInicioObtencion = request.getFechaObtencion().atStartOfDay();
             LocalDateTime fechaFinObtencion = request.getFechaObtencion().atTime(LocalTime.MAX);
@@ -81,12 +71,53 @@ public class DetalleMasivasService {
 
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
 
-            CustomPaginate customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
+            CustomPaginate<DetalleRegistroArchivoMasivasDTO> customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
 
             return customPaginate;
 
+        } catch (Exception e) {
+            Throwable excepcion = e.getCause();
+            if (excepcion instanceof RollbackException) {
+                throw new DataBaseException(e);
+            }
+            throw new GenericException(e);
+        }
+
+    }
+
+    /**
+     * Método que realiza la búsqueda del detalle de los archivos de tipo
+     * masivas según filtros de búsqueda y los exporta a un archivo pdf/xlsx
+     *
+     * @param request
+     * @param usuario
+     * @param tipoArchivo
+     * @return
+     */
+    public ReporteDTO descargarDetalleArchivoMasivas(FiltroMasivasRequest request, String usuario, String tipoArchivo) {
+
+        try {
+            request.setNumeroPagina(0);
+            request.setRegistrosPorPagina(0);
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.DETALLE_MASIVAS, ConstantesServices.METODO_DESCARGAR, request.toStringDetalleMasivas());
+            CustomPaginate<DetalleRegistroArchivoMasivasDTO> resultado = buscarDetalleMasivas(request);
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            //Filtros
+            parameters.put("IN_NOMBRE_ARCHIVO", request.getNombreArchivo());
+            parameters.put("IN_FECHA_OBTENCION", ServicesUtil.formatearLocalDateToString(request.getFechaObtencion()));
+            parameters.put("IN_FECHA_PROCESADA", ServicesUtil.formatearLocalDateToString(request.getFechaProcesada()));
+            parameters.put("IN_CUENTA_ORIGEN", request.getCuentaOrigen());
+            parameters.put("IN_CUENTA_DESTINO", request.getCuentaDestino());
+            parameters.put("IN_MOTIVO_RECHAZO", request.getMotivoRechazo());//Todo
+            parameters.put("IN_TIPO_TRANSACCION", request.getTipoTransaccion());//Todo
+            return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteDetalleArchivoMasivas.jrxml", "detalleMasivas", logo);
+
+        } catch (JasperReportException e) {
+            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {

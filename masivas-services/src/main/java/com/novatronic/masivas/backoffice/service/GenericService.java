@@ -1,9 +1,10 @@
 package com.novatronic.masivas.backoffice.service;
 
-import com.novatronic.masivas.backoffice.dto.ComboEstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
-import com.novatronic.novalog.audit.logger.NovaLogger;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,13 +14,108 @@ import org.springframework.stereotype.Service;
 @Service
 public class GenericService {
 
-    private static final NovaLogger LOGGER = NovaLogger.getLogger(GenericService.class);
+    private final ParametroCacheService parametroCacheService;
 
-    public List<ComboEstadoDTO> listarEstados() {
-        return List.of(
-                new ComboEstadoDTO(ConstantesServices.ESTADO_INACTIVO, ConstantesServices.ESTADO_INACTIVO_DESCRIPCION),
-                new ComboEstadoDTO(ConstantesServices.ESTADO_ACTIVO, ConstantesServices.ESTADO_ACTIVO_DESCRIPCION)
+    public GenericService(ParametroCacheService parametroCacheService) {
+        this.parametroCacheService = parametroCacheService;
+    }
+
+    public List<ParametroDTO> listarEstados() {
+        return List.of(new ParametroDTO(ConstantesServices.ESTADO_INACTIVO, ConstantesServices.ESTADO_INACTIVO_DESCRIPCION),
+                new ParametroDTO(ConstantesServices.ESTADO_ACTIVO, ConstantesServices.ESTADO_ACTIVO_DESCRIPCION)
         );
+    }
+
+    public List<ParametroDTO> getAllEstadoArchivo() {
+        List<ParametroDTO> listaEstadoArchivo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_ESTADO_ARCHIVOS);
+        return listaEstadoArchivo.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllCategoriaDirectorio() {
+        List<ParametroDTO> listaCategoriaDirectorio = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_CATEGORIA_DIRECTORIO);
+        return listaCategoriaDirectorio.stream()
+                .filter(estado -> "1000".equals(estado.getCodigo()) || "2000".equals(estado.getCodigo()))
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllTipoArchivo() {
+        List<ParametroDTO> listaTipoArchivo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_TIPO_ARCHIVO);
+        return listaTipoArchivo.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllExtensionBase() {
+        List<ParametroDTO> listaExtensionBase = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_EXTENSION_BASE);
+        return listaExtensionBase.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllExtensionControl() {
+        List<ParametroDTO> listaExtensionControl = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_EXTENSION_CONTROL);
+        return listaExtensionControl.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllMotivoRechazo() {
+        List<ParametroDTO> listaMotivoRechazo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_MOTIVO_RECHAZO);
+        return listaMotivoRechazo.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllTipoTransaccion() {
+        List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_TIPO_TRANSACCION);
+        return listaTipoTransaccion.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllGrupoParametro() {
+        List<ParametroDTO> listaGrupoParametro = parametroCacheService.getAllParametersGroup();
+        return listaGrupoParametro.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public String getNombreEstadoArchivo(String codEstado) {
+        List<ParametroDTO> lista = getAllEstadoArchivo();
+        return getGenericName(lista, codEstado);
+    }
+
+    public String getNombreCategoriaDirectorio(String codEstado) {
+        List<ParametroDTO> lista = getAllCategoriaDirectorio();
+        return getGenericName(lista, codEstado);
+    }
+
+    public String getNombreTipoArchivo(String codEstado) {
+        List<ParametroDTO> lista = getAllTipoArchivo();
+        return getGenericName(lista, codEstado);
+    }
+
+    public String getNombreGrupoParametro(Long codGrupo) {
+        ParametroDTO grupo = parametroCacheService.getParameterGroup(String.valueOf(codGrupo));
+        return grupo != null ? grupo.getDescripcion() : "";
+    }
+
+    public String getNombreEntidad(String codigoEntidad) {
+        ParametroDTO entidad = parametroCacheService.getEntity(String.valueOf(codigoEntidad));
+        return entidad != null ? entidad.getDescripcion() : "";
+    }
+
+    public String getGenericName(List<ParametroDTO> lista, String genericCode) {
+        String genericName;
+        genericName = lista.stream()
+                .filter(parameter -> parameter.getCodigo().equals(genericCode))
+                .findFirst()
+                .map(parameterDTO -> parameterDTO.getDescripcion())
+                .orElse("");
+        return genericName;
     }
 
 }

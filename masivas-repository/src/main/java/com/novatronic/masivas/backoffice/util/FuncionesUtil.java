@@ -2,6 +2,8 @@ package com.novatronic.masivas.backoffice.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -12,6 +14,7 @@ public class FuncionesUtil {
 
     private static final String SDF = "dd/MM/yyyy";
     private static final String SDFWS = "yyyyMMdd";
+    private static final String FORMAT_fechaConHora = "dd/MM/yyyy HH:mm:ss";
 
     public static String convertToDateWithoutSeparators(String fecha) {
         String resultado = null;
@@ -80,4 +83,21 @@ public class FuncionesUtil {
         return existe;
     }
 
+    public static String formatearLocalDateTimeToString_sinnHora(LocalDateTime fecha) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(SDF);
+            return fecha.format(formatter);
+        } catch (Exception e) {
+            return "-";
+        }
+    }
+
+    public static String formatearLocalDateTimeToString_conHora(LocalDateTime fecha) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_fechaConHora);
+            return fecha.format(formatter);
+        } catch (Exception e) {
+            return "-";
+        }
+    }
 }

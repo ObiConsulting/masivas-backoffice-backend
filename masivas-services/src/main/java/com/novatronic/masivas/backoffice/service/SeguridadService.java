@@ -47,10 +47,10 @@ public class SeguridadService {
     private final JwtUtil jwtUtil;
     private final RestTemplate restTemplate;
 
-    @Value("${lbtr.captcha.active}")
+    @Value("${masivas.captcha.active}")
     private String captchaActive;
 
-    @Value("${lbtr.captcha.url}")
+    @Value("${masivas.captcha.url}")
     private String captchaUrl;
 
     @Value("${masivas.sca.empresa}")
@@ -210,9 +210,7 @@ public class SeguridadService {
 
             HttpEntity<CaptchaRequest> entity = new HttpEntity<>(captchaRequest, headers);
 
-            ResponseEntity<CaptchaResponse> response = restTemplate.exchange(
-                    captchaUrl, HttpMethod.POST, entity, CaptchaResponse.class
-            );
+            ResponseEntity<CaptchaResponse> response = restTemplate.exchange(captchaUrl, HttpMethod.POST, entity, CaptchaResponse.class);
 
             return response.getBody();
 
