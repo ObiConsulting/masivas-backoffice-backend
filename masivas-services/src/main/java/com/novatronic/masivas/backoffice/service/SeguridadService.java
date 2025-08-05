@@ -7,7 +7,7 @@ import com.novatronic.masivas.backoffice.security.model.CaptchaRequest;
 import com.novatronic.masivas.backoffice.security.model.CaptchaResponse;
 import com.novatronic.masivas.backoffice.security.model.LoginResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
-import com.novatronic.masivas.backoffice.security.service.SCAAutentication;
+import com.novatronic.masivas.backoffice.security.service.SCAService;
 import com.novatronic.masivas.backoffice.security.util.JwtUtil;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.logger.NovaLogger;
@@ -44,7 +44,7 @@ public class SeguridadService {
 
     private final HazelcastInstance hazelcastInstance;
     private final HttpServletRequest request;
-    private final SCAAutentication scaAutentication;
+    private final SCAService scaAutentication;
     private final JwtUtil jwtUtil;
     private final RestTemplate restTemplate;
 
@@ -61,7 +61,7 @@ public class SeguridadService {
 
     public SeguridadService(HazelcastInstance hazelcastInstance,
             HttpServletRequest request,
-            SCAAutentication scaAutentication,
+            SCAService scaAutentication,
             JwtUtil jwtUtil,
             RestTemplate restTemplate) {
         this.hazelcastInstance = hazelcastInstance;
@@ -87,7 +87,7 @@ public class SeguridadService {
         logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.LOGIN, "{" + ConstantesServices.AUDIT_CAMPO_USUARIO + username + ConstantesServices.AUDIT_CAMPO_PASSWORD + password + '}');
 
         // validacion de captcha
-        if ("1".equals(captchaActive)) {
+        if (ConstantesServices.ESTADO_ACTIVO.equals(captchaActive)) {
             CaptchaResponse captchaResponse = validarCaptcha(captchaId, captchaText);
             if (captchaResponse == null || !captchaResponse.isValid()) {
                 respuesta.setCodigo("9494");

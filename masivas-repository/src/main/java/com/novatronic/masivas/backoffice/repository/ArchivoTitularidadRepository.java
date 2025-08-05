@@ -4,6 +4,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoTitularidadDT
 import com.novatronic.masivas.backoffice.entity.TpArchivoTitularidad;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArchivoTitularidadRepository extends JpaRepository<TpArchivoTitularidad, Long> {
 
+    public Optional<TpArchivoTitularidad> getByNombre(String nombre);
+
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoTitularidadDTO("
             + "t.idArchivo, t.nombre, t.fechaObtencion, t.fechaProcesada, t.cantidadDeclarado, t.cantidadProcesado, "
             + "    CASE "
@@ -26,7 +29,8 @@ public interface ArchivoTitularidadRepository extends JpaRepository<TpArchivoTit
             + "        WHEN t.estadoEnviadoCCE IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0701') "
             + "        WHEN t.estadoObtenidoCliente IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0700') "
             + "        ELSE 'Pendiente' "
-            + "    END)"
+            + "    END, "
+            + "true, true)"
             + "FROM TpArchivoTitularidad t\n"
             + "     WHERE (:fechaInicioObtencion IS NULL OR t.fechaObtencion >= :fechaInicioObtencion)\n"
             + "      AND (:fechaFinObtencion IS NULL OR t.fechaObtencion <= :fechaFinObtencion)\n"

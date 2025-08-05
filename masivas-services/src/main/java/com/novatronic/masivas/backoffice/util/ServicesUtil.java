@@ -3,9 +3,14 @@ package com.novatronic.masivas.backoffice.util;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -122,6 +127,20 @@ public final class ServicesUtil {
             mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACION;
         }
         return mensaje;
+    }
+
+    public static String hashData(String data) throws NoSuchAlgorithmException {
+        if (data == null || data.isEmpty()) {
+            return data;
+        }
+
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = digest.digest(data.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(hashBytes);
+    }
+
+    public static Integer generarNumeroAleatorio() {
+        return ThreadLocalRandom.current().nextInt(0, 1_000_000_000); // Genera entre 0 (inclusive) y 1,000,000,000 (exclusivo)
     }
 
 }

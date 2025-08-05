@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,17 +25,17 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class SCAAutentication {
+public class SCAService {
 
     private AAServiceFactory aaFactory;
     private AAService aaService;
     private List<String> resources;
     private List<String> profile;
     private Map<String, Object> parameters;
-    private Properties configProperties;
+    private final Properties configProperties;
 
     @Autowired
-    public SCAAutentication(@Qualifier("aasProperties") Properties configProperties) {
+    public SCAService(@Qualifier("aasProperties") Properties configProperties) {
         this.configProperties = configProperties;
     }
 
@@ -85,7 +84,6 @@ public class SCAAutentication {
         String token;
         SCAResponseDto objRespuesta = new SCAResponseDto();
         String codigoRespuesta;
-        String rolname = "";
 
         try {
 
@@ -107,8 +105,8 @@ public class SCAAutentication {
 
             List<String> perfiles = listarProfiles(token);
             if (perfiles != null) {
-                rolname = perfiles.get(0);
-                objRespuesta.setRolname(rolname);
+                String rolName = perfiles.get(0);
+                objRespuesta.setRolname(rolName);
             }
             objRespuesta.setToken(token);
             objRespuesta.setUsername(usuario);

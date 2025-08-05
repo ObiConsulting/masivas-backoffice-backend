@@ -32,11 +32,18 @@ public class ConstantesServices {
     public static final String IGUAL = "=";
     public static final String DOSPUNTOS = ":";
     public static final String CAMBIO_LINEA = "\n";
-    public static final String GION = " - ";
+    public static final String GUION = " - ";
     public static final String NEGATIVO = "-";
     public static final String COMILLA_SIMPLE = "'";
 
     public static final String CRONTAB_JAVA = "0";
+
+    public static final String TIPO_ACCION_RESPALDAR = "Backup";
+    public static final String TIPO_ACCION_RESTAURAR = "Restore";
+
+    public static final String TIPO_DIRECTORIO = "DIR";
+    public static final String TIPO_MASIVAS = "MAS";
+    public static final String TIPO_TITULARIDAD = "TIT";
 
     //Para los Estados
     public static final String ESTADO_INACTIVO = "0";
@@ -52,8 +59,8 @@ public class ConstantesServices {
     public static final String ID_GRUPO_EXTENSION_BASE = "4";
     public static final String ID_GRUPO_EXTENSION_CONTROL = "6";
     public static final String ID_GRUPO_ESTADO_ARCHIVOS = "8";
-    public static final String ID_MOTIVO_RECHAZO = "15";
-    public static final String ID_TIPO_TRANSACCION = "15";
+    public static final String ID_TIPO_TRANSACCION = "9";
+    public static final String ID_MOTIVO_RECHAZO = "10";
 
     public static final String PREFIJO_NUM_REF_HOST_LBTR = "LBTR";
     public static final String CODIGO_OK_WS = "0000";
@@ -99,6 +106,8 @@ public class ConstantesServices {
     public static final String REPORTE_CIERRE = "Reporte Cierre";
     public static final String REPORTE_TOTALIZADO = "Reporte Totalizado";
     public static final String REPORTE_CONSOLIDADO = "Reporte Consolidado por Entidad Destino";
+    public static final String RESPALDAR_ARCHIVO = "Respaldar Archivo";
+    public static final String RESTAURAR_ARCHIVO = "Restaurar Archivo";
 
     //Para reporte
     public static final String PARAM_IN_ESTADO = "IN_ESTADO";
@@ -114,6 +123,7 @@ public class ConstantesServices {
     public static final String ACCION_LOGOUT = "logout";
     public static final String ACCION_CHANGE_PASSWORD = "changePassword";
     public static final String ACCION_PERMISSION = "permission";
+    public static final String ACCION_BACKUP_RESTORE = "respaldar/restaurar";
     public static final String TABLA_ENTIDAD = "TP_ENTIDAD";
     public static final String TABLA_GRUPO_PARAMETRO = "TP_GRUPO_PARAMETRO";
     public static final String TABLA_PARAMETRO = "TS_DETALLE_PARAMETRO";
@@ -137,12 +147,14 @@ public class ConstantesServices {
     public static final String ERROR_BADREQUEST = "0001";
     public static final String RESPUESTA_ERROR_9999 = "9999";
     public static final String CODIGO_ERROR_JASPER = "0097";
+    public static final String CODIGO_ERROR_API_CORE = "0096";
 
     public static final String CODIGO_ERROR_COD_ENTIDAD_UNICA = "0010";
     public static final String CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO = "0011";
     public static final String CODIGO_ERROR_COD_PARAMETRO_UNICO = "0012";
     public static final String CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA = "0013";
     public static final String CODIGO_ERROR_COD_APLICACION_UNICA = "0014";
+    public static final String CODIGO_ERROR_API_CORE_ACCION = "0015";
 
     //Mensajes del Sistema
     public static final String MENSAJE_EXITO_CREAR_OPERACION = "Operación creada correctamente";
@@ -182,5 +194,7 @@ public class ConstantesServices {
     public static final String MENSAJE_ERROR_COD_APLICACION_UNICA = "El codigo aplicación ya existe";
     public static final String MENSAJE_ERROR_JASPER = "Se ha producido un error al generar el archivo jasper. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_EXCEPTION = "Se ha producido un error. Por favor, inténtalo de nuevo en unos minutos.";
+    public static final String MENSAJE_ERROR_API_CORE = "Se ha producido un error en la comunicación con la api core. Por favor, inténtalo de nuevo en unos minutos.";
+    public static final String MENSAJE_ERROR_API_CORE_ACCION = "Se ha producido un error ejecutar la acción respaldar/restaurar. Por favor, inténtalo de nuevo en unos minutos.";
 
 }

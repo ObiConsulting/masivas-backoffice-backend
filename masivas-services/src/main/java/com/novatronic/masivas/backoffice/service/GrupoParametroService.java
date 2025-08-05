@@ -124,8 +124,6 @@ public class GrupoParametroService {
 
             return customPaginate;
 
-        } catch (NoOperationExistsException e) {
-            throw e;
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -275,13 +273,9 @@ public class GrupoParametroService {
 
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteGrupoParametro.jrxml", "grupoParametro", logo);
 
-        } catch (JasperReportException e) {
+        } catch (JasperReportException | DataBaseException | GenericException e) {
             throw e;
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 

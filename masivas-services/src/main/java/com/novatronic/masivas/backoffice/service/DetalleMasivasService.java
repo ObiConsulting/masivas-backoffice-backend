@@ -11,6 +11,8 @@ import com.novatronic.masivas.backoffice.repository.DetalleArchivoMasivasReposit
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
+import com.novatronic.masivas.backoffice.security.service.CryptoService;
+import com.novatronic.masivas.backoffice.security.util.MaskUtil;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.masivas.backoffice.util.GenerarReporte;
 import com.novatronic.masivas.backoffice.util.ServicesUtil;
@@ -34,13 +36,22 @@ public class DetalleMasivasService {
 
     @Autowired
     private final DetalleArchivoMasivasRepository detalleArchivoMasivasRepository;
+    private final CryptoService cryptoServiceImpl;
+    private final MaskUtil maskUtil;
+    private final GenericService genericService;
+
     @Value("${reporte.logo}")
     private String logo;
+    @Value("${mask.active}")
+    private String maskActive;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(DetalleMasivasService.class);
 
-    public DetalleMasivasService(DetalleArchivoMasivasRepository detalleArchivoMasivasRepository) {
+    public DetalleMasivasService(DetalleArchivoMasivasRepository detalleArchivoMasivasRepository, CryptoService cryptoServiceImpl, MaskUtil maskUtil, GenericService genericService) {
         this.detalleArchivoMasivasRepository = detalleArchivoMasivasRepository;
+        this.cryptoServiceImpl = cryptoServiceImpl;
+        this.maskUtil = maskUtil;
+        this.genericService = genericService;
     }
 
     /**
@@ -63,13 +74,34 @@ public class DetalleMasivasService {
             LocalDateTime fechaInicioProcesada = request.getFechaProcesada().atStartOfDay();
             LocalDateTime fechaFinProcesada = request.getFechaProcesada().atTime(LocalTime.MAX);
 
+            //Generamos el hash para cuenta origen y cuenta destino
+            request.setCuentaOrigen(ServicesUtil.hashData(request.getCuentaOrigen()));
+            request.setCuentaDestino(ServicesUtil.hashData(request.getCuentaDestino()));
+
+            logEvento("Hash Cuenta Origen {}", request.getCuentaOrigen());
+            logEvento("Hash Cuenta Destino {}", request.getCuentaDestino());
+
             Page<DetalleRegistroArchivoMasivasDTO> objPageable = detalleArchivoMasivasRepository.buscarPorFiltros(request.getNombreArchivo(), fechaInicioObtencion, fechaFinObtencion, fechaInicioProcesada, fechaFinProcesada,
                     request.getCuentaOrigen(), request.getCuentaDestino(), request.getMotivoRechazo(), request.getTipoTransaccion(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
-
             int totalRegistros = (totalRegistrosLong > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) totalRegistrosLong;
+
+            for (DetalleRegistroArchivoMasivasDTO detalle : objPageable.getContent()) {
+
+                detalle.setCuentaOrigen(cryptoServiceImpl.decrypt(detalle.getCuentaOrigen()));
+                detalle.setNumeroDocumento(cryptoServiceImpl.decrypt(detalle.getNumeroDocumento()));
+                detalle.setCuentaDestino(cryptoServiceImpl.decrypt(detalle.getCuentaDestino()));
+
+                if (ConstantesServices.ESTADO_ACTIVO.equals(maskActive)) {
+
+                    detalle.setCuentaOrigen(maskUtil.format(detalle.getCuentaOrigen()));
+                    detalle.setNumeroDocumento(maskUtil.format(detalle.getNumeroDocumento()));
+                    detalle.setCuentaDestino(maskUtil.format(detalle.getCuentaDestino()));
+
+                }
+            }
 
             CustomPaginate<DetalleRegistroArchivoMasivasDTO> customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
 
@@ -112,17 +144,13 @@ public class DetalleMasivasService {
             parameters.put("IN_FECHA_PROCESADA", ServicesUtil.formatearLocalDateToString(request.getFechaProcesada()));
             parameters.put("IN_CUENTA_ORIGEN", request.getCuentaOrigen());
             parameters.put("IN_CUENTA_DESTINO", request.getCuentaDestino());
-            parameters.put("IN_MOTIVO_RECHAZO", request.getMotivoRechazo());//Todo
-            parameters.put("IN_TIPO_TRANSACCION", request.getTipoTransaccion());//Todo
+            parameters.put("IN_MOTIVO_RECHAZO", genericService.getNombreMotivoRechazo(request.getMotivoRechazo()));
+            parameters.put("IN_TIPO_TRANSACCION", genericService.getNombreTipoTransaccion(request.getTipoTransaccion()));
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteDetalleArchivoMasivas.jrxml", "detalleMasivas", logo);
 
-        } catch (JasperReportException e) {
+        } catch (JasperReportException | DataBaseException | GenericException e) {
             throw e;
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 

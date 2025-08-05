@@ -104,8 +104,20 @@ public class GenericService {
     }
 
     public String getNombreEntidad(String codigoEntidad) {
-        ParametroDTO entidad = parametroCacheService.getEntity(String.valueOf(codigoEntidad));
+        ParametroDTO entidad = parametroCacheService.getEntity(codigoEntidad);
         return entidad != null ? entidad.getDescripcion() : "";
+    }
+
+    public String getNombreMotivoRechazo(String codMotivoRechazo) {
+        List<ParametroDTO> lista = getAllMotivoRechazo();
+        String nombre = getGenericName(lista, codMotivoRechazo);
+        return nombre.isEmpty() ? nombre : codMotivoRechazo + ConstantesServices.GUION + nombre;
+    }
+
+    public String getNombreTipoTransaccion(String codTipoTransaccion) {
+        List<ParametroDTO> lista = getAllTipoTransaccion();
+        String nombre = getGenericName(lista, codTipoTransaccion);
+        return nombre.isEmpty() ? nombre : codTipoTransaccion + ConstantesServices.GUION + nombre;
     }
 
     public String getGenericName(List<ParametroDTO> lista, String genericCode) {

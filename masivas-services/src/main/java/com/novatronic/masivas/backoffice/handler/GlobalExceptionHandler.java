@@ -1,6 +1,7 @@
 package com.novatronic.masivas.backoffice.handler;
 
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
+import com.novatronic.masivas.backoffice.exception.ActionRestCoreException;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestClientException;
 
 /**
  *
@@ -32,22 +34,31 @@ public class GlobalExceptionHandler {
                 .body(new MasivasResponse<>(ConstantesServices.ERROR_BADREQUEST, ConstantesServices.MENSAJE_BAD_REQUEST + ": " + errores, null));
     }
 
-    @ExceptionHandler(UniqueFieldException.class)
-    public ResponseEntity<MasivasResponse<Object>> handleUniqueFieldException(UniqueFieldException ex) {
+    @ExceptionHandler({UniqueFieldException.class, NoOperationExistsException.class, ActionRestCoreException.class})
+    public ResponseEntity<MasivasResponse<Object>> handleBusinessExceptions(RuntimeException ex) {
         LOGGER.error(ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ex.getErrorCode(), ex.getMessage(), null));
-    }
+        String errorCode = "";
 
-    @ExceptionHandler(NoOperationExistsException.class)
-    public ResponseEntity<MasivasResponse<Object>> noSuchElementException(NoOperationExistsException ex) {
-        LOGGER.error(ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ex.getErrorCode(), ex.getMessage(), null));
+        if (ex instanceof UniqueFieldException uniqueFieldException) {
+            errorCode = uniqueFieldException.getErrorCode();
+        }
+        if (ex instanceof NoOperationExistsException noOperationExistsException) {
+            errorCode = noOperationExistsException.getErrorCode();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(errorCode, ex.getMessage(), null));
     }
 
     @ExceptionHandler(DataBaseException.class)
     public ResponseEntity<MasivasResponse<Object>> handleDataBaseException(DataBaseException ex) {
         LOGGER.error(ConstantesServices.MENSAJE_ERROR_BD, ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null));
+    }
+
+    @ExceptionHandler(RestClientException.class)
+    public ResponseEntity<MasivasResponse<Object>> handleRestClientException(RestClientException ex) {
+        LOGGER.error(ConstantesServices.MENSAJE_ERROR_API_CORE, ex);
+        return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_API_CORE, ConstantesServices.MENSAJE_ERROR_API_CORE, null));
     }
 
     @ExceptionHandler(GenericException.class)

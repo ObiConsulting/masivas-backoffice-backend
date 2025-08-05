@@ -31,8 +31,11 @@ public class DetalleConsultaArchivoMasivasDTO implements Serializable {
     private Long montoProcesado;
     private Long montoRechazado;
     private String estado;
+    private boolean flagRespaldar;
+    private boolean flagRestaurar;
 
-    public DetalleConsultaArchivoMasivasDTO(Long idArchivo, String nombre, LocalDateTime fechaObtencion, LocalDateTime fechaProcesada, Long cantidadDeclarado, Long cantidadProcesado, Long montoProcesado, Long montoRechazado, String estado) {
+    public DetalleConsultaArchivoMasivasDTO(Long idArchivo, String nombre, LocalDateTime fechaObtencion, LocalDateTime fechaProcesada, Long cantidadDeclarado, Long cantidadProcesado,
+            Long montoProcesado, Long montoRechazado, String estado, boolean flagRespaldar, boolean flagRestaurar) {
         this.idArchivo = idArchivo;
         this.nombre = nombre;
         this.fechaObtencion = fechaObtencion;
@@ -44,6 +47,8 @@ public class DetalleConsultaArchivoMasivasDTO implements Serializable {
         this.montoProcesado = montoProcesado;
         this.montoRechazado = montoRechazado;
         this.estado = estado;
+        this.flagRespaldar = flagRespaldar;
+        this.flagRestaurar = flagRestaurar;
     }
 
 }

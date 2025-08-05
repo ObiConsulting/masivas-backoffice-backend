@@ -34,10 +34,11 @@ public class TpArchivoDirectorio extends ModelAudit<String> implements Serializa
     @SequenceGenerator(name = "SEQ_TP_ARCHIVO_DIR", sequenceName = "SEQ_TP_ARCHIVO_DIR", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_ARCHIVO_DIR")
     private Long idArchivo;
-    @Size(max = 50)
+    @Column(name = "TRACE_ARCHIVO", precision = 6, scale = 0)
+    private Long trace;
     @Column(name = "NOMBRE_CCE")
     private String nombre;
-    @Column(name = "CANT_DECLARADO_CCE")
+    @Column(name = "CANT_DECLARADO_CCE", precision = 38, scale = 0)
     private Long cantidadDeclarado;
     @Column(name = "ESTADO_OBTENCION_CCE")
     private Long estadoObtenido;
@@ -47,5 +48,9 @@ public class TpArchivoDirectorio extends ModelAudit<String> implements Serializa
     private Long estadoEnviado;
     @Column(name = "FEC_OBTENCION_CCE")
     private LocalDateTime fechaObtencion;
+    @Column(name = "ESTADO_FISICO")
+    private Long estadoFisico;
+    @Column(name = "FEC_MODIFICACION_FISICA")
+    private LocalDateTime fechaModificacionFisica;
 
 }

@@ -34,9 +34,14 @@ public class TpArchivoTitularidad extends ModelAudit<String> implements Serializ
     @SequenceGenerator(name = "SEQ_TP_ARCHIVO_TIT", sequenceName = "SEQ_TP_ARCHIVO_TIT", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_ARCHIVO_TIT")
     private Long idArchivo;
+    @Column(name = "TRACE_ARCHIVO", precision = 6, scale = 0)
+    private Long trace;
+    @Size(max = 50)
+    @Column(name = "NOMBRE_CLIENTE")
+    private String nombre;
     @Size(max = 50)
     @Column(name = "NOMBRE_CCE")
-    private String nombre;
+    private String nombreCCE;
 //    @Column(name = "FEC_OBTENCION_CCE")
     @Column(name = "FEC_OBTENCION_CLIENTE")
     private LocalDateTime fechaObtencion;
@@ -58,5 +63,9 @@ public class TpArchivoTitularidad extends ModelAudit<String> implements Serializ
     private Long estadoProcesadoCCE;
     @Column(name = "ESTADO_ENVIO_CLIENTE")
     private Long estadoEnviadoCliente;
+    @Column(name = "ESTADO_FISICO")
+    private Long estadoFisico;
+    @Column(name = "FEC_MODIFICACION_FISICA")
+    private LocalDateTime fechaModificacionFisica;
 
 }

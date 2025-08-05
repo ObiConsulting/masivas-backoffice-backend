@@ -55,7 +55,7 @@ public class TpDetalleMasivas extends ModelAudit<String> implements Serializable
     @Basic(optional = false)
     @Size(max = 1)
     @Column(name = "COD_TRANSACCION_EXTENDIDA")
-    private String tipoTransaccion;
+    private String codTipoTransaccion;
     @Column(name = "FEC_TRANSACCION")
     private LocalDateTime fechaTransaccion;
     @Size(max = 2)
@@ -83,4 +83,7 @@ public class TpDetalleMasivas extends ModelAudit<String> implements Serializable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COD_ENTIDAD_DESTINO", referencedColumnName = "COD_ENTIDAD", insertable = false, updatable = false)
     private TpEntidad entidad;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COD_TRANSACCION_EXTENDIDA", referencedColumnName = "COD_DETALLE_PARAMETRO", insertable = false, updatable = false)
+    private TpParametro tipoTransaccion;
 }

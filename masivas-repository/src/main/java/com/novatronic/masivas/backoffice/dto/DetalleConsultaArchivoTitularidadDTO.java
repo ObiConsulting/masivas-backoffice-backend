@@ -29,8 +29,11 @@ public class DetalleConsultaArchivoTitularidadDTO implements Serializable {
     private Long cantidadDeclarado;
     private Long cantidadProcesado;
     private String estado;
+    private boolean flagRespaldar;
+    private boolean flagRestaurar;
 
-    public DetalleConsultaArchivoTitularidadDTO(Long idArchivo, String nombre, LocalDateTime fechaObtencion, LocalDateTime fechaProcesada, Long cantidadDeclarado, Long cantidadProcesado, String estado) {
+    public DetalleConsultaArchivoTitularidadDTO(Long idArchivo, String nombre, LocalDateTime fechaObtencion, LocalDateTime fechaProcesada, Long cantidadDeclarado,
+            Long cantidadProcesado, String estado, boolean flagRespaldar, boolean flagRestaurar) {
         this.idArchivo = idArchivo;
         this.nombre = nombre;
         this.fechaObtencion = fechaObtencion;
@@ -40,6 +43,8 @@ public class DetalleConsultaArchivoTitularidadDTO implements Serializable {
         this.cantidadDeclarado = cantidadDeclarado;
         this.cantidadProcesado = cantidadProcesado;
         this.estado = estado;
+        this.flagRespaldar = flagRespaldar;
+        this.flagRestaurar = flagRestaurar;
     }
 
 }

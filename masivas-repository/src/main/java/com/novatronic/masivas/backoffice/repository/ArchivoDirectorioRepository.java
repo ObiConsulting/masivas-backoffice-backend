@@ -4,6 +4,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO
 import com.novatronic.masivas.backoffice.entity.TpArchivoDirectorio;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,13 +19,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDirectorio, Long> {
 
+    public Optional<TpArchivoDirectorio> getByNombre(String nombre);
+
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO("
             + "d.idArchivo, d.nombre, d.cantidadDeclarado, d.fechaObtencion,"
             + "    CASE "
             + "        WHEN d.estadoEnviado IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0703') "
             + "        WHEN d.estadoObtenido IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0702')  "
             + "        ELSE 'Pendiente' "
-            + "    END)"
+            + "    END, "
+            + "true, true)"
             + "FROM TpArchivoDirectorio d\n"
             + "     WHERE (:fechaInicio IS NULL OR d.fechaObtencion >= :fechaInicio)\n"
             + "      AND (:fechaFin IS NULL OR d.fechaObtencion <= :fechaFin)\n"

@@ -131,4 +131,29 @@ public class ArchivoController {
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
+
+    @PostMapping("/directorio/ejecutar")
+    public ResponseEntity<MasivasResponse<Object>> respaldarArchivoDirectorio(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        Long respuesta = archivoService.gestionarOperacionDirectorio(request);
+        archivoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_DIRECTORIO,
+                ConstantesServices.ACCION_BACKUP_RESTORE, ConstantesServices.MENSAJE_EXITO_GENERICO);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, respuesta));
+    }
+
+    @PostMapping("/masivas/ejecutar")
+    public ResponseEntity<MasivasResponse<Object>> respaldarArchivoMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        Long respuesta = archivoService.gestionarOperacionMasivas(request);
+        archivoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_MASIVAS,
+                ConstantesServices.ACCION_BACKUP_RESTORE, ConstantesServices.MENSAJE_EXITO_GENERICO);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, respuesta));
+    }
+
+    @PostMapping("/titularidad/ejecutar")
+    public ResponseEntity<MasivasResponse<Object>> respaldarArchivoTitularidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+        Long respuesta = archivoService.gestionarOperacionTitularidad(request);
+        archivoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_TITULARIDAD,
+                ConstantesServices.ACCION_BACKUP_RESTORE, ConstantesServices.MENSAJE_EXITO_GENERICO);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, respuesta));
+    }
+
 }

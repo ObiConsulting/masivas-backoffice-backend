@@ -25,14 +25,19 @@ public class DetalleConsultaArchivoDirectorioDTO implements Serializable {
     private LocalDateTime fechaObtencion;
     private String fechaObtencionFormato;
     private String codigoEstado;
+    private boolean flagRespaldar;
+    private boolean flagRestaurar;
 
-    public DetalleConsultaArchivoDirectorioDTO(Long idArchivo, String nombre, Long cantidadDeclarado, LocalDateTime fechaObtencion, String codigoEstado) {
+    public DetalleConsultaArchivoDirectorioDTO(Long idArchivo, String nombre, Long cantidadDeclarado, LocalDateTime fechaObtencion, String codigoEstado,
+            boolean flagRespaldar, boolean flagRestaurar) {
         this.idArchivo = idArchivo;
         this.nombre = nombre;
         this.cantidadDeclarado = cantidadDeclarado;
         this.fechaObtencion = fechaObtencion;
         this.fechaObtencionFormato = FuncionesUtil.formatearLocalDateTimeToString_sinnHora(fechaObtencion);
         this.codigoEstado = codigoEstado;
+        this.flagRespaldar = flagRespaldar;
+        this.flagRestaurar = flagRestaurar;
     }
 
 }
