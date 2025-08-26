@@ -1,5 +1,7 @@
 package com.novatronic.masivas.backoffice.util;
 
+import com.novatronic.novalog.audit.logger.NovaLogger;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -15,6 +17,8 @@ public class FuncionesUtil {
     private static final String SDF = "dd/MM/yyyy";
     private static final String SDFWS = "yyyyMMdd";
     private static final String FORMAT_fechaConHora = "dd/MM/yyyy HH:mm:ss";
+
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(FuncionesUtil.class);
 
     public static String convertToDateWithoutSeparators(String fecha) {
         String resultado = null;
@@ -99,5 +103,18 @@ public class FuncionesUtil {
         } catch (Exception e) {
             return "-";
         }
+    }
+
+    public static BigDecimal convertirABigDecimal(Object valor) {
+        if (valor == null) {
+            return BigDecimal.ZERO;
+        } else if (valor instanceof BigDecimal bigDecimal) {
+            return bigDecimal;
+        } else if (valor instanceof Long long1) {
+            return BigDecimal.valueOf(long1);
+        }
+        // Si llega aquí, es un tipo inesperado
+        LOGGER.error("Advertencia: Tipo de dato inesperado para la suma: " + valor.getClass().getName());
+        return BigDecimal.ZERO;
     }
 }

@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.service;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaParametroDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroParametroDTO;
+import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
@@ -14,6 +15,7 @@ import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import com.novatronic.masivas.backoffice.repository.ParametroRepository;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import jakarta.transaction.RollbackException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -152,8 +155,7 @@ public class ParametroServiceTest {
         request.setCodigo("1593");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(parametroRepository.buscarPorFiltros(any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -251,6 +253,19 @@ public class ParametroServiceTest {
     }
 
     @Test
+    void editarParametro_excepcion_bd2() {
+        MasivasRequestDTO request = crearRequest();
+
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
+        when(parametroRepository.findById(any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            parametroService.editarParametro(request, "usuario");
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
     void editarParametro_excepcion_generico() {
         MasivasRequestDTO request = crearRequest();
 
@@ -300,8 +315,7 @@ public class ParametroServiceTest {
         FiltroMasivasRequest request = new FiltroMasivasRequest();
         request.setIdParametro(12l);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
         when(parametroRepository.findById(any())).thenThrow(genericEx);
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
@@ -320,6 +334,95 @@ public class ParametroServiceTest {
 
         GenericException thrown = assertThrows(GenericException.class, () -> {
             parametroService.obtenerParametro(request);
+        });
+        assertTrue(thrown instanceof GenericException);
+    }
+
+    @Test
+    void cambiaEstado_Exito() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        TpParametro aplicacionSimulada = new TpParametro();
+        aplicacionSimulada.setIdParametro(1L);
+        aplicacionSimulada.setCodigo("APP_TEST");
+        Optional<TpParametro> optionalMok = Optional.of(aplicacionSimulada);
+
+        when(parametroRepository.findById(any())).thenReturn(optionalMok);
+
+        EstadoDTO resultado = parametroService.cambiarEstadoParametro(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        assertNotNull(resultado);
+    }
+
+    @Test
+    void cambiaEstado_error_noEncontrado() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        NoOperationExistsException noOperationExistsException = new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
+
+        when(parametroRepository.findById(any())).thenThrow(noOperationExistsException);
+
+        NoOperationExistsException thrown = assertThrows(NoOperationExistsException.class, () -> {
+            parametroService.cambiarEstadoParametro(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        });
+        assertEquals(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, thrown.getErrorCode());
+        assertEquals(ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA, thrown.getMessage());
+    }
+
+    @Test
+    void cambiaEstado_excepcion_bd() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
+        when(parametroRepository.findById(any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            parametroService.cambiarEstadoParametro(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
+    void cambiaEstado_excepcion_bd2() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        RollbackException rollbackEx = new RollbackException("");
+        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        when(parametroRepository.findById(any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            parametroService.cambiarEstadoParametro(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
+    void cambiaEstado_excepcion_generico() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        when(parametroRepository.findById(any())).thenReturn(null);
+
+        GenericException thrown = assertThrows(GenericException.class, () -> {
+            parametroService.cambiarEstadoParametro(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
         });
         assertTrue(thrown instanceof GenericException);
     }
@@ -348,8 +451,7 @@ public class ParametroServiceTest {
         request.setCodigo("1593");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(parametroRepository.buscarPorFiltros(any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 

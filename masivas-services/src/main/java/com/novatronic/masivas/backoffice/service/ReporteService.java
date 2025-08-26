@@ -21,13 +21,13 @@ import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
-import jakarta.transaction.RollbackException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 
 /**
  *
@@ -44,6 +44,8 @@ public class ReporteService {
     private final ArchivoTitularidadRepository archivoTitularidadRepository;
     @Autowired
     private final DetalleArchivoMasivasRepository detalleArchivoMasivasRepository;
+    @Autowired
+    private final GenericService genericService;
 
     @Value("${reporte.logo}")
     private String logo;
@@ -51,11 +53,12 @@ public class ReporteService {
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ReporteService.class);
 
     public ReporteService(ArchivoDirectorioRepository archivoDirectorioRepository, ArchivoMasivasRepository archivoMasivasRepository, ArchivoTitularidadRepository archivoTitularidadRepository,
-            DetalleArchivoMasivasRepository detalleArchivoMasivasRepository) {
+            DetalleArchivoMasivasRepository detalleArchivoMasivasRepository, GenericService genericService) {
         this.archivoDirectorioRepository = archivoDirectorioRepository;
         this.archivoMasivasRepository = archivoMasivasRepository;
         this.archivoTitularidadRepository = archivoTitularidadRepository;
         this.detalleArchivoMasivasRepository = detalleArchivoMasivasRepository;
+        this.genericService = genericService;
     }
 
     /**
@@ -92,11 +95,9 @@ public class ReporteService {
 
             return reporte;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -127,11 +128,9 @@ public class ReporteService {
 
             return reporte;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -148,22 +147,20 @@ public class ReporteService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.REPORTE_CONSOLIDADO, request.toStringReporteCierreObtener());
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.REPORTE_CONSOLIDADO, request.toStringReporteConsolidado());
 
             LocalDateTime fechaInicio = request.getFecha().atStartOfDay();
             LocalDateTime fechaFin = request.getFecha().atTime(LocalTime.MAX);
 
-            List<DetalleReporteConsolidadoDTO> listaReporte = detalleArchivoMasivasRepository.totalesPorEntidadDestino(fechaInicio, fechaFin);
+            List<DetalleReporteConsolidadoDTO> listaReporte = detalleArchivoMasivasRepository.totalesPorEntidadDestino(fechaInicio, fechaFin, request.getMoneda());
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, listaReporte.size());
 
             return listaReporte;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -184,22 +181,19 @@ public class ReporteService {
             request.setNumeroPagina(0);
             request.setRegistrosPorPagina(0);
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.REPORTE_CONSOLIDADO, ConstantesServices.METODO_DESCARGAR, request.toStringReporteCierreObtener());
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.REPORTE_CONSOLIDADO, ConstantesServices.METODO_DESCARGAR, request.toStringReporteConsolidado());
             List<DetalleReporteConsolidadoDTO> resultado = reporteConsolidadoPorEntidadDestino(request);
 
             HashMap<String, Object> parameters = new HashMap<>();
             //Filtros
             parameters.put("IN_FECHA", ServicesUtil.formatearLocalDateToString(request.getFecha()));
+            parameters.put("IN_MONEDA", genericService.getNombreMoneda(request.getMoneda()));
 
             return GenerarReporte.generarReporte(resultado, parameters, usuario, tipoArchivo, "reportes/reporteConsolidado.jrxml", "reporteConsolidado", logo);
 
-        } catch (JasperReportException e) {
+        } catch (JasperReportException | DataBaseException | GenericException e) {
             throw e;
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -240,10 +234,14 @@ public class ReporteService {
 
                 case "Procesado" -> {
                     reporte.setTotalProcesado(reporte.getTotalProcesado() + cantidad);
-                    BigDecimal montoProcesado = ServicesUtil.convertirABigDecimal(resultado[2]);
-                    BigDecimal montoRechazado = ServicesUtil.convertirABigDecimal(resultado[3]);
-                    reporte.setMontoProcesado(montoProcesado);
-                    reporte.setMontoRechazado(montoRechazado);
+                    BigDecimal montoProcesadoDolar = ServicesUtil.convertirABigDecimal(resultado[2]).movePointLeft(2);
+                    BigDecimal montoProcesadoSol = ServicesUtil.convertirABigDecimal(resultado[3]).movePointLeft(2);
+                    BigDecimal montoRechazadoDolar = ServicesUtil.convertirABigDecimal(resultado[4]).movePointLeft(2);
+                    BigDecimal montoRechazadoSol = ServicesUtil.convertirABigDecimal(resultado[5]).movePointLeft(2);
+                    reporte.setMontoProcesadoDolar(montoProcesadoDolar);
+                    reporte.setMontoProcesadoSol(montoProcesadoSol);
+                    reporte.setMontoRechazadoDolar(montoRechazadoDolar);
+                    reporte.setMontoRechazadoSol(montoRechazadoSol);
                 }
                 case "Pendiente por Procesar" ->
                     reporte.setTotalPendiente(reporte.getTotalPendiente() + cantidad);

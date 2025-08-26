@@ -136,7 +136,7 @@ public class SeguridadService {
                                 e -> (Serializable) e.getValue()
                         ));
 
-                int tiempoSesion = 6 * Integer.parseInt(atributos.get(TIMEOUT_ATTR).toString());
+                int tiempoSesion = Integer.parseInt(atributos.get(TIMEOUT_ATTR).toString());
 
                 List<String> permisos = scaAutentication.listarRecursos(result.getToken());
                 permisos.add(ConstantesServices.PERMISO_USUARIO_VALIDO);
@@ -169,7 +169,7 @@ public class SeguridadService {
      * @param newPassword
      * @return
      */
-    public MasivasResponse<LoginResponse> changePassFirstTime(String username, String password, String newPassword) {
+    public MasivasResponse<LoginResponse> changePassword(String username, String password, String newPassword) {
 
         logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.CAMBIAR_CONTRASENA, "{" + ConstantesServices.AUDIT_CAMPO_USUARIO + username + ConstantesServices.AUDIT_CAMPO_PASSWORD + password + ",newPassword=" + newPassword + '}');
 

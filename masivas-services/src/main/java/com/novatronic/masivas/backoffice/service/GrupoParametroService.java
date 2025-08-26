@@ -6,6 +6,7 @@ import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
+import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.entity.TpGrupoParametro;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
@@ -25,10 +26,14 @@ import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -124,11 +129,9 @@ public class GrupoParametroService {
 
             return customPaginate;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -159,6 +162,8 @@ public class GrupoParametroService {
 
         } catch (NoOperationExistsException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -194,11 +199,9 @@ public class GrupoParametroService {
 
         } catch (NoOperationExistsException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
     }
@@ -239,6 +242,8 @@ public class GrupoParametroService {
 
         } catch (NoOperationExistsException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -279,6 +284,17 @@ public class GrupoParametroService {
             throw new GenericException(e);
         }
 
+    }
+
+    public List<ParametroDTO> getAllGrupoParametro() {
+
+        logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_CONSULTAR, "");
+        List<TpGrupoParametro> listaGrupoParametro = grupoParametroRepository.findAll();
+
+        return listaGrupoParametro.stream()
+                .map(grupo -> new ParametroDTO(String.valueOf(grupo.getIdGrupoParametro()), grupo.getDescripcion()))
+                .sorted(Comparator.comparing(p -> Long.valueOf(p.getCodigo())))
+                .collect(Collectors.toList());
     }
 
     private void updateGrupoParametro(TpGrupoParametro grupoParametro, MasivasRequestDTO request, String usuario, String operacion) {

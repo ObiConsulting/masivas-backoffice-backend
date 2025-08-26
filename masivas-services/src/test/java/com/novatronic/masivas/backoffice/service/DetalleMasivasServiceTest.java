@@ -10,7 +10,6 @@ import com.novatronic.masivas.backoffice.repository.DetalleArchivoMasivasReposit
 import com.novatronic.masivas.backoffice.security.service.CryptoService;
 import com.novatronic.masivas.backoffice.security.util.MaskUtil;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
-import jakarta.transaction.RollbackException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -32,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -114,8 +114,7 @@ public class DetalleMasivasServiceTest {
         request.setCuentaOrigen("1234567890");
         request.setCuentaDestino("1234567890");
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(detalleArchivoMasivasRepository.buscarPorFiltros(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -172,8 +171,7 @@ public class DetalleMasivasServiceTest {
         request.setCuentaOrigen("1234567890");
         request.setCuentaDestino("1234567890");
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(detalleArchivoMasivasRepository.buscarPorFiltros(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 

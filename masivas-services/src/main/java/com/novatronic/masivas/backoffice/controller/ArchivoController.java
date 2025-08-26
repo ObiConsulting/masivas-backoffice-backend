@@ -63,7 +63,7 @@ public class ArchivoController {
     @PostMapping("/masivas/detalle/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarDetalleMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleRegistroArchivoMasivasDTO> objPageable = detalleMasivasService.buscarDetalleMasivas(request);
-        archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS,
+        detalleMasivasService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS,
                 ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
@@ -133,7 +133,7 @@ public class ArchivoController {
     }
 
     @PostMapping("/directorio/ejecutar")
-    public ResponseEntity<MasivasResponse<Object>> respaldarArchivoDirectorio(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+    public ResponseEntity<MasivasResponse<Object>> gestionarOperacionDirectorio(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Long respuesta = archivoService.gestionarOperacionDirectorio(request);
         archivoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_DIRECTORIO,
                 ConstantesServices.ACCION_BACKUP_RESTORE, ConstantesServices.MENSAJE_EXITO_GENERICO);
@@ -141,7 +141,7 @@ public class ArchivoController {
     }
 
     @PostMapping("/masivas/ejecutar")
-    public ResponseEntity<MasivasResponse<Object>> respaldarArchivoMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+    public ResponseEntity<MasivasResponse<Object>> gestionarOperacionMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Long respuesta = archivoService.gestionarOperacionMasivas(request);
         archivoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_MASIVAS,
                 ConstantesServices.ACCION_BACKUP_RESTORE, ConstantesServices.MENSAJE_EXITO_GENERICO);
@@ -149,7 +149,7 @@ public class ArchivoController {
     }
 
     @PostMapping("/titularidad/ejecutar")
-    public ResponseEntity<MasivasResponse<Object>> respaldarArchivoTitularidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
+    public ResponseEntity<MasivasResponse<Object>> gestionarOperacionTitularidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Long respuesta = archivoService.gestionarOperacionTitularidad(request);
         archivoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_TITULARIDAD,
                 ConstantesServices.ACCION_BACKUP_RESTORE, ConstantesServices.MENSAJE_EXITO_GENERICO);

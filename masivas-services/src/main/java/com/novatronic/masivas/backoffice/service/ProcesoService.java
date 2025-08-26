@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.dao.DataAccessException;
 
 /**
  *
@@ -67,12 +68,9 @@ public class ProcesoService {
                                     Collectors.toList() // Los valores serán una lista de DetalleProcesoDTO
                             )
                     ));
-
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -102,6 +100,8 @@ public class ProcesoService {
 
         } catch (NoOperationExistsException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -145,12 +145,9 @@ public class ProcesoService {
                                     Collectors.toList() // Los valores serán una lista de DetalleProcesoDTO
                             )
                     ));
-
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 

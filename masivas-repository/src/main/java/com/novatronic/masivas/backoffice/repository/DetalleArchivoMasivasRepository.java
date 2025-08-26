@@ -20,7 +20,8 @@ import org.springframework.stereotype.Repository;
 public interface DetalleArchivoMasivasRepository extends JpaRepository<TpDetalleMasivas, Long> {
 
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleRegistroArchivoMasivasDTO("
-            + "d.idArchivo, m.nombre, d.cuentaOrigen, d.numeroDocumentoCliente, d.cuentaDestino, d.importe, CONCAT(d.codTipoTransaccion, ' - ', t.valor), d.fechaTransaccion, d.codigoRespuesta, d.mensajeRespuesta, "
+            + "d.idArchivo, m.nombre, d.cuentaOrigen, d.numeroDocumentoCliente, d.cuentaDestino, d.importe,"
+            + "CONCAT (d.moneda, ' - ', mo.valor), CONCAT(d.codTipoTransaccion, ' - ', t.valor), d.fechaTransaccion, d.codigoRespuesta, d.mensajeRespuesta, "
             + "    CASE "
             + "        WHEN d.codigoRespuesta = '00' THEN 'Aceptada' "
             + "        WHEN d.codigoRespuesta = '05' THEN 'Rechazada' "
@@ -28,7 +29,7 @@ public interface DetalleArchivoMasivasRepository extends JpaRepository<TpDetalle
             + "        WHEN d.codigoRespuesta IS NULL and d.mensajeRespuesta IS NOT NULL THEN 'TimeOut' "
             + "        ELSE 'Pendiente' "
             + "    END) "
-            + "FROM TpDetalleMasivas d JOIN d.archivoMasivas m JOIN d.tipoTransaccion t \n"
+            + "FROM TpDetalleMasivas d JOIN d.archivoMasivas m JOIN d.tipoTransaccion t JOIN d.monedaDesc mo\n"
             + "     WHERE (:fechaInicioObtencion IS NULL OR m.fechaObtencion >= :fechaInicioObtencion)\n"
             + "      AND (:fechaFinObtencion IS NULL OR m.fechaObtencion <= :fechaFinObtencion)\n"
             + "      AND (:fechaInicioProcesada IS NULL OR m.fechaProcesada >= :fechaInicioProcesada)\n"
@@ -36,8 +37,6 @@ public interface DetalleArchivoMasivasRepository extends JpaRepository<TpDetalle
             + "      AND (:nombreArchivo IS NULL OR LOWER(m.nombre) LIKE LOWER(CONCAT('%', :nombreArchivo, '%')))\n"
             + "      AND (:cuentaOrigen IS NULL OR LOWER(d.cuentaOrigenHash) LIKE LOWER(CONCAT('%', :cuentaOrigen, '%')))\n"
             + "      AND (:cuentaDestino IS NULL OR LOWER(d.cuentaDestinoHash) LIKE LOWER(CONCAT('%', :cuentaDestino, '%')))\n"
-            //            + "      AND (:cuentaOrigen IS NULL OR LOWER(d.cuentaOrigen) LIKE LOWER(CONCAT('%', :cuentaOrigen, '%')))\n"
-            //            + "      AND (:cuentaDestino IS NULL OR LOWER(d.cuentaDestino) LIKE LOWER(CONCAT('%', :cuentaDestino, '%')))\n"
             + "      AND (:motivoRechazo IS NULL OR d.mensajeRespuesta = :motivoRechazo)\n"
             + "      AND (:codTipoTransaccion IS NULL OR d.codTipoTransaccion = :codTipoTransaccion)")
     Page<DetalleRegistroArchivoMasivasDTO> buscarPorFiltros(
@@ -55,16 +54,20 @@ public interface DetalleArchivoMasivasRepository extends JpaRepository<TpDetalle
 
     @Query("SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleReporteConsolidadoDTO("
             + "CONCAT(d.codEntidadDestino, ' - ', e.nombre), "
+            + "CONCAT (d.moneda, ' - ', mo.valor), "
             + "COUNT(d.idArchivo), "
-            + "CAST(SUM(CASE WHEN d.codigoRespuesta = '00' THEN d.importe ELSE 0 END) AS java.math.BigDecimal), "
-            + "CAST(SUM(CASE WHEN d.codigoRespuesta = '05' THEN d.importe ELSE 0 END) AS java.math.BigDecimal) "
+            + "CAST(SUM(CASE WHEN d.codigoRespuesta = '00' THEN d.importe ELSE 0 END) AS java.math.BigDecimal)/100, "//Monto Procesado
+            + "CAST(SUM(CASE WHEN d.codigoRespuesta = '05' THEN d.importe ELSE 0 END) AS java.math.BigDecimal)/100 "//Monto Rechazado
             + ") "
-            + "FROM TpDetalleMasivas d JOIN d.entidad e "
+            + "FROM TpDetalleMasivas d JOIN d.entidad e JOIN d.monedaDesc mo\n"
             + "WHERE (:fechaInicio IS NULL OR d.fechaTransaccion >= :fechaInicio) "
-            + "AND (:fechaFin IS NULL OR d.fechaTransaccion <= :fechaFin) "
-            + "GROUP BY CONCAT(d.codEntidadDestino, ' - ', e.nombre)")
+            + "      AND (:fechaFin IS NULL OR d.fechaTransaccion <= :fechaFin) "
+            + "      AND (:codMoneda IS NULL OR d.moneda = :codMoneda)\n"
+            + "GROUP BY CONCAT(d.codEntidadDestino, ' - ', e.nombre), CONCAT (d.moneda, ' - ', mo.valor)\n"
+            + "ORDER BY CONCAT(d.codEntidadDestino, ' - ', e.nombre) ASC")
     List<DetalleReporteConsolidadoDTO> totalesPorEntidadDestino(
             @Param("fechaInicio") LocalDateTime fechaInicio,
-            @Param("fechaFin") LocalDateTime fechaFin
+            @Param("fechaFin") LocalDateTime fechaFin,
+            @Param("codMoneda") String codMoneda
     );
 }

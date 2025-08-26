@@ -47,6 +47,7 @@ public class FiltroMasivasRequest {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime fechaFinProcesada;
     private String tipoAccion;
+    private Long idArchivo;
 
     //Ruta
     private String codTipoArchivo;
@@ -75,6 +76,7 @@ public class FiltroMasivasRequest {
     //Reporte
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate fecha;
+    private String moneda;
 
     public Integer getNumeroPagina() {
         return numeroPagina != null ? Math.max(numeroPagina - 1, 0) : Constantes.PAGINA_INICIAL;
@@ -200,6 +202,14 @@ public class FiltroMasivasRequest {
         return tipoAccion != null ? tipoAccion : "";
     }
 
+    public Long getIdArchivo() {
+        return idArchivo;
+    }
+
+    public String getMoneda() {
+        return moneda != null ? moneda : "";
+    }
+
     public String toStringGrupoParametro() {
         return "{" + "codigo=" + codigo + ", estado=" + estado + '}';
     }
@@ -254,12 +264,16 @@ public class FiltroMasivasRequest {
         return "{" + "fecha=" + fecha + '}';
     }
 
+    public String toStringReporteConsolidado() {
+        return "{" + "fecha=" + fecha + ", moneda=" + moneda + '}';
+    }
+
     public String toStringAplicacionObtener() {
         return "{" + "idAplicacion=" + idAplicacion + '}';
     }
 
     public String toStringRespaldarResturarObtener() {
-        return "{" + "nombreArchivo=" + nombreArchivo + '}';
+        return "{" + "idArchivo=" + idArchivo + '}';
     }
 
     public String toStringDetalleMasivas() {

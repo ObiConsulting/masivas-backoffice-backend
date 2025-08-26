@@ -2,6 +2,7 @@ package com.novatronic.masivas.backoffice.service;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
+import com.novatronic.masivas.backoffice.dto.EntidadDTO;
 import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.entity.TpParametro;
 import com.novatronic.masivas.backoffice.repository.EntidadRepository;
@@ -31,10 +32,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ParametroCacheService {
 
-    private HazelcastInstance hazelcastInstance;
-    private ParametroRepository parametroRepository;
-    private GrupoParametroRepository grupoParametroRepository;
-    private EntidadRepository entidadRepository;
+    private final HazelcastInstance hazelcastInstance;
+    private final ParametroRepository parametroRepository;
+    private final GrupoParametroRepository grupoParametroRepository;
+    private final EntidadRepository entidadRepository;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ParametroCacheService.class);
     private static final String CLASSPATH_FILE = "nova-log.properties";
@@ -92,7 +93,13 @@ public class ParametroCacheService {
                 .collect(Collectors.groupingBy(
                         p -> String.valueOf(p.getIdGrupoParametro()),
                         Collectors.mapping(
-                                p -> new ParametroDTO(p.getCodigo(), p.getValor()),
+                                p -> {
+                                    if (p.getIdGrupoParametro().equals(ConstantesServices.ID_GRUPO_EXTENSION_BASE_L) || p.getIdGrupoParametro().equals(ConstantesServices.ID_GRUPO_EXTENSION_CONTROL_L)) {
+                                        return new ParametroDTO(String.valueOf(p.getIdParametro()), p.getValor());
+                                    } else {
+                                        return new ParametroDTO(p.getCodigo(), p.getValor());
+                                    }
+                                },
                                 Collectors.toList()
                         )
                 ));
@@ -116,11 +123,12 @@ public class ParametroCacheService {
      * Carga las entidades financieras del sistema en cache
      */
     public void loadEntitiesInCache() {
-        Map<String, ParametroDTO> cache = hazelcastInstance.getMap(ConstantesServices.MAP_ENTIDADES);
+        Map<String, EntidadDTO> cache = hazelcastInstance.getMap(ConstantesServices.MAP_ENTIDADES);
         entidadRepository.findAll().stream()
-                .map(entity -> new ParametroDTO(
+                .map(entity -> new EntidadDTO(
                 String.valueOf(entity.getCodigo()),
-                entity.getNombre()))
+                entity.getNombre(),
+                entity.getPropietario()))
                 .forEach(dto -> cache.put(dto.getCodigo(), dto));
     }
 
@@ -164,13 +172,23 @@ public class ParametroCacheService {
     }
 
     /**
+     * Listado de las entidades de la caché.
+     *
+     * @return
+     */
+    public List<EntidadDTO> getAllEntities() {
+        Map<String, EntidadDTO> cache = hazelcastInstance.getMap(ConstantesServices.MAP_ENTIDADES);
+        return new ArrayList<>(cache.values());
+    }
+
+    /**
      * Obtener una entidad según código de la caché.
      *
      * @param codEntity
      * @return
      */
-    public ParametroDTO getEntity(String codEntity) {
-        IMap<String, ParametroDTO> cache = hazelcastInstance.getMap(ConstantesServices.MAP_ENTIDADES);
+    public EntidadDTO getEntity(String codEntity) {
+        IMap<String, EntidadDTO> cache = hazelcastInstance.getMap(ConstantesServices.MAP_ENTIDADES);
         return cache.get(codEntity);
     }
 }

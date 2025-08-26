@@ -44,8 +44,11 @@ public class ApplicationConfig {
     @Value("${ip.portCount:3}")
     private Integer portCountHazelcast;
 
-    @Value("${instanceName:tam_gkn_prod}")
+    @Value("${instanceName}")
     private String instanceName;
+
+    @Value("${clusterName}")
+    private String clusterName;
 
     @Value("${masivas.captcha.connecttimeout}")
     private int connectionTimeout;
@@ -79,6 +82,7 @@ public class ApplicationConfig {
         }
         join.getTcpIpConfig().setMembers(this.ips);
         join.getTcpIpConfig().setEnabled(true);
+        config.setClusterName(clusterName);
         return config.setInstanceName(instanceName);
 
     }

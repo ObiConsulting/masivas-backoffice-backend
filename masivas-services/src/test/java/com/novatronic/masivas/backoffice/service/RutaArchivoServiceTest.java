@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -86,8 +87,7 @@ public class RutaArchivoServiceTest {
         request.setCodTipoArchivo("DIR");
         request.setCodCategoriaDirectorio("1000");
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(rutaArchivoRepository.buscarPorFiltros(any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -158,6 +158,19 @@ public class RutaArchivoServiceTest {
     }
 
     @Test
+    void editarRutaArchivo_excepcion_bd2() {
+        MasivasRequestDTO request = crearRequest();
+
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
+        when(rutaArchivoRepository.findById(any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            rutaArchivoService.editarRuta(request, "usuario");
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
     void editarRutaArchivo_excepcion_generico() {
         MasivasRequestDTO request = crearRequest();
 
@@ -189,8 +202,7 @@ public class RutaArchivoServiceTest {
         FiltroMasivasRequest request = new FiltroMasivasRequest();
         request.setIdRuta(1l);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
         when(rutaArchivoRepository.buscarPorId(any())).thenThrow(genericEx);
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
@@ -238,8 +250,7 @@ public class RutaArchivoServiceTest {
         request.setCodTipoArchivo("DIR");
         request.setCodCategoriaDirectorio("1000");
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(rutaArchivoRepository.buscarPorFiltros(any(), any(), any(Pageable.class))).thenThrow(genericEx);
 

@@ -19,11 +19,11 @@ import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
-import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -109,11 +109,9 @@ public class DetalleMasivasService {
 
             return customPaginate;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 

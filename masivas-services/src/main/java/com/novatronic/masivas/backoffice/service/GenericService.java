@@ -1,10 +1,14 @@
 package com.novatronic.masivas.backoffice.service;
 
+import com.novatronic.masivas.backoffice.dto.EntidadDTO;
 import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class GenericService {
 
     private final ParametroCacheService parametroCacheService;
+
+    private static final NovaLogger LOGGER = NovaLogger.getLogger(GenericService.class);
 
     public GenericService(ParametroCacheService parametroCacheService) {
         this.parametroCacheService = parametroCacheService;
@@ -63,14 +69,22 @@ public class GenericService {
     }
 
     public List<ParametroDTO> getAllMotivoRechazo() {
-        List<ParametroDTO> listaMotivoRechazo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_MOTIVO_RECHAZO);
-        return listaMotivoRechazo.stream()
+        List<ParametroDTO> listaMotivoRechazo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_MOTIVO_RECHAZO);
+        List<ParametroDTO> listaRptaOperadora = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_RPTA_OPERADORA);
+        return Stream.concat(listaMotivoRechazo.stream(), listaRptaOperadora.stream())
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
                 .collect(Collectors.toList());
     }
 
     public List<ParametroDTO> getAllTipoTransaccion() {
-        List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_TIPO_TRANSACCION);
+        List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_TIPO_TRANSACCION);
+        return listaTipoTransaccion.stream()
+                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParametroDTO> getAllMoneda() {
+        List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_MONEDA);
         return listaTipoTransaccion.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
                 .collect(Collectors.toList());
@@ -104,8 +118,27 @@ public class GenericService {
     }
 
     public String getNombreEntidad(String codigoEntidad) {
-        ParametroDTO entidad = parametroCacheService.getEntity(codigoEntidad);
+        EntidadDTO entidad = parametroCacheService.getEntity(codigoEntidad);
         return entidad != null ? entidad.getDescripcion() : "";
+    }
+
+    public String getNombreMoneda(String codigoMoneda) {
+        List<ParametroDTO> lista = getAllMoneda();
+        String nombre = getGenericName(lista, codigoMoneda);
+        return nombre.isEmpty() ? nombre : codigoMoneda + ConstantesServices.GUION + nombre;
+    }
+
+    public String getCodigoEntidadPropietaria() {
+        List<EntidadDTO> listaEntidad = parametroCacheService.getAllEntities();
+        Optional<EntidadDTO> propietaria = listaEntidad.stream()
+                .filter(entidad -> entidad.getPropietario().equals(ConstantesServices.PROPIETARIO))
+                .findFirst();
+        if (propietaria.isPresent()) {
+            return propietaria.get().getCodigo();
+        } else {
+            LOGGER.error("No se encontró ninguna entidad con propietario = 1.");
+            return "-1";
+        }
     }
 
     public String getNombreMotivoRechazo(String codMotivoRechazo) {

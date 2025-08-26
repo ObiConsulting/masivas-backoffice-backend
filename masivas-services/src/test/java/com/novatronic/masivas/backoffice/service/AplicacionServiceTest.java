@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.service;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaAplicacionDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroAplicacionDTO;
+import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
@@ -15,6 +16,7 @@ import com.novatronic.masivas.backoffice.repository.AplicacionRepository;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -149,8 +152,7 @@ public class AplicacionServiceTest {
         request.setNombre("App de Prueba");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(aplicacionRepository.buscarPorFiltros(any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -249,6 +251,19 @@ public class AplicacionServiceTest {
     }
 
     @Test
+    void editarAplicacion_excepcion_bd2() {
+        MasivasRequestDTO request = crearRequest();
+
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
+        when(aplicacionRepository.findById(any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            aplicacionService.editarAplicacion(request, "usuario");
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
     void editarAplicacion_excepcion_generico() {
         MasivasRequestDTO request = crearRequest();
 
@@ -298,8 +313,7 @@ public class AplicacionServiceTest {
         FiltroMasivasRequest request = new FiltroMasivasRequest();
         request.setIdAplicacion(12l);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
         when(aplicacionRepository.findById(any())).thenThrow(genericEx);
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
@@ -318,6 +332,95 @@ public class AplicacionServiceTest {
 
         GenericException thrown = assertThrows(GenericException.class, () -> {
             aplicacionService.obtenerAplicacion(request);
+        });
+        assertTrue(thrown instanceof GenericException);
+    }
+
+    @Test
+    void cambiaEstado_Exito() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        TpAplicacion aplicacionSimulada = new TpAplicacion();
+        aplicacionSimulada.setIdAplicacion(1L);
+        aplicacionSimulada.setCodigo("APP_TEST");
+        Optional<TpAplicacion> optionalMok = Optional.of(aplicacionSimulada);
+
+        when(aplicacionRepository.findById(any())).thenReturn(optionalMok);
+
+        EstadoDTO resultado = aplicacionService.cambiarEstadoAplicacion(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        assertNotNull(resultado);
+    }
+
+    @Test
+    void cambiaEstado_error_noEncontrado() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        NoOperationExistsException noOperationExistsException = new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
+
+        when(aplicacionRepository.findById(any())).thenThrow(noOperationExistsException);
+
+        NoOperationExistsException thrown = assertThrows(NoOperationExistsException.class, () -> {
+            aplicacionService.cambiarEstadoAplicacion(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        });
+        assertEquals(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, thrown.getErrorCode());
+        assertEquals(ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA, thrown.getMessage());
+    }
+
+    @Test
+    void cambiaEstado_excepcion_bd() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
+        when(aplicacionRepository.findById(any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            aplicacionService.cambiarEstadoAplicacion(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
+    void cambiaEstado_excepcion_bd2() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        RollbackException rollbackEx = new RollbackException("");
+        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        when(aplicacionRepository.findById(any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            aplicacionService.cambiarEstadoAplicacion(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
+    void cambiaEstado_excepcion_generico() {
+        MasivasRequestDTO request = new MasivasRequestDTO();
+        List<Long> listaMockeada = new ArrayList<>();
+        listaMockeada.add(10L);
+        listaMockeada.add(20L);
+        request.setIdsOperacion(listaMockeada);
+
+        when(aplicacionRepository.findById(any())).thenReturn(null);
+
+        GenericException thrown = assertThrows(GenericException.class, () -> {
+            aplicacionService.cambiarEstadoAplicacion(request, "usuario", ConstantesServices.ESTADO_ACTIVO);
         });
         assertTrue(thrown instanceof GenericException);
     }
@@ -365,8 +468,7 @@ public class AplicacionServiceTest {
         request.setNombre("App de Prueba");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(aplicacionRepository.buscarPorFiltros(any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 

@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.novatronic.masivas.backoffice.util.FuncionesUtil;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,6 @@ import lombok.ToString;
  */
 @Data
 @NoArgsConstructor
-//@AllArgsConstructor
 @ToString
 public class DetalleConsultaArchivoMasivasDTO implements Serializable {
 
@@ -28,14 +28,16 @@ public class DetalleConsultaArchivoMasivasDTO implements Serializable {
     private String fechaProcesadaFormato;
     private Long cantidadDeclarado;
     private Long cantidadProcesado;
-    private Long montoProcesado;
-    private Long montoRechazado;
+    private BigDecimal montoProcesadoDolar;
+    private BigDecimal montoProcesadoSol;
+    private BigDecimal montoRechazadoDolar;
+    private BigDecimal montoRechazadoSol;
     private String estado;
     private boolean flagRespaldar;
     private boolean flagRestaurar;
 
     public DetalleConsultaArchivoMasivasDTO(Long idArchivo, String nombre, LocalDateTime fechaObtencion, LocalDateTime fechaProcesada, Long cantidadDeclarado, Long cantidadProcesado,
-            Long montoProcesado, Long montoRechazado, String estado, boolean flagRespaldar, boolean flagRestaurar) {
+            Long montoProcesadoDolar, Long montoProcesadoSol, Long montoRechazadoDolar, Long montoRechazadoSol, String estado, boolean flagRespaldar, boolean flagRestaurar) {
         this.idArchivo = idArchivo;
         this.nombre = nombre;
         this.fechaObtencion = fechaObtencion;
@@ -44,8 +46,10 @@ public class DetalleConsultaArchivoMasivasDTO implements Serializable {
         this.fechaProcesadaFormato = FuncionesUtil.formatearLocalDateTimeToString_conHora(fechaProcesada);
         this.cantidadDeclarado = cantidadDeclarado;
         this.cantidadProcesado = cantidadProcesado;
-        this.montoProcesado = montoProcesado;
-        this.montoRechazado = montoRechazado;
+        this.montoProcesadoDolar = FuncionesUtil.convertirABigDecimal(montoProcesadoDolar).movePointLeft(2);
+        this.montoProcesadoSol = FuncionesUtil.convertirABigDecimal(montoProcesadoSol).movePointLeft(2);
+        this.montoRechazadoDolar = FuncionesUtil.convertirABigDecimal(montoRechazadoDolar).movePointLeft(2);
+        this.montoRechazadoSol = FuncionesUtil.convertirABigDecimal(montoRechazadoSol).movePointLeft(2);
         this.estado = estado;
         this.flagRespaldar = flagRespaldar;
         this.flagRestaurar = flagRestaurar;

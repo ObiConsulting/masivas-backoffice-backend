@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 9.0.0.final using JasperReports Library version 6.21.0-4f56c4f36cd19e17675219a9ac4692d5f0f13b06  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteDetalleArchivoMasivas" pageWidth="1250" pageHeight="900" columnWidth="1210" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a9220343-1f3f-4064-a8c4-e9c50a2e6785">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteDetalleArchivoMasivas" pageWidth="1370" pageHeight="900" columnWidth="1330" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a9220343-1f3f-4064-a8c4-e9c50a2e6785">
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="net.sf.jasperreports.export.xlsx.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -13,7 +13,8 @@
 		<field name="cuentaOrigen" class="java.lang.String"/>
 		<field name="numeroDocumento" class="java.lang.String"/>
 		<field name="cuentaDestino" class="java.lang.String"/>
-		<field name="importe" class="java.lang.Long"/>
+		<field name="importe" class="java.math.BigDecimal"/>
+		<field name="moneda" class="java.lang.String"/>
 		<field name="tipoTransaccion" class="java.lang.String"/>
 		<field name="fechaFormato" class="java.lang.String"/>
 		<field name="codigoRechazo" class="java.lang.String"/>
@@ -58,7 +59,7 @@
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="230" y="0" width="780" height="60" forecolor="#263238" uuid="423db5c6-5f4a-4bf1-9fe9-017bd4118109">
+				<reportElement x="230" y="0" width="899" height="60" forecolor="#263238" uuid="423db5c6-5f4a-4bf1-9fe9-017bd4118109">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -67,7 +68,7 @@
 				<text><![CDATA[Reporte de Detalle de Masivas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1010" y="0" width="100" height="20" uuid="f3ff5184-3af0-4883-a98b-11bc411fe065">
+				<reportElement x="1129" y="0" width="100" height="20" uuid="f3ff5184-3af0-4883-a98b-11bc411fe065">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box rightPadding="4"/>
@@ -77,7 +78,7 @@
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement mode="Opaque" x="1110" y="0" width="70" height="20" uuid="3efa3c26-5997-4d5e-bb23-de9bb51e526a">
+				<reportElement mode="Opaque" x="1229" y="0" width="70" height="20" uuid="3efa3c26-5997-4d5e-bb23-de9bb51e526a">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -87,7 +88,7 @@
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1010" y="20" width="100" height="20" uuid="283342b9-f95b-4732-a3d1-71206d81cd86">
+				<reportElement x="1129" y="20" width="100" height="20" uuid="283342b9-f95b-4732-a3d1-71206d81cd86">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -98,7 +99,7 @@
 				<text><![CDATA[Hora:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="1110" y="20" width="70" height="20" uuid="6ecdc6cd-9dc2-4581-bb27-b079d244c1c5">
+				<reportElement x="1229" y="20" width="70" height="20" uuid="6ecdc6cd-9dc2-4581-bb27-b079d244c1c5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
@@ -108,7 +109,7 @@
 				<textFieldExpression><![CDATA[$P{IN_HORA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1010" y="40" width="100" height="20" uuid="6035b52e-6587-4617-9a35-4e2a0fd7615b">
+				<reportElement x="1129" y="40" width="100" height="20" uuid="6035b52e-6587-4617-9a35-4e2a0fd7615b">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -119,7 +120,7 @@
 				<text><![CDATA[Generado por:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="1110" y="40" width="70" height="20" uuid="2c2c9e94-b125-4783-844a-9af1c2e5ca9c">
+				<reportElement x="1229" y="40" width="70" height="20" uuid="2c2c9e94-b125-4783-844a-9af1c2e5ca9c">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -129,10 +130,10 @@
 				<textFieldExpression><![CDATA[$P{IN_GENERADO}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="30" y="70" width="1150" height="1" forecolor="#263238" uuid="3b4b18a5-ddcc-489b-9e61-1e803248cd06"/>
+				<reportElement x="30" y="70" width="1269" height="1" forecolor="#263238" uuid="3b4b18a5-ddcc-489b-9e61-1e803248cd06"/>
 			</line>
 			<rectangle>
-				<reportElement mode="Transparent" x="30" y="80" width="1149" height="70" forecolor="#263238" uuid="d59ef414-f247-4555-b01f-d20f4994d7f9"/>
+				<reportElement mode="Transparent" x="30" y="80" width="1269" height="70" forecolor="#263238" uuid="d59ef414-f247-4555-b01f-d20f4994d7f9"/>
 			</rectangle>
 			<staticText>
 				<reportElement x="60" y="90" width="120" height="20" uuid="87db820b-4fc1-479e-ae02-5ab32c20d3b9"/>
@@ -150,7 +151,7 @@
 				<textFieldExpression><![CDATA[$P{IN_NOMBRE_ARCHIVO}.isEmpty() ? "TODOS" : $P{IN_NOMBRE_ARCHIVO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="510" y="90" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="9bfd0411-11ff-42ec-9335-97a3793dec1e">
+				<reportElement mode="Transparent" x="520" y="90" width="150" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="9bfd0411-11ff-42ec-9335-97a3793dec1e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="None" markup="none">
@@ -160,7 +161,7 @@
 				<textFieldExpression><![CDATA[$P{IN_FECHA_OBTENCION}.isEmpty() ? "TODOS" : $P{IN_FECHA_OBTENCION}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="390" y="90" width="120" height="20" uuid="0e41e26a-6fe1-48c8-94c8-6f447d85f7ea">
+				<reportElement x="400" y="90" width="120" height="20" uuid="0e41e26a-6fe1-48c8-94c8-6f447d85f7ea">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -187,14 +188,14 @@
 				<textFieldExpression><![CDATA[$P{IN_TOTAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="890" y="90" width="120" height="20" uuid="a6ab0089-c5b2-460f-b449-0dabbe3ce106"/>
+				<reportElement x="1010" y="90" width="120" height="20" uuid="a6ab0089-c5b2-460f-b449-0dabbe3ce106"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cuenta Origen:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="1010" y="90" width="140" height="20" uuid="6163c525-c8aa-4ecf-8f79-302f63980133"/>
+				<reportElement x="1130" y="90" width="140" height="20" uuid="6163c525-c8aa-4ecf-8f79-302f63980133"/>
 				<box leftPadding="4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
@@ -202,7 +203,7 @@
 				<textFieldExpression><![CDATA[$P{IN_CUENTA_ORIGEN}.isEmpty() ? "TODOS" : $P{IN_CUENTA_ORIGEN}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="760" y="90" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="6b2b47da-93af-4587-8807-f8289b2a9b4a">
+				<reportElement mode="Transparent" x="830" y="90" width="140" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="6b2b47da-93af-4587-8807-f8289b2a9b4a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="None" markup="none">
@@ -212,7 +213,7 @@
 				<textFieldExpression><![CDATA[$P{IN_FECHA_PROCESADA}.isEmpty() ? "TODOS" : $P{IN_FECHA_PROCESADA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="640" y="90" width="120" height="20" uuid="a7a7f159-958f-417c-a3cb-def915ee46b9">
+				<reportElement x="710" y="90" width="120" height="20" uuid="a7a7f159-958f-417c-a3cb-def915ee46b9">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -236,7 +237,7 @@
 				<textFieldExpression><![CDATA[$P{IN_CUENTA_DESTINO}.isEmpty() ? "TODOS" : $P{IN_CUENTA_DESTINO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="390" y="120" width="120" height="20" uuid="cb4f9acf-18cf-492b-a8d1-620daf0b26cf">
+				<reportElement x="400" y="120" width="120" height="20" uuid="cb4f9acf-18cf-492b-a8d1-620daf0b26cf">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -245,7 +246,7 @@
 				<text><![CDATA[Motivo Rechazo:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="510" y="120" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="125d327b-ea61-4df9-b59a-a4cc312cea95">
+				<reportElement mode="Transparent" x="520" y="120" width="150" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="125d327b-ea61-4df9-b59a-a4cc312cea95">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="None" markup="none">
@@ -255,7 +256,7 @@
 				<textFieldExpression><![CDATA[$P{IN_MOTIVO_RECHAZO}.isEmpty() ? "TODOS" : $P{IN_MOTIVO_RECHAZO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="640" y="120" width="120" height="20" uuid="2e694486-25b7-478f-b0b1-f2d664fd752c">
+				<reportElement x="710" y="120" width="120" height="20" uuid="2e694486-25b7-478f-b0b1-f2d664fd752c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -264,7 +265,7 @@
 				<text><![CDATA[Tipo Transacción:]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="760" y="120" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="0d6b3636-ec71-42aa-b928-ebc320ce197a">
+				<reportElement mode="Transparent" x="830" y="120" width="140" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="0d6b3636-ec71-42aa-b928-ebc320ce197a">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="None" markup="none">
@@ -330,7 +331,7 @@
 				<text><![CDATA[Cuenta Origen]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="1100" y="0" width="80" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="1ed8e88d-6b85-4548-982d-31d2f2bf2337">
+				<reportElement mode="Opaque" x="1220" y="0" width="80" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="1ed8e88d-6b85-4548-982d-31d2f2bf2337">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -356,7 +357,7 @@
 				<text><![CDATA[Cuenta Destino]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="770" y="0" width="80" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="94512e41-db46-4af5-b6da-1d03cdcce3c5">
+				<reportElement mode="Opaque" x="870" y="0" width="100" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="94512e41-db46-4af5-b6da-1d03cdcce3c5">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -368,7 +369,7 @@
 				<text><![CDATA[Tipo Transacción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="620" y="0" width="150" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="5c02fd22-6c3c-4163-9190-38b5983485b2">
+				<reportElement mode="Opaque" x="720" y="0" width="150" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="5c02fd22-6c3c-4163-9190-38b5983485b2">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -380,7 +381,7 @@
 				<text><![CDATA[Importe]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="850" y="0" width="100" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="038ab537-1885-449f-a800-38890f000c5b">
+				<reportElement mode="Opaque" x="970" y="0" width="100" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="038ab537-1885-449f-a800-38890f000c5b">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -392,7 +393,7 @@
 				<text><![CDATA[Fecha]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="950" y="0" width="70" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="6b6e1043-69e6-4288-9878-a12cd1352009">
+				<reportElement mode="Opaque" x="1070" y="0" width="70" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="6b6e1043-69e6-4288-9878-a12cd1352009">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -404,7 +405,7 @@
 				<text><![CDATA[Código Rechazo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="1020" y="0" width="80" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="49d808dc-8a2f-4b70-88a3-d99ac0f84b78">
+				<reportElement mode="Opaque" x="1140" y="0" width="80" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="49d808dc-8a2f-4b70-88a3-d99ac0f84b78">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -415,13 +416,25 @@
 				</textElement>
 				<text><![CDATA[Motivo Rechazo]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="620" y="0" width="100" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="de1176f4-332d-4c0f-8198-4d11971db581">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Moneda]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="80" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<componentElement>
-				<reportElement x="30" y="0" width="1150" height="80" uuid="a8dec6ca-7b38-49fe-96ef-2b51f467e3fe">
+				<reportElement x="30" y="0" width="1270" height="80" uuid="a8dec6ca-7b38-49fe-96ef-2b51f467e3fe">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -557,8 +570,30 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="150" uuid="88d06bfb-b0b8-4e95-a011-2361dc9c7e06">
+					<jr:column width="100" uuid="8f87ef7a-26d7-4c4c-90a6-36e9bbe55c14">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader height="0" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</jr:columnHeader>
+						<jr:detailCell height="30">
+							<box>
+								<pen lineWidth="0.5" lineColor="#EEEEEE"/>
+								<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+								<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+								<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+								<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+							</box>
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="100" height="30" uuid="01f5c14c-3cdb-49be-b8d5-877a6d7b9f14"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{moneda}.isEmpty() ? "-" : $F{moneda}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="150" uuid="88d06bfb-b0b8-4e95-a011-2361dc9c7e06">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</jr:columnHeader>
@@ -579,8 +614,8 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="96ed91b7-2b00-4f8d-9bdb-b31dd58558f1">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+					<jr:column width="100" uuid="96ed91b7-2b00-4f8d-9bdb-b31dd58558f1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</jr:columnHeader>
@@ -593,7 +628,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
 							</box>
 							<textField>
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="30" uuid="7c65a2a0-d655-473e-88a0-0a2d0b09fe7e"/>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="100" height="30" uuid="7c65a2a0-d655-473e-88a0-0a2d0b09fe7e"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -602,7 +637,7 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="100" uuid="9c77810c-f0b6-440c-8f20-26de84dc14a5">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</jr:columnHeader>
@@ -624,7 +659,7 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="70" uuid="5e0e3699-b8f6-4e37-8064-9c25afae784e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</jr:columnHeader>
@@ -646,7 +681,7 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="80" uuid="b118d674-d0cb-43d4-abd1-9a078cec7633">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</jr:columnHeader>
@@ -668,7 +703,7 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="80" uuid="f7f2c4a1-e676-4c5f-ad00-b2b49bf2e71c">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="5"/>
@@ -698,7 +733,7 @@
 		<band height="20" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement mode="Opaque" x="1079" y="0" width="100" height="20" forecolor="#FFFFFF" backcolor="#096AC6" uuid="5efcd053-2058-45ad-aa4f-b999d10cfd33">
+				<reportElement mode="Opaque" x="1200" y="0" width="100" height="20" forecolor="#FFFFFF" backcolor="#096AC6" uuid="5efcd053-2058-45ad-aa4f-b999d10cfd33">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$P{IN_FILE_TYPE}.equals( "PDF" )]]></printWhenExpression>
 				</reportElement>

@@ -4,6 +4,7 @@ import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoMasivasDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoTitularidadDTO;
+import com.novatronic.masivas.backoffice.dto.ArchivoResponseDTO;
 import com.novatronic.masivas.backoffice.dto.EjecutarResponseDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
@@ -40,6 +41,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -76,14 +78,6 @@ public class ArchivoServiceTest {
         ReflectionTestUtils.setField(archivoService, "apiCoreUrl", "http://172.29.42.30:8408/gestor/tareas/ejecutar");
     }
 
-//    private MasivasRequestDTO crearRequest() {
-//        MasivasRequestDTO request = new MasivasRequestDTO();
-//        request.setIdParametro(123l);
-//        request.setCodigo("1234");
-//        request.setNombre("Parametro Prueba");
-//        request.setEstado(ConstantesServices.ESTADO_INACTIVO);
-//        return request;
-//    }
     @Test
     void buscarArchivoDirectorio_exito() {
 
@@ -111,8 +105,7 @@ public class ArchivoServiceTest {
         request.setFechaFin(LocalDate.now());
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(archivoDirectorioRepository.buscarPorFiltros(any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -171,8 +164,7 @@ public class ArchivoServiceTest {
         request.setFechaFinProcesada(LocalDateTime.now());
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(archivoMasivasRepository.buscarPorFiltros(any(), any(), any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -233,8 +225,7 @@ public class ArchivoServiceTest {
         request.setFechaFinProcesada(LocalDateTime.now());
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(archivoTitularidadRepository.buscarPorFiltros(any(), any(), any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -290,8 +281,7 @@ public class ArchivoServiceTest {
         request.setFechaFin(LocalDate.now());
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(archivoDirectorioRepository.buscarPorFiltros(any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -339,8 +329,7 @@ public class ArchivoServiceTest {
         request.setFechaFinProcesada(LocalDateTime.now());
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(archivoMasivasRepository.buscarPorFiltros(any(), any(), any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -388,8 +377,7 @@ public class ArchivoServiceTest {
         request.setFechaFinProcesada(LocalDateTime.now());
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
         when(archivoTitularidadRepository.buscarPorFiltros(any(), any(), any(), any(), any(), any(Pageable.class))).thenThrow(genericEx);
 
@@ -419,14 +407,18 @@ public class ArchivoServiceTest {
         directorio.setIdArchivo(1l);
         Optional<TpArchivoDirectorio> optionalMok = Optional.of(directorio);
 
-        when(archivoDirectorioRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoDirectorioRepository.findById(any())).thenReturn(optionalMok);
 
-        EjecutarResponseDTO respuestaSimulada = new EjecutarResponseDTO();
+        ArchivoResponseDTO respuestaSimulada = new ArchivoResponseDTO();
         respuestaSimulada.setEstado(1L);
         respuestaSimulada.setFechaProceso(LocalDateTime.now());
+        List<ArchivoResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
 
-        List<EjecutarResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(listaRespuesta, HttpStatus.OK);
+        EjecutarResponseDTO response = new EjecutarResponseDTO();
+        response.setArchivos(listaRespuesta);
+        response.setCodigoRespuesta(ConstantesServices.CODIGO_OK_WS);
+
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -446,14 +438,18 @@ public class ArchivoServiceTest {
         directorio.setIdArchivo(1l);
         Optional<TpArchivoDirectorio> optionalMok = Optional.of(directorio);
 
-        when(archivoDirectorioRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoDirectorioRepository.findById(any())).thenReturn(optionalMok);
 
-        EjecutarResponseDTO respuestaSimulada = new EjecutarResponseDTO();
+        ArchivoResponseDTO respuestaSimulada = new ArchivoResponseDTO();
         respuestaSimulada.setEstado(1L);
         respuestaSimulada.setFechaProceso(LocalDateTime.now());
+        List<ArchivoResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
 
-        List<EjecutarResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(listaRespuesta, HttpStatus.OK);
+        EjecutarResponseDTO response = new EjecutarResponseDTO();
+        response.setArchivos(listaRespuesta);
+        response.setCodigoRespuesta(ConstantesServices.CODIGO_OK_WS);
+
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -480,7 +476,7 @@ public class ArchivoServiceTest {
 
         Optional<TpArchivoDirectorio> optionalMok = Optional.empty();
 
-        when(archivoDirectorioRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoDirectorioRepository.findById(any())).thenReturn(optionalMok);
 
         NoOperationExistsException thrown = assertThrows(NoOperationExistsException.class, () -> {
             archivoService.gestionarOperacionDirectorio(request);
@@ -494,10 +490,9 @@ public class ArchivoServiceTest {
         request.setIdEntidad(12l);
         request.setTipoAccion(ConstantesServices.TIPO_ACCION_RESPALDAR);
 
-        RollbackException rollbackEx = new RollbackException("");
-        RuntimeException genericEx = new RuntimeException("", rollbackEx);
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
 
-        when(archivoDirectorioRepository.getByNombre(any())).thenThrow(genericEx);
+        when(archivoDirectorioRepository.findById(any())).thenThrow(genericEx);
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
             archivoService.gestionarOperacionDirectorio(request);
@@ -511,7 +506,7 @@ public class ArchivoServiceTest {
         request.setIdEntidad(12l);
         request.setTipoAccion(ConstantesServices.TIPO_ACCION_RESPALDAR);
 
-        when(archivoDirectorioRepository.getByNombre(any())).thenReturn(null);
+        when(archivoDirectorioRepository.findById(any())).thenReturn(null);
 
         GenericException thrown = assertThrows(GenericException.class, () -> {
             archivoService.gestionarOperacionDirectorio(request);
@@ -531,9 +526,9 @@ public class ArchivoServiceTest {
         directorio.setIdArchivo(1l);
         Optional<TpArchivoDirectorio> optionalMok = Optional.of(directorio);
 
-        when(archivoDirectorioRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoDirectorioRepository.findById(any())).thenReturn(optionalMok);
 
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -555,14 +550,19 @@ public class ArchivoServiceTest {
         directorio.setIdArchivo(1l);
         Optional<TpArchivoDirectorio> optionalMok = Optional.of(directorio);
 
-        when(archivoDirectorioRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoDirectorioRepository.findById(any())).thenReturn(optionalMok);
 
-        EjecutarResponseDTO respuestaSimulada = new EjecutarResponseDTO();
+        ArchivoResponseDTO respuestaSimulada = new ArchivoResponseDTO();
         respuestaSimulada.setEstado(null);
         respuestaSimulada.setFechaProceso(LocalDateTime.now());
 
-        List<EjecutarResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(listaRespuesta, HttpStatus.OK);
+        List<ArchivoResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
+
+        EjecutarResponseDTO response = new EjecutarResponseDTO();
+        response.setCodigoRespuesta("9999");
+        response.setArchivos(listaRespuesta);
+
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -584,14 +584,18 @@ public class ArchivoServiceTest {
         masivas.setIdArchivo(1l);
         Optional<TpArchivoMasivas> optionalMok = Optional.of(masivas);
 
-        when(archivoMasivasRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoMasivasRepository.findById(any())).thenReturn(optionalMok);
 
-        EjecutarResponseDTO respuestaSimulada = new EjecutarResponseDTO();
+        ArchivoResponseDTO respuestaSimulada = new ArchivoResponseDTO();
         respuestaSimulada.setEstado(1L);
         respuestaSimulada.setFechaProceso(LocalDateTime.now());
+        List<ArchivoResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
 
-        List<EjecutarResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(listaRespuesta, HttpStatus.OK);
+        EjecutarResponseDTO response = new EjecutarResponseDTO();
+        response.setArchivos(listaRespuesta);
+        response.setCodigoRespuesta(ConstantesServices.CODIGO_OK_WS);
+
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -611,14 +615,18 @@ public class ArchivoServiceTest {
         masivas.setIdArchivo(1l);
         Optional<TpArchivoMasivas> optionalMok = Optional.of(masivas);
 
-        when(archivoMasivasRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoMasivasRepository.findById(any())).thenReturn(optionalMok);
 
-        EjecutarResponseDTO respuestaSimulada = new EjecutarResponseDTO();
+        ArchivoResponseDTO respuestaSimulada = new ArchivoResponseDTO();
         respuestaSimulada.setEstado(1L);
         respuestaSimulada.setFechaProceso(LocalDateTime.now());
+        List<ArchivoResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
 
-        List<EjecutarResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(listaRespuesta, HttpStatus.OK);
+        EjecutarResponseDTO response = new EjecutarResponseDTO();
+        response.setArchivos(listaRespuesta);
+        response.setCodigoRespuesta(ConstantesServices.CODIGO_OK_WS);
+
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -645,7 +653,7 @@ public class ArchivoServiceTest {
 
         Optional<TpArchivoMasivas> optionalMok = Optional.empty();
 
-        when(archivoMasivasRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoMasivasRepository.findById(any())).thenReturn(optionalMok);
 
         NoOperationExistsException thrown = assertThrows(NoOperationExistsException.class, () -> {
             archivoService.gestionarOperacionMasivas(request);
@@ -662,7 +670,7 @@ public class ArchivoServiceTest {
         RollbackException rollbackEx = new RollbackException("");
         RuntimeException genericEx = new RuntimeException("", rollbackEx);
 
-        when(archivoMasivasRepository.getByNombre(any())).thenThrow(genericEx);
+        when(archivoMasivasRepository.findById(any())).thenThrow(genericEx);
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
             archivoService.gestionarOperacionMasivas(request);
@@ -676,7 +684,7 @@ public class ArchivoServiceTest {
         request.setIdEntidad(12l);
         request.setTipoAccion(ConstantesServices.TIPO_ACCION_RESPALDAR);
 
-        when(archivoMasivasRepository.getByNombre(any())).thenReturn(null);
+        when(archivoMasivasRepository.findById(any())).thenReturn(null);
 
         GenericException thrown = assertThrows(GenericException.class, () -> {
             archivoService.gestionarOperacionMasivas(request);
@@ -696,14 +704,18 @@ public class ArchivoServiceTest {
         titularidad.setIdArchivo(1l);
         Optional<TpArchivoTitularidad> optionalMok = Optional.of(titularidad);
 
-        when(archivoTitularidadRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoTitularidadRepository.findById(any())).thenReturn(optionalMok);
 
-        EjecutarResponseDTO respuestaSimulada = new EjecutarResponseDTO();
+        ArchivoResponseDTO respuestaSimulada = new ArchivoResponseDTO();
         respuestaSimulada.setEstado(1L);
         respuestaSimulada.setFechaProceso(LocalDateTime.now());
+        List<ArchivoResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
 
-        List<EjecutarResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(listaRespuesta, HttpStatus.OK);
+        EjecutarResponseDTO response = new EjecutarResponseDTO();
+        response.setArchivos(listaRespuesta);
+        response.setCodigoRespuesta(ConstantesServices.CODIGO_OK_WS);
+
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -723,14 +735,18 @@ public class ArchivoServiceTest {
         titularidad.setIdArchivo(1l);
         Optional<TpArchivoTitularidad> optionalMok = Optional.of(titularidad);
 
-        when(archivoTitularidadRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoTitularidadRepository.findById(any())).thenReturn(optionalMok);
 
-        EjecutarResponseDTO respuestaSimulada = new EjecutarResponseDTO();
+        ArchivoResponseDTO respuestaSimulada = new ArchivoResponseDTO();
         respuestaSimulada.setEstado(1L);
         respuestaSimulada.setFechaProceso(LocalDateTime.now());
+        List<ArchivoResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
 
-        List<EjecutarResponseDTO> listaRespuesta = Collections.singletonList(respuestaSimulada);
-        ResponseEntity<List<EjecutarResponseDTO>> responseEntity = new ResponseEntity<>(listaRespuesta, HttpStatus.OK);
+        EjecutarResponseDTO response = new EjecutarResponseDTO();
+        response.setArchivos(listaRespuesta);
+        response.setCodigoRespuesta(ConstantesServices.CODIGO_OK_WS);
+
+        ResponseEntity<EjecutarResponseDTO> responseEntity = new ResponseEntity<>(response, HttpStatus.OK);
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
@@ -757,7 +773,7 @@ public class ArchivoServiceTest {
 
         Optional<TpArchivoTitularidad> optionalMok = Optional.empty();
 
-        when(archivoTitularidadRepository.getByNombre(any())).thenReturn(optionalMok);
+        when(archivoTitularidadRepository.findById(any())).thenReturn(optionalMok);
 
         NoOperationExistsException thrown = assertThrows(NoOperationExistsException.class, () -> {
             archivoService.gestionarOperacionTitularidad(request);
@@ -774,7 +790,7 @@ public class ArchivoServiceTest {
         RollbackException rollbackEx = new RollbackException("");
         RuntimeException genericEx = new RuntimeException("", rollbackEx);
 
-        when(archivoTitularidadRepository.getByNombre(any())).thenThrow(genericEx);
+        when(archivoTitularidadRepository.findById(any())).thenThrow(genericEx);
 
         DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
             archivoService.gestionarOperacionTitularidad(request);
@@ -788,7 +804,7 @@ public class ArchivoServiceTest {
         request.setIdEntidad(12l);
         request.setTipoAccion(ConstantesServices.TIPO_ACCION_RESPALDAR);
 
-        when(archivoTitularidadRepository.getByNombre(any())).thenReturn(null);
+        when(archivoTitularidadRepository.findById(any())).thenReturn(null);
 
         GenericException thrown = assertThrows(GenericException.class, () -> {
             archivoService.gestionarOperacionTitularidad(request);

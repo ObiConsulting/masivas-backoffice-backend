@@ -18,6 +18,7 @@ import lombok.ToString;
 public class DetalleReporteConsolidadoDTO implements Serializable {
 
     private String entidadDestino;
+    private String moneda;
     private Long totalTransferencias;
     private BigDecimal montoProcesado;
     private BigDecimal montoRechazado;

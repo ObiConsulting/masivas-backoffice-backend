@@ -25,6 +25,7 @@ import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -75,11 +76,9 @@ public class RutaService {
 
             return customPaginate;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -107,6 +106,8 @@ public class RutaService {
 
         } catch (NoOperationExistsException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -129,11 +130,9 @@ public class RutaService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_OBTENER, request.toStringRutaObtener());
             return rutaRepository.buscarPorId(request.getIdRuta());
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
     }

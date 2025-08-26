@@ -10,6 +10,7 @@
 			<![CDATA[]]>
 		</queryString>
 		<field name="entidadDestino" class="java.lang.String"/>
+		<field name="moneda" class="java.lang.String"/>
 		<field name="totalTransferencias" class="java.lang.Long"/>
 		<field name="montoProcesado" class="java.math.BigDecimal"/>
 		<field name="montoRechazado" class="java.math.BigDecimal"/>
@@ -22,6 +23,7 @@
 	<parameter name="IN_HORA" class="java.lang.String"/>
 	<parameter name="IN_GENERADO" class="java.lang.String"/>
 	<parameter name="IN_FECHA" class="java.lang.String"/>
+	<parameter name="IN_MONEDA" class="java.lang.String"/>
 	<parameter name="IN_TOTAL" class="java.lang.Integer"/>
 	<parameter name="IN_DATA_SOURCE" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="IN_FILE_TYPE" class="java.lang.String"/>
@@ -153,6 +155,21 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{IN_TOTAL}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="320" y="90" width="100" height="20" uuid="6ad3754c-ae0f-4c2c-aaa2-4ab2ff3e0256"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Moneda:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="420" y="90" width="120" height="20" uuid="e3b973cc-c44b-4e60-9109-3c5379d12751"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{IN_MONEDA}.isEmpty() ? "TODOS" :$P{IN_MONEDA}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>
@@ -160,7 +177,7 @@
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement mode="Opaque" x="380" y="0" width="150" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="0d60dbac-6260-4457-a649-4970ad914fab">
+				<reportElement mode="Opaque" x="380" y="0" width="130" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="0d60dbac-6260-4457-a649-4970ad914fab">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
@@ -197,7 +214,7 @@
 				<text><![CDATA[Entidad Destino]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="530" y="0" width="200" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="c9eb11ba-9579-4e39-b539-de06c521f28b">
+				<reportElement mode="Opaque" x="610" y="0" width="160" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="c9eb11ba-9579-4e39-b539-de06c521f28b">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -210,7 +227,7 @@
 				<text><![CDATA[Monto Procesado]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="730" y="0" width="200" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="1ed8e88d-6b85-4548-982d-31d2f2bf2337">
+				<reportElement mode="Opaque" x="770" y="0" width="160" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="1ed8e88d-6b85-4548-982d-31d2f2bf2337">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -221,6 +238,19 @@
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Monto Rechazado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="510" y="0" width="100" height="40" forecolor="#FFFFFF" backcolor="#096AC6" uuid="d9cf4837-571b-4b00-946c-d509339a9760">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Moneda]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -296,7 +326,7 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="150" uuid="d89bd983-9cc7-4c20-a0ac-c9cf469cadbf">
+					<jr:column width="130" uuid="d89bd983-9cc7-4c20-a0ac-c9cf469cadbf">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -311,7 +341,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
 							</box>
 							<textField pattern="#,##0">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="150" height="30" uuid="2f711111-7ade-4e02-90de-9f4736e6bc7a"/>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="130" height="30" uuid="2f711111-7ade-4e02-90de-9f4736e6bc7a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -319,8 +349,30 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="200" uuid="6425fe54-8542-428f-b1d0-a66c7bd072c5">
+					<jr:column width="100" uuid="7c14bc60-b681-42a3-9179-4d348e3c7ae6">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader height="0" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</jr:columnHeader>
+						<jr:detailCell height="30">
+							<box>
+								<pen lineWidth="0.5" lineColor="#EEEEEE"/>
+								<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+								<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+								<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+								<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
+							</box>
+							<textField>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="100" height="30" uuid="3af6c9d2-fa6d-4f38-898d-1b43ddada020"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{moneda}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="160" uuid="6425fe54-8542-428f-b1d0-a66c7bd072c5">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</jr:columnHeader>
@@ -334,7 +386,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
 							</box>
 							<textField pattern="#,##0.00">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="200" height="30" uuid="410a663c-ce2d-4e47-8bf9-ed5dbdfe0c4d"/>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="160" height="30" uuid="410a663c-ce2d-4e47-8bf9-ed5dbdfe0c4d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>
@@ -342,8 +394,8 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="200" uuid="f7f2c4a1-e676-4c5f-ad00-b2b49bf2e71c">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+					<jr:column width="160" uuid="f7f2c4a1-e676-4c5f-ad00-b2b49bf2e71c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:columnHeader height="0" rowSpan="1">
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="5"/>
@@ -357,7 +409,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#EEEEEE"/>
 							</box>
 							<textField pattern="#,##0.00">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="200" height="30" uuid="1951dca4-729f-4c80-9755-3aeb62a7e67d"/>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="160" height="30" uuid="1951dca4-729f-4c80-9755-3aeb62a7e67d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="9"/>
 								</textElement>

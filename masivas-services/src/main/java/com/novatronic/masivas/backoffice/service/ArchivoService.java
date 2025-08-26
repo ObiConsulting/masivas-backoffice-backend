@@ -6,6 +6,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoMasivasDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoTitularidadDTO;
 import com.novatronic.masivas.backoffice.dto.EjecutarRequestDTO;
+import com.novatronic.masivas.backoffice.dto.ArchivoResponseDTO;
 import com.novatronic.masivas.backoffice.dto.EjecutarResponseDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -110,11 +112,9 @@ public class ArchivoService {
 
             return customPaginate;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -148,11 +148,9 @@ public class ArchivoService {
 
             return customPaginate;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -186,11 +184,9 @@ public class ArchivoService {
 
             return customPaginate;
 
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
-            Throwable excepcion = e.getCause();
-            if (excepcion instanceof RollbackException) {
-                throw new DataBaseException(e);
-            }
             throw new GenericException(e);
         }
 
@@ -313,23 +309,22 @@ public class ArchivoService {
 
         try {
             String codigoAccion = "";
-            String codigoOperacion;
 
             switch (request.getTipoAccion()) {
                 case ConstantesServices.TIPO_ACCION_RESPALDAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESPALDAR_ARCHIVO, request.toStringRespaldarResturarObtener());
-                    codigoAccion = "5";//TODO
+                    codigoAccion = ConstantesServices.COD_ACCION_RESPALDAR;
                 }
                 case ConstantesServices.TIPO_ACCION_RESTAURAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESTAURAR_ARCHIVO, request.toStringRespaldarResturarObtener());
-                    codigoAccion = "6";//TODO
+                    codigoAccion = ConstantesServices.COD_ACCION_RESTAURAR;
                 }
                 default -> {
                     throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
                 }
             }
 
-            Optional<TpArchivoDirectorio> archivoDirectorio = archivoDirectorioRepository.getByNombre(request.getNombreArchivo());
+            Optional<TpArchivoDirectorio> archivoDirectorio = archivoDirectorioRepository.findById(request.getIdArchivo());
 
             if (!archivoDirectorio.isPresent()) {
                 throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
@@ -344,9 +339,7 @@ public class ArchivoService {
             List<ArchivoDTO> listaArchivo = new ArrayList<>();
             listaArchivo.add(archivo);
 
-            codigoOperacion = "DIR"; //TODO
-
-            EjecutarResponseDTO respuesta = invocarServicio(listaArchivo, codigoOperacion, codigoAccion);
+            ArchivoResponseDTO respuesta = invocarServicio(listaArchivo, ConstantesServices.TIPO_DIRECTORIO, codigoAccion);
 
             //Actualizamos el registro
             directorio.setEstadoFisico(respuesta.getEstado());
@@ -358,6 +351,8 @@ public class ArchivoService {
 
         } catch (NoOperationExistsException | ActionRestCoreException | RestClientException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -379,23 +374,22 @@ public class ArchivoService {
 
         try {
             String codigoAccion = "";
-            String codigoOperacion;
 
             switch (request.getTipoAccion()) {
                 case ConstantesServices.TIPO_ACCION_RESPALDAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESPALDAR_ARCHIVO, request.toStringRespaldarResturarObtener());
-                    codigoAccion = "5";//TODO
+                    codigoAccion = ConstantesServices.COD_ACCION_RESPALDAR;
                 }
                 case ConstantesServices.TIPO_ACCION_RESTAURAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESTAURAR_ARCHIVO, request.toStringRespaldarResturarObtener());
-                    codigoAccion = "6";//TODO
+                    codigoAccion = ConstantesServices.COD_ACCION_RESTAURAR;
                 }
                 default -> {
                     throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
                 }
             }
 
-            Optional<TpArchivoMasivas> archivoMasivas = archivoMasivasRepository.getByNombre(request.getNombreArchivo());
+            Optional<TpArchivoMasivas> archivoMasivas = archivoMasivasRepository.findById(request.getIdArchivo());
 
             if (!archivoMasivas.isPresent()) {
                 throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
@@ -410,9 +404,7 @@ public class ArchivoService {
             List<ArchivoDTO> listaArchivo = new ArrayList<>();
             listaArchivo.add(archivo);
 
-            codigoOperacion = "MAS"; //TODO
-
-            EjecutarResponseDTO respuesta = invocarServicio(listaArchivo, codigoOperacion, codigoAccion);
+            ArchivoResponseDTO respuesta = invocarServicio(listaArchivo, ConstantesServices.TIPO_MASIVAS, codigoAccion);
 
             //Actualizamos el registro
             masivas.setEstadoFisico(respuesta.getEstado());
@@ -424,6 +416,8 @@ public class ArchivoService {
 
         } catch (NoOperationExistsException | ActionRestCoreException | RestClientException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -445,23 +439,22 @@ public class ArchivoService {
 
         try {
             String codigoAccion = "";
-            String codigoOperacion;
 
             switch (request.getTipoAccion()) {
                 case ConstantesServices.TIPO_ACCION_RESPALDAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESPALDAR_ARCHIVO, request.toStringRespaldarResturarObtener());
-                    codigoAccion = "5";//TODO
+                    codigoAccion = ConstantesServices.COD_ACCION_RESPALDAR;
                 }
                 case ConstantesServices.TIPO_ACCION_RESTAURAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESTAURAR_ARCHIVO, request.toStringRespaldarResturarObtener());
-                    codigoAccion = "6";//TODO
+                    codigoAccion = ConstantesServices.COD_ACCION_RESTAURAR;
                 }
                 default -> {
                     throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
                 }
             }
 
-            Optional<TpArchivoTitularidad> archivoTitularidad = archivoTitularidadRepository.getByNombre(request.getNombreArchivo());
+            Optional<TpArchivoTitularidad> archivoTitularidad = archivoTitularidadRepository.findById(request.getIdArchivo());
 
             if (!archivoTitularidad.isPresent()) {
                 throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
@@ -476,9 +469,7 @@ public class ArchivoService {
             List<ArchivoDTO> listaArchivo = new ArrayList<>();
             listaArchivo.add(archivo);
 
-            codigoOperacion = "MAS"; //TODO
-
-            EjecutarResponseDTO respuesta = invocarServicio(listaArchivo, codigoOperacion, codigoAccion);
+            ArchivoResponseDTO respuesta = invocarServicio(listaArchivo, ConstantesServices.TIPO_TITULARIDAD, codigoAccion);
 
             //Actualizamos el registro
             titularidad.setEstadoFisico(respuesta.getEstado());
@@ -490,6 +481,8 @@ public class ArchivoService {
 
         } catch (NoOperationExistsException | ActionRestCoreException | RestClientException e) {
             throw e;
+        } catch (DataAccessException e) {
+            throw new DataBaseException(e);
         } catch (Exception e) {
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
@@ -500,12 +493,12 @@ public class ArchivoService {
 
     }
 
-    private EjecutarResponseDTO invocarServicio(List<ArchivoDTO> archivo, String codigoOperacion, String codigoAccion) {
+    private ArchivoResponseDTO invocarServicio(List<ArchivoDTO> archivo, String codigoOperacion, String codigoAccion) {
 
         try {
 
-            String codServer = "3000"; //TODO sacarlo de la bd
-            String codEntidad = "0018"; //TODO sacarlo de la bd
+            String codServer = ConstantesServices.COD_SERVER_MASIVAS;
+            String codEntidad = genericService.getCodigoEntidadPropietaria();
             EjecutarRequestDTO ejecutarRequestDTO = new EjecutarRequestDTO(
                     ServicesUtil.generarNumeroAleatorio(),
                     codServer,
@@ -519,21 +512,21 @@ public class ArchivoService {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<EjecutarRequestDTO> entity = new HttpEntity<>(ejecutarRequestDTO, headers);
-            ResponseEntity<List<EjecutarResponseDTO>> response = restTemplate.exchange(apiCoreUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<List<EjecutarResponseDTO>>() {
+            ResponseEntity<EjecutarResponseDTO> response = restTemplate.exchange(apiCoreUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<EjecutarResponseDTO>() {
             });
 
-            List<EjecutarResponseDTO> listaResponse = response.getBody();
-            if (listaResponse == null) {
+            EjecutarResponseDTO ejecutarResponseDTO = response.getBody();
+            if (ejecutarResponseDTO == null) {
                 throw new ActionRestCoreException(ConstantesServices.CODIGO_ERROR_API_CORE_ACCION, ConstantesServices.MENSAJE_ERROR_API_CORE_ACCION);
             }
 
-            EjecutarResponseDTO respuesta = listaResponse.get(0);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_API_RESPONSE, apiCoreUrl, ejecutarResponseDTO);
 
             //Verificamos si existe un error en el response
-            if (respuesta.getEstado() == null) {
+            if (!ejecutarResponseDTO.getCodigoRespuesta().equals(ConstantesServices.CODIGO_OK_WS)) {
                 throw new ActionRestCoreException(ConstantesServices.CODIGO_ERROR_API_CORE_ACCION, ConstantesServices.MENSAJE_ERROR_API_CORE_ACCION);
             }
-            return respuesta;
+            return ejecutarResponseDTO.getArchivos().get(0);
 
         } catch (ActionRestCoreException | RestClientException e) {
             throw e;
@@ -547,6 +540,10 @@ public class ArchivoService {
     public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
         LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
                 null, accion, null, null, mensajeExito);
+    }
+
+    public void logError(String mensajeError, Exception e) {
+        LOGGER.error(mensajeError, e);
     }
 
 }

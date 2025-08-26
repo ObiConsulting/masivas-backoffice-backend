@@ -41,10 +41,6 @@ public class ConstantesServices {
     public static final String TIPO_ACCION_RESPALDAR = "Backup";
     public static final String TIPO_ACCION_RESTAURAR = "Restore";
 
-    public static final String TIPO_DIRECTORIO = "DIR";
-    public static final String TIPO_MASIVAS = "MAS";
-    public static final String TIPO_TITULARIDAD = "TIT";
-
     //Para los Estados
     public static final String ESTADO_INACTIVO = "0";
     public static final String ESTADO_ACTIVO = "1";
@@ -52,17 +48,27 @@ public class ConstantesServices {
     public static final String ESTADO_ACTIVO_DESCRIPCION = "Activo";
 
     //Para los Estados de los archivos
-    public static final String CODIGO_GRUPO_ESTADO = "050";
     public static final String CODIGOS_ESTADOS_ARCHIVO = "0700,0701,0702,0703";
     public static final String ID_GRUPO_CATEGORIA_DIRECTORIO = "1";
     public static final String ID_GRUPO_TIPO_ARCHIVO = "3";
     public static final String ID_GRUPO_EXTENSION_BASE = "4";
+    public static final Long ID_GRUPO_EXTENSION_BASE_L = 4l;
     public static final String ID_GRUPO_EXTENSION_CONTROL = "6";
+    public static final Long ID_GRUPO_EXTENSION_CONTROL_L = 6l;
+    public static final String ID_GRUPO_MONEDA = "7";
     public static final String ID_GRUPO_ESTADO_ARCHIVOS = "8";
-    public static final String ID_TIPO_TRANSACCION = "9";
-    public static final String ID_MOTIVO_RECHAZO = "10";
+    public static final String ID_GRUPO_TIPO_TRANSACCION = "9";
+    public static final String ID_GRUPO_MOTIVO_RECHAZO = "10";
+    public static final String ID_GRUPO_RPTA_OPERADORA = "11";
 
-    public static final String PREFIJO_NUM_REF_HOST_LBTR = "LBTR";
+    //Respaldar/Restaurar
+    public static final String COD_SERVER_MASIVAS = "3000";
+    public static final String COD_ACCION_RESPALDAR = "5";
+    public static final String COD_ACCION_RESTAURAR = "6";
+    public static final String TIPO_DIRECTORIO = "DIR";
+    public static final String TIPO_MASIVAS = "MAS";
+    public static final String TIPO_TITULARIDAD = "TIT";
+
     public static final String CODIGO_OK_WS = "0000";
     public static final String CODIGO_OK = "00";
 
@@ -74,12 +80,14 @@ public class ConstantesServices {
     //Para Entidad Financiera
     public static final Long ID_PERFIL = 1L;
     public static final String NO_PROPIETARIO = "0";
+    public static final String PROPIETARIO = "1";
 
     //Para log
     public static final String MENSAJE_TRAZABILIDAD = "Procesando [{}]. Método [{}]. Valores: {}";
     public static final String MENSAJE_TRAZABILIDAD_ACCION = "Procesando [{}]. Valores: {}";
     public static final String MENSAJE_TRAZABILIDAD_RESULTADOS = "Total de registros obtenidos: [{}]";
     public static final String MENSAJE_TRAZABILIDAD_RESULTADOS_REPORTE = "Total de registros obtenidos {}: [{}]";
+    public static final String MENSAJE_TRAZABILIDAD_API_RESPONSE = "Respuesta de API {{}}: [{}]";
 
     public static final String METODO_REGISTRAR = "Registrar";
     public static final String METODO_CONSULTAR = "Consultar";

@@ -63,7 +63,7 @@ public class SeguridadController {
         MasivasResponse<LoginResponse> respuesta;
         try {
 
-            respuesta = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
+            respuesta = seguridadService.changePassword(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
 
             seguridadService.logEvento(respuesta.getMensaje());
 //            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, authRequest.getUsername(), ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD, respuesta.getMensaje());
@@ -136,7 +136,7 @@ public class SeguridadController {
         MasivasResponse<LoginResponse> respuesta;
         try {
 
-            respuesta = seguridadService.changePassFirstTime(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
+            respuesta = seguridadService.changePassword(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
 
             seguridadService.logEvento(respuesta.getMensaje());
             seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD, respuesta.getMensaje());

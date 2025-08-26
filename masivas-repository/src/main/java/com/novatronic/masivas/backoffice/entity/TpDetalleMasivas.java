@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,15 +50,19 @@ public class TpDetalleMasivas extends ModelAudit<String> implements Serializable
     @Column(name = "CCI_RECEPTOR_CIFRADO")
     private String cuentaDestino;
     @Basic(optional = false)
-    @Column(name = "MONTO", precision = 15, scale = 0)
-    private Long importe;
-//    @Column(name = "COD_TRANSACCION_EXTENDIDA")//00-> Aceptdda, 05->Rechazada,null-> si descresp =null en PROCESO, si es !=vacio sería TimeOut 
+    @Column(name = "MONTO", precision = 12, scale = 2)
+    private BigDecimal importe;
+    @Basic(optional = false)
+    @Size(max = 3)
+    @Column(name = "COD_MONEDA")
+    private String moneda;
     @Basic(optional = false)
     @Size(max = 1)
     @Column(name = "COD_TRANSACCION_EXTENDIDA")
     private String codTipoTransaccion;
     @Column(name = "FEC_TRANSACCION")
     private LocalDateTime fechaTransaccion;
+    //00-> Aceptada, 05->Rechazada, null-> si DESC_RESPUESTA = null en PROCESO, si es !=vacio sería TimeOut 
     @Size(max = 2)
     @Column(name = "COD_RESPUESTA")
     private String codigoRespuesta;
@@ -86,4 +91,7 @@ public class TpDetalleMasivas extends ModelAudit<String> implements Serializable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COD_TRANSACCION_EXTENDIDA", referencedColumnName = "COD_DETALLE_PARAMETRO", insertable = false, updatable = false)
     private TpParametro tipoTransaccion;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COD_MONEDA", referencedColumnName = "COD_DETALLE_PARAMETRO", insertable = false, updatable = false)
+    private TpParametro monedaDesc;
 }

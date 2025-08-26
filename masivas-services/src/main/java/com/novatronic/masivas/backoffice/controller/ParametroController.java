@@ -160,4 +160,12 @@ public class ParametroController {
                 ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
+
+    @GetMapping("/listarMoneda")
+    public ResponseEntity<MasivasResponse<Object>> listarMoneda(@AuthenticationPrincipal UserContext userContext) {
+        List<ParametroDTO> listaMoneda = genericService.getAllMoneda();
+        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
+                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaMoneda));
+    }
 }
