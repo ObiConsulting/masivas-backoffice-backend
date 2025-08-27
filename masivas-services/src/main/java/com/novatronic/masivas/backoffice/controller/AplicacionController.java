@@ -33,6 +33,14 @@ public class AplicacionController {
     @Autowired
     private AplicacionService aplicacionService;
 
+    /**
+     * Endpoint que realiza la creación de una aplicación en el sistema. Si la
+     * operación es exitosa, se retorna el ID de la aplicación recién creada.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse<Object>> registrarAplicacion(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idAplicacion = aplicacionService.crearAplicacion(request, userContext.getUsername());
@@ -41,6 +49,15 @@ public class AplicacionController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION, idAplicacion));
     }
 
+    /**
+     * Endpoing que realiza la busqueda de las aplicaciones en el sistema.
+     * Recibe un objeto con filtros de búsqueda, y retorna una lista paginada de
+     * aplicaciones que coincidan con dichos criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarAplicacion(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaAplicacionDTO> objPageable = aplicacionService.buscarAplicacion(request);
@@ -49,6 +66,14 @@ public class AplicacionController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoint que realiza la edición de una aplicación en el sistema. Si la
+     * operación es exitosa, se retorna el ID de la aplicación recién editada.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarAplicacion(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idAplicacion = aplicacionService.editarAplicacion(request, userContext.getUsername());
@@ -57,6 +82,14 @@ public class AplicacionController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idAplicacion));
     }
 
+    /**
+     * Endpoint que devuelve los detalles de una aplicación específica a partir
+     * de su ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerAplicacion(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroAplicacionDTO aplicacionDTO = aplicacionService.obtenerAplicacion(request);
@@ -65,6 +98,13 @@ public class AplicacionController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, aplicacionDTO));
     }
 
+    /**
+     * Endpoint que Activa una o varias aplicaciones a partir de su ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/activar")
     public ResponseEntity<MasivasResponse<Object>> activar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = aplicacionService.cambiarEstadoAplicacion(request, userContext.getUsername(), ConstantesServices.ESTADO_ACTIVO);
@@ -73,6 +113,13 @@ public class AplicacionController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
+    /**
+     * Endpoint que Inactiva una o varias aplicaciones a partir de su ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/desactivar")
     public ResponseEntity<MasivasResponse<Object>> desactivar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = aplicacionService.cambiarEstadoAplicacion(request, userContext.getUsername(), ConstantesServices.ESTADO_INACTIVO);
@@ -81,6 +128,15 @@ public class AplicacionController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato PDF con la lista de
+     * aplicaciones.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = aplicacionService.descargarAplicacion(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -89,6 +145,15 @@ public class AplicacionController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato XLSX con la lista de
+     * aplicaciones.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = aplicacionService.descargarAplicacion(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

@@ -32,6 +32,15 @@ public class RutaController {
     @Autowired
     private RutaService rutaService;
 
+    /**
+     * Endpoing que realiza la busqueda de las rutas en el sistema. Recibe un
+     * objeto con filtros de búsqueda, y retorna una lista paginada de rutas que
+     * coincidan con dichos criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarRuta(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaRutaDTO> objPageable = rutaService.buscarRuta(request);
@@ -40,6 +49,14 @@ public class RutaController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoint que realiza la edición de una ruta en el sistema. Si la
+     * operación es exitosa, se retorna el ID de la ruta recién editada.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarRuta(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idRuta = rutaService.editarRuta(request, userContext.getUsername());
@@ -48,6 +65,14 @@ public class RutaController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idRuta));
     }
 
+    /**
+     * Endpoint que devuelve los detalles de una ruta específica a partir de su
+     * ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerRuta(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroRutaDTO entidadDTO = rutaService.obtenerRuta(request);
@@ -56,6 +81,15 @@ public class RutaController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, entidadDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato PDF con la lista de
+     * rutas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = rutaService.descargarRutas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -64,6 +98,15 @@ public class RutaController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato XLSX con la lista de
+     * rutas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = rutaService.descargarRutas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

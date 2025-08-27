@@ -31,6 +31,15 @@ public class ProcesoController {
     @Autowired
     private ProcesoService procesoService;
 
+    /**
+     * Endpoing que realiza la busqueda de los procesos en el sistema. Recibe un
+     * objeto con filtros de búsqueda, y retorna una lista paginada de procesos
+     * que coincidan con dichos criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Map<String, List<DetalleConsultaProcesoDTO>> objPageable = procesoService.buscarProceso(request);
@@ -39,6 +48,14 @@ public class ProcesoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoint que realiza la edición de un proceso en el sistema. Si la
+     * operación es exitosa, se retorna el ID del proceso recién editado.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarProceso(@Valid @RequestBody List<DetalleRegistroProcesoDTO> request, @AuthenticationPrincipal UserContext userContext) {
         Long idProceso = procesoService.editarProceso(request, userContext.getUsername());
@@ -47,6 +64,14 @@ public class ProcesoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idProceso));
     }
 
+    /**
+     * Endpoint que devuelve los detalles de un proceso específico a partir de
+     * su ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Map<String, List<DetalleRegistroProcesoDTO>> objPageable = procesoService.obtenerProceso(request);

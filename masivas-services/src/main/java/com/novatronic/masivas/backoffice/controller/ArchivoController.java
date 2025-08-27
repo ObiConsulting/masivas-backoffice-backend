@@ -36,6 +36,16 @@ public class ArchivoController {
     @Autowired
     private DetalleMasivasService detalleMasivasService;
 
+    /**
+     * Endpoing que realiza la busqueda de los archivos de tipo directorio en el
+     * sistema. Recibe un objeto con filtros de búsqueda, y retorna una lista
+     * paginada de archivos de tipo directorio que coincidan con dichos
+     * criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/directorio/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoDirectorio(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaArchivoDirectorioDTO> objPageable = archivoService.buscarArchivoDirectorio(request);
@@ -44,6 +54,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoing que realiza la busqueda de los archivos de tipo masivas en el
+     * sistema. Recibe un objeto con filtros de búsqueda, y retorna una lista
+     * paginada de archivos de tipo masivas que coincidan con dichos criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/masivas/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaArchivoMasivasDTO> objPageable = archivoService.buscarArchivoMasivas(request);
@@ -52,6 +71,16 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoing que realiza la busqueda de los archivos de tipo titularidad en
+     * el sistema. Recibe un objeto con filtros de búsqueda, y retorna una lista
+     * paginada de archivos de tipo titularidad que coincidan con dichos
+     * criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/titularidad/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoTitularidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaArchivoTitularidadDTO> objPageable = archivoService.buscarArchivoTitularidad(request);
@@ -60,6 +89,16 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoing que realiza la busqueda del detalle de los archivos de tipo
+     * masivas en el sistema. Recibe un objeto con filtros de búsqueda, y
+     * retorna una lista paginada del detalle de los archivos de tipo masivas
+     * que coincidan con dichos criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/masivas/detalle/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarDetalleMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleRegistroArchivoMasivasDTO> objPageable = detalleMasivasService.buscarDetalleMasivas(request);
@@ -68,6 +107,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato PDF con la lista de
+     * archivos de tipo directorio.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/directorio/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoDirectorioPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoDirectorio(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -76,6 +124,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato XLSX con la lista de
+     * archivos de tipo directorio.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/directorio/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoDirectorioXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoDirectorio(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -84,6 +141,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato PDF con la lista de
+     * archivos de tipo masivas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/masivas/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoMasivasPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -92,6 +158,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato XLSX con la lista de
+     * archivos de tipo masivas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/masivas/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoMasivasXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -100,6 +175,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato PDF con la lista de
+     * archivos de tipo titularidad.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/titularidad/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoTitularidadPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoTitularidad(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -108,6 +192,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato XLSX con la lista de
+     * archivos de tipo titularidad.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/titularidad/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoTitularidadXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoTitularidad(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -116,6 +209,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato PDF con la lista de
+     * detalles de archivos de tipo masivas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/masivas/detalle/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarDetalleArchivoMasivasPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = detalleMasivasService.descargarDetalleArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -124,6 +226,15 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato XLSX con la lista de
+     * detalles de archivos de tipo masivas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/masivas/detalle/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarDetalleMasivasXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = detalleMasivasService.descargarDetalleArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -132,6 +243,14 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que respalda o restaura un archivo de tipo directorio.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/directorio/ejecutar")
     public ResponseEntity<MasivasResponse<Object>> gestionarOperacionDirectorio(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Long respuesta = archivoService.gestionarOperacionDirectorio(request);
@@ -140,6 +259,14 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, respuesta));
     }
 
+    /**
+     * Endpoint que respalda o restaura un archivo de tipo masivas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/masivas/ejecutar")
     public ResponseEntity<MasivasResponse<Object>> gestionarOperacionMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Long respuesta = archivoService.gestionarOperacionMasivas(request);
@@ -148,6 +275,14 @@ public class ArchivoController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, respuesta));
     }
 
+    /**
+     * Endpoint que respalda o restaura un archivo de tipo titularidad.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/titularidad/ejecutar")
     public ResponseEntity<MasivasResponse<Object>> gestionarOperacionTitularidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Long respuesta = archivoService.gestionarOperacionTitularidad(request);

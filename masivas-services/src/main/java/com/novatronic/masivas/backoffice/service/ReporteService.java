@@ -62,7 +62,7 @@ public class ReporteService {
     }
 
     /**
-     * Método que realiza el reporte de cierre diario
+     * Método que realiza el reporte de cierre de un día especifico.
      *
      * @param request
      * @return
@@ -104,7 +104,7 @@ public class ReporteService {
     }
 
     /**
-     * Método que realiza el reporte de cierre diario
+     * Método que realiza el reporte totalizado de un día especifico.
      *
      * @param request
      * @return
@@ -199,6 +199,14 @@ public class ReporteService {
 
     }
 
+    /**
+     * Método que realiza el calculo de los totales según su estado para los
+     * diferentes tipos de archivos.
+     *
+     * @param request
+     * @param listaArchivo
+     * @return
+     */
     private void calcularTotales(DetalleConsultaReporteCierreDTO reporte, List<Object[]> listaArchivo) {
 
         listaArchivo.forEach((Object[] resultado) -> {
@@ -223,6 +231,13 @@ public class ReporteService {
         });
     }
 
+    /**
+     * Método que procesa los montos según su estado.
+     *
+     * @param reporte
+     * @param listaArchivo
+     * @return
+     */
     private void procesarTotalizado(DetalleConsultaReporteTotalizadoDTO reporte, List<Object[]> listaArchivo) {
 
         listaArchivo.forEach((Object[] resultado) -> {

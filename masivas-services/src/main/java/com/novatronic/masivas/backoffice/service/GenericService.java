@@ -26,12 +26,22 @@ public class GenericService {
         this.parametroCacheService = parametroCacheService;
     }
 
+    /**
+     * Método que devuelve la lista de estado (activo|inactivo)
+     *
+     * @return
+     */
     public List<ParametroDTO> listarEstados() {
         return List.of(new ParametroDTO(ConstantesServices.ESTADO_INACTIVO, ConstantesServices.ESTADO_INACTIVO_DESCRIPCION),
                 new ParametroDTO(ConstantesServices.ESTADO_ACTIVO, ConstantesServices.ESTADO_ACTIVO_DESCRIPCION)
         );
     }
 
+    /**
+     * Método que devuelve la lista de estado de los archivos.
+     *
+     * @return
+     */
     public List<ParametroDTO> getAllEstadoArchivo() {
         List<ParametroDTO> listaEstadoArchivo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_ESTADO_ARCHIVOS);
         return listaEstadoArchivo.stream()
@@ -39,6 +49,11 @@ public class GenericService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método que devuelve la lista de categoria directorio.
+     *
+     * @return
+     */
     public List<ParametroDTO> getAllCategoriaDirectorio() {
         List<ParametroDTO> listaCategoriaDirectorio = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_CATEGORIA_DIRECTORIO);
         return listaCategoriaDirectorio.stream()
@@ -47,6 +62,11 @@ public class GenericService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método que devuelve la lista de tipos de archivo.
+     *
+     * @return
+     */
     public List<ParametroDTO> getAllTipoArchivo() {
         List<ParametroDTO> listaTipoArchivo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_TIPO_ARCHIVO);
         return listaTipoArchivo.stream()
@@ -54,6 +74,11 @@ public class GenericService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método que devuelve la lista de extensiones base.
+     *
+     * @return
+     */
     public List<ParametroDTO> getAllExtensionBase() {
         List<ParametroDTO> listaExtensionBase = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_EXTENSION_BASE);
         return listaExtensionBase.stream()
@@ -61,6 +86,11 @@ public class GenericService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método que devuelve la lista de extensiones de control.
+     *
+     * @return
+     */
     public List<ParametroDTO> getAllExtensionControl() {
         List<ParametroDTO> listaExtensionControl = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_EXTENSION_CONTROL);
         return listaExtensionControl.stream()
@@ -68,6 +98,11 @@ public class GenericService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método que devuelve la lista de motivo de rechazo.
+     *
+     * @return
+     */
     public List<ParametroDTO> getAllMotivoRechazo() {
         List<ParametroDTO> listaMotivoRechazo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_MOTIVO_RECHAZO);
         List<ParametroDTO> listaRptaOperadora = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_RPTA_OPERADORA);
@@ -76,6 +111,11 @@ public class GenericService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Método que devuelve la lista de tipo de transacciones.
+     *
+     * @return
+     */
     public List<ParametroDTO> getAllTipoTransaccion() {
         List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_TIPO_TRANSACCION);
         return listaTipoTransaccion.stream()
@@ -86,13 +126,6 @@ public class GenericService {
     public List<ParametroDTO> getAllMoneda() {
         List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_MONEDA);
         return listaTipoTransaccion.stream()
-                .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
-    }
-
-    public List<ParametroDTO> getAllGrupoParametro() {
-        List<ParametroDTO> listaGrupoParametro = parametroCacheService.getAllParametersGroup();
-        return listaGrupoParametro.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
                 .collect(Collectors.toList());
     }

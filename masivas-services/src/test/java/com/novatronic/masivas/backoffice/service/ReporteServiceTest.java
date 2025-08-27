@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
@@ -46,6 +47,8 @@ public class ReporteServiceTest {
     private ArchivoTitularidadRepository archivoTitularidadRepository;
     @Mock
     private DetalleArchivoMasivasRepository detalleArchivoMasivasRepository;
+    @Mock
+    private GenericService genericService;
     @InjectMocks
     private ReporteService reporteService;
 
@@ -238,6 +241,7 @@ public class ReporteServiceTest {
         listaMockeada.add(new DetalleReporteConsolidadoDTO("Entidad 3", "604 - soles", 100L, new BigDecimal(350000l), new BigDecimal(30000l)));
 
         when(detalleArchivoMasivasRepository.totalesPorEntidadDestino(any(), any(), any())).thenReturn(listaMockeada);
+        Mockito.when(genericService.getNombreMoneda(any())).thenReturn("604-Soles");
 
         ReporteDTO resultado = reporteService.descargarConsolidado(request, "usuario", ConstantesServices.TIPO_ARCHIVO_PDF);
         assertNotNull(resultado);

@@ -41,6 +41,14 @@ public class ParametroController {
         this.genericService = genericService;
     }
 
+    /**
+     * Endpoint que realiza la creación de un parámetro en el sistema. Si la
+     * operación es exitosa, se retorna el ID del parámetro recién creado.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse<Object>> registrar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idParametro = parametroService.crearParametro(request, userContext.getUsername());
@@ -49,6 +57,15 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION, idParametro));
     }
 
+    /**
+     * Endpoing que realiza la busqueda de los parámetros en el sistema. Recibe
+     * un objeto con filtros de búsqueda, y retorna una lista paginada de
+     * parámetros que coincidan con dichos criterios.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscar(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaParametroDTO> objPageable = parametroService.buscarParametro(request);
@@ -57,6 +74,14 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
+    /**
+     * Endpoint que realiza la edición de un parámetro en el sistema. Si la
+     * operación es exitosa, se retorna el ID del parámetro recién editado.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idParametro = parametroService.editarParametro(request, userContext.getUsername());
@@ -65,6 +90,14 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idParametro));
     }
 
+    /**
+     * Endpoint que devuelve los detalles de un parámetro específico a partir de
+     * su ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtener(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroParametroDTO parametroDTO = parametroService.obtenerParametro(request);
@@ -73,6 +106,13 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, parametroDTO));
     }
 
+    /**
+     * Endpoint que Activa uno o varios parámetros a partir de su ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/activar")
     public ResponseEntity<MasivasResponse<Object>> activar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = parametroService.cambiarEstadoParametro(request, userContext.getUsername(), ConstantesServices.ESTADO_ACTIVO);
@@ -81,6 +121,13 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
+    /**
+     * Endpoint que Inactiva uno o varios parámetros a partir de su ID.
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/desactivar")
     public ResponseEntity<MasivasResponse<Object>> desactivar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = parametroService.cambiarEstadoParametro(request, userContext.getUsername(), ConstantesServices.ESTADO_INACTIVO);
@@ -89,6 +136,15 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato PDF con la lista de
+     * parámetros.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = parametroService.descargarParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -97,6 +153,15 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte en formato XLSX con la lista de
+     * parámetros.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = parametroService.descargarParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -105,6 +170,13 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todos los estados de los
+     * archivos.
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarEstadoArchivos")
     public ResponseEntity<MasivasResponse<Object>> listarEstadoArchivos(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllEstadoArchivo();
@@ -113,6 +185,13 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todas los categorías de
+     * directorio.
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarCategoriaDirectorio")
     public ResponseEntity<MasivasResponse<Object>> listarCategoriaDirectorio(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllCategoriaDirectorio();
@@ -121,6 +200,12 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todos los tipos de archivo.
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarTipoArchivo")
     public ResponseEntity<MasivasResponse<Object>> listarTipoArchivo(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllTipoArchivo();
@@ -129,6 +214,12 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todas las estensiones bases.
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarExtensionBase")
     public ResponseEntity<MasivasResponse<Object>> listarExtensionBase(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllExtensionBase();
@@ -137,6 +228,13 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todas las extensiones de
+     * control.
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarExtensionControl")
     public ResponseEntity<MasivasResponse<Object>> listarExtensionControl(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllExtensionControl();
@@ -145,6 +243,12 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todos los tipos de transacción.
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarTipoTransaccion")
     public ResponseEntity<MasivasResponse<Object>> listarTipoTransaccion(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllTipoTransaccion();
@@ -153,6 +257,12 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todos los motivos de rechazo.
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarMotivoRechazo")
     public ResponseEntity<MasivasResponse<Object>> listarMotivoRechazo(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllMotivoRechazo();
@@ -161,6 +271,12 @@ public class ParametroController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
+    /**
+     * Endpoint que obtiene la lista completa de todas las monedas
+     *
+     * @param userContext
+     * @return
+     */
     @GetMapping("/listarMoneda")
     public ResponseEntity<MasivasResponse<Object>> listarMoneda(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaMoneda = genericService.getAllMoneda();

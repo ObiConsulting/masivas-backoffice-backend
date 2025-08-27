@@ -150,17 +150,6 @@ public class ParametroCacheService {
     }
 
     /**
-     * Listado de los grupos parámetro de la caché.
-     *
-     * @return
-     */
-    public List<ParametroDTO> getAllParametersGroup() {
-        loadParametersGroupInCache();
-        Map<String, ParametroDTO> cache = hazelcastInstance.getMap(ConstantesServices.MAP_GRUPO_PARAMETROS);
-        return new ArrayList<>(cache.values());
-    }
-
-    /**
      * Obtener un grupo parámetro según código de la caché.
      *
      * @param codGroup

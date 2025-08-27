@@ -39,7 +39,7 @@ public class GenericServiceTest {
 
     @Test
     void listarEstadoArchivo_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Estado 1"));
         listaParametro.add(new ParametroDTO("002", "Estado 2"));
 
@@ -50,7 +50,7 @@ public class GenericServiceTest {
 
     @Test
     void listarCategoriaDirectorio_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("1000", "Categoria 1"));
         listaParametro.add(new ParametroDTO("2000", "Categoria 2"));
 
@@ -61,7 +61,7 @@ public class GenericServiceTest {
 
     @Test
     void listarTipoArchivo_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Tipo 1"));
         listaParametro.add(new ParametroDTO("002", "Tipo 2"));
 
@@ -72,7 +72,7 @@ public class GenericServiceTest {
 
     @Test
     void listarExtensionBase_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Extension Base 1"));
         listaParametro.add(new ParametroDTO("002", "Extension Base 2"));
 
@@ -83,7 +83,7 @@ public class GenericServiceTest {
 
     @Test
     void listarExtensionControl_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Extension Control 1"));
         listaParametro.add(new ParametroDTO("002", "Extension Control 2"));
 
@@ -94,7 +94,7 @@ public class GenericServiceTest {
 
     @Test
     void listarMotivoRechazo_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Motivo 1"));
         listaParametro.add(new ParametroDTO("002", "Motivo 2"));
 
@@ -105,7 +105,7 @@ public class GenericServiceTest {
 
     @Test
     void listarTipoTransaccion_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Tipo Transaccion 1"));
         listaParametro.add(new ParametroDTO("002", "Tipo Transaccion 2"));
 
@@ -115,8 +115,19 @@ public class GenericServiceTest {
     }
 
     @Test
+    void listarMoneda_exito() {
+        List<ParametroDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new ParametroDTO("604", "Soles"));
+        listaParametro.add(new ParametroDTO("840", "Dolares"));
+
+        when(parametroCacheService.getParametersByGroup(any())).thenReturn(listaParametro);
+        List<ParametroDTO> resultado = genericService.getAllMoneda();
+        assertNotNull(resultado);
+    }
+
+    @Test
     void obtenerNombreEstadoArchivo_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Estado 1"));
         listaParametro.add(new ParametroDTO("002", "Estado 2"));
 
@@ -127,7 +138,7 @@ public class GenericServiceTest {
 
     @Test
     void obtenerNombreCategoriaDirectorio_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("1000", "Categoria 1"));
         listaParametro.add(new ParametroDTO("2000", "Categoria 2"));
 
@@ -138,7 +149,7 @@ public class GenericServiceTest {
 
     @Test
     void obtenerNombreTipoArchivo_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Tipo 1"));
         listaParametro.add(new ParametroDTO("002", "Tipo 2"));
 
@@ -149,7 +160,7 @@ public class GenericServiceTest {
 
     @Test
     void obtenerNombreMotivoRechazo_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Motivo 1"));
         listaParametro.add(new ParametroDTO("002", "Motivo 2"));
 
@@ -159,8 +170,19 @@ public class GenericServiceTest {
     }
 
     @Test
+    void obtenerNombreMotivoRechazo_sinExito() {
+        List<ParametroDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new ParametroDTO("001", "Motivo 1"));
+        listaParametro.add(new ParametroDTO("002", "Motivo 2"));
+
+        when(parametroCacheService.getParametersByGroup(any())).thenReturn(listaParametro);
+        String resultado = genericService.getNombreMotivoRechazo("100");
+        assertEquals("", resultado);
+    }
+
+    @Test
     void obtenerNombreTipoTransaccion_exito() {
-        List<ParametroDTO> listaParametro = new ArrayList<ParametroDTO>();
+        List<ParametroDTO> listaParametro = new ArrayList<>();
         listaParametro.add(new ParametroDTO("001", "Tipo Transaccion 1"));
         listaParametro.add(new ParametroDTO("002", "Tipo Transaccion 2"));
 
@@ -171,10 +193,79 @@ public class GenericServiceTest {
 
     @Test
     void obtenerNombreEntidad_exito() {
-        EntidadDTO parametro = new EntidadDTO("001", "Entidad 1", "0");
+        EntidadDTO entidad = new EntidadDTO("001", "Entidad 1", "0");
 
-        when(parametroCacheService.getEntity(any())).thenReturn(parametro);
+        when(parametroCacheService.getEntity(any())).thenReturn(entidad);
         String resultado = genericService.getNombreEntidad("001");
         assertEquals("Entidad 1", resultado);
     }
+
+    @Test
+    void obtenerNombreEntidad_sinExito() {
+        when(parametroCacheService.getEntity(any())).thenReturn(null);
+        String resultado = genericService.getNombreEntidad("001");
+        assertEquals("", resultado);
+    }
+
+    @Test
+    void obtenerNombreGrupoParametro_exito() {
+        ParametroDTO parametro = new ParametroDTO("001", "Grupo 001");
+
+        when(parametroCacheService.getParameterGroup(any())).thenReturn(parametro);
+        String resultado = genericService.getNombreGrupoParametro(1l);
+        assertEquals("Grupo 001", resultado);
+    }
+
+    @Test
+    void obtenerNombreGrupoParametro_sinExito() {
+        when(parametroCacheService.getParameterGroup(any())).thenReturn(null);
+        String resultado = genericService.getNombreGrupoParametro(1l);
+        assertEquals("", resultado);
+    }
+
+    @Test
+    void obtenerNombreMoneda_exito() {
+        List<ParametroDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new ParametroDTO("604", "Soles"));
+        listaParametro.add(new ParametroDTO("840", "Dolares"));
+
+        when(parametroCacheService.getParametersByGroup(any())).thenReturn(listaParametro);
+        String resultado = genericService.getNombreMoneda("604");
+        assertEquals("604 - Soles", resultado);
+    }
+
+    @Test
+    void obtenerNombreMoneda_sinExito() {
+        List<ParametroDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new ParametroDTO("604", "Soles"));
+        listaParametro.add(new ParametroDTO("840", "Dolares"));
+
+        when(parametroCacheService.getParametersByGroup(any())).thenReturn(listaParametro);
+        String resultado = genericService.getNombreMoneda("800");
+        assertEquals("", resultado);
+    }
+
+    @Test
+    void obtenerCodigoEntidadPropietaria_exito() {
+        List<EntidadDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new EntidadDTO("001", "Entidad 1", "0"));
+        listaParametro.add(new EntidadDTO("002", "Entidad 2", "0"));
+        listaParametro.add(new EntidadDTO("003", "Entidad 3", "1"));
+
+        when(parametroCacheService.getAllEntities()).thenReturn(listaParametro);
+        String resultado = genericService.getCodigoEntidadPropietaria();
+        assertEquals("003", resultado);
+    }
+
+    @Test
+    void obtenerCodigoEntidadPropietaria_sinExito() {
+        List<EntidadDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new EntidadDTO("001", "Entidad 1", "0"));
+        listaParametro.add(new EntidadDTO("002", "Entidad 2", "0"));
+
+        when(parametroCacheService.getAllEntities()).thenReturn(listaParametro);
+        String resultado = genericService.getCodigoEntidadPropietaria();
+        assertEquals("-1", resultado);
+    }
+
 }

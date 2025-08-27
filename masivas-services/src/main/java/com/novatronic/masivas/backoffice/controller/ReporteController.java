@@ -32,6 +32,14 @@ public class ReporteController {
     @Autowired
     private ReporteService reporteService;
 
+    /**
+     * Endpoint que genera y retorna un reporte detallado del cierre diario.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/cierre/buscar")
     public ResponseEntity<MasivasResponse<Object>> reporteCierre(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteCierreDTO reporte = reporteService.reporteCierre(request);
@@ -40,6 +48,15 @@ public class ReporteController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));
     }
 
+    /**
+     * Endpoint que genera y retorna un reporte totalizado de las operaciones
+     * masivas.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/totalizado")
     public ResponseEntity<MasivasResponse<Object>> reporteTotalizado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteTotalizadoDTO reporte = reporteService.reporteTotalizado(request);
@@ -48,6 +65,14 @@ public class ReporteController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));
     }
 
+    /**
+     * Endpoint que genera y retorna un reporte consolidado agrupado por entidad
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/consolidado")
     public ResponseEntity<MasivasResponse<Object>> reporteConsolidado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         List<DetalleReporteConsolidadoDTO> reporte = reporteService.reporteConsolidadoPorEntidadDestino(request);
@@ -56,6 +81,14 @@ public class ReporteController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte consolidado en formato PDF.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/consolidado/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarConsolidadoPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = reporteService.descargarConsolidado(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -64,6 +97,14 @@ public class ReporteController {
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
+    /**
+     * Endpoint que genera y descarga un reporte consolidado en formato XLSX.
+     *
+     *
+     * @param request
+     * @param userContext
+     * @return
+     */
     @PostMapping("/consolidado/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarConsolidadoXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = reporteService.descargarConsolidado(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
