@@ -146,7 +146,7 @@ public class SeguridadService {
                 UserContext userContext = buildUserContext(username, permisos, safeAttributes, tiempoSesion, result);
 
                 List<String> permisosjwt = List.of(ConstantesServices.PERMISO_USUARIO_VALIDO);
-                String token = jwtUtil.generateToken(username, permisosjwt, userContext.getScaProfile(), tiempoSesion);
+                String token = jwtUtil.generateToken(username, permisosjwt, userContext.getScaProfile(), tiempoSesion * 6);
                 userContext.setToken(token);
 
                 hazelcastInstance.getMap(ConstantesServices.MAP_LOGUEADOS).put(userContext.getUsername(), userContext, tiempoSesion, TimeUnit.MINUTES);
