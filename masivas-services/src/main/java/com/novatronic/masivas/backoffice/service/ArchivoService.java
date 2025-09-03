@@ -28,8 +28,6 @@ import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.masivas.backoffice.util.GenerarReporte;
 import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
-import com.novatronic.novalog.audit.util.Estado;
-import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -305,19 +303,22 @@ public class ArchivoService {
      * @param request
      * @return
      */
-    public Long gestionarOperacionDirectorio(FiltroMasivasRequest request) {
+    public String gestionarOperacionDirectorio(FiltroMasivasRequest request) {
 
         try {
             String codigoAccion = "";
+            String mensaje;
 
             switch (request.getTipoAccion()) {
                 case ConstantesServices.TIPO_ACCION_RESPALDAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESPALDAR_ARCHIVO, request.toStringRespaldarResturarObtener());
                     codigoAccion = ConstantesServices.COD_ACCION_RESPALDAR;
+                    mensaje = ConstantesServices.MENSAJE_EXITO_RESPALDAR_ARCHIVO;
                 }
                 case ConstantesServices.TIPO_ACCION_RESTAURAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESTAURAR_ARCHIVO, request.toStringRespaldarResturarObtener());
                     codigoAccion = ConstantesServices.COD_ACCION_RESTAURAR;
+                    mensaje = ConstantesServices.MENSAJE_EXITO_RESTAURAR_ARCHIVO;
                 }
                 default -> {
                     throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
@@ -347,7 +348,7 @@ public class ArchivoService {
 
             archivoDirectorioRepository.save(directorio);
 
-            return directorio.getIdArchivo();
+            return mensaje;
 
         } catch (NoOperationExistsException | ActionRestCoreException | RestClientException e) {
             throw e;
@@ -370,19 +371,22 @@ public class ArchivoService {
      * @param request
      * @return
      */
-    public Long gestionarOperacionMasivas(FiltroMasivasRequest request) {
+    public String gestionarOperacionMasivas(FiltroMasivasRequest request) {
 
         try {
             String codigoAccion = "";
+            String mensaje;
 
             switch (request.getTipoAccion()) {
                 case ConstantesServices.TIPO_ACCION_RESPALDAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESPALDAR_ARCHIVO, request.toStringRespaldarResturarObtener());
                     codigoAccion = ConstantesServices.COD_ACCION_RESPALDAR;
+                    mensaje = ConstantesServices.MENSAJE_EXITO_RESPALDAR_ARCHIVO;
                 }
                 case ConstantesServices.TIPO_ACCION_RESTAURAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESTAURAR_ARCHIVO, request.toStringRespaldarResturarObtener());
                     codigoAccion = ConstantesServices.COD_ACCION_RESTAURAR;
+                    mensaje = ConstantesServices.MENSAJE_EXITO_RESTAURAR_ARCHIVO;
                 }
                 default -> {
                     throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
@@ -412,7 +416,7 @@ public class ArchivoService {
 
             archivoMasivasRepository.save(masivas);
 
-            return masivas.getIdArchivo();
+            return mensaje;
 
         } catch (NoOperationExistsException | ActionRestCoreException | RestClientException e) {
             throw e;
@@ -435,19 +439,22 @@ public class ArchivoService {
      * @param request
      * @return
      */
-    public Long gestionarOperacionTitularidad(FiltroMasivasRequest request) {
+    public String gestionarOperacionTitularidad(FiltroMasivasRequest request) {
 
         try {
             String codigoAccion = "";
+            String mensaje;
 
             switch (request.getTipoAccion()) {
                 case ConstantesServices.TIPO_ACCION_RESPALDAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESPALDAR_ARCHIVO, request.toStringRespaldarResturarObtener());
                     codigoAccion = ConstantesServices.COD_ACCION_RESPALDAR;
+                    mensaje = ConstantesServices.MENSAJE_EXITO_RESPALDAR_ARCHIVO;
                 }
                 case ConstantesServices.TIPO_ACCION_RESTAURAR -> {
                     logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_ACCION, ConstantesServices.RESTAURAR_ARCHIVO, request.toStringRespaldarResturarObtener());
                     codigoAccion = ConstantesServices.COD_ACCION_RESTAURAR;
+                    mensaje = ConstantesServices.MENSAJE_EXITO_RESTAURAR_ARCHIVO;
                 }
                 default -> {
                     throw new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA);
@@ -477,7 +484,7 @@ public class ArchivoService {
 
             archivoTitularidadRepository.save(titularidad);
 
-            return titularidad.getIdArchivo();
+            return mensaje;
 
         } catch (NoOperationExistsException | ActionRestCoreException | RestClientException e) {
             throw e;
@@ -537,9 +544,8 @@ public class ArchivoService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
-        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
-                null, accion, null, null, mensajeExito);
+    public <T> void logAuditoria(T request, UserContext userContext, String mensajeExito) {
+        LOGGER.auditSuccess(null, request, userContext.getUsername(), userContext.getScaProfile(), userContext.getIp(), ConstantesServices.VACIO, mensajeExito, ConstantesServices.RESPUESTA_OK_API);
     }
 
     public void logError(String mensajeError, Exception e) {

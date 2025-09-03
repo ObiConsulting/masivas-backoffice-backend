@@ -422,8 +422,8 @@ public class ArchivoServiceTest {
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-        Long resultado = archivoService.gestionarOperacionDirectorio(request);
-        assertEquals(1l, resultado);
+        String resultado = archivoService.gestionarOperacionDirectorio(request);
+        assertEquals("Archivo respaldado correctamente", resultado);
     }
 
     @Test
@@ -453,8 +453,8 @@ public class ArchivoServiceTest {
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-        Long resultado = archivoService.gestionarOperacionDirectorio(request);
-        assertEquals(1l, resultado);
+        String resultado = archivoService.gestionarOperacionDirectorio(request);
+        assertEquals("Archivo restaurado correctamente", resultado);
     }
 
     @Test
@@ -599,8 +599,8 @@ public class ArchivoServiceTest {
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-        Long resultado = archivoService.gestionarOperacionMasivas(request);
-        assertEquals(1l, resultado);
+        String resultado = archivoService.gestionarOperacionMasivas(request);
+        assertEquals("Archivo respaldado correctamente", resultado);
     }
 
     @Test
@@ -630,8 +630,8 @@ public class ArchivoServiceTest {
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-        Long resultado = archivoService.gestionarOperacionMasivas(request);
-        assertEquals(1l, resultado);
+        String resultado = archivoService.gestionarOperacionMasivas(request);
+        assertEquals("Archivo restaurado correctamente", resultado);
     }
 
     @Test
@@ -719,8 +719,8 @@ public class ArchivoServiceTest {
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-        Long resultado = archivoService.gestionarOperacionTitularidad(request);
-        assertEquals(1l, resultado);
+        String resultado = archivoService.gestionarOperacionTitularidad(request);
+        assertEquals("Archivo respaldado correctamente", resultado);
     }
 
     @Test
@@ -750,8 +750,8 @@ public class ArchivoServiceTest {
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntity);
 
-        Long resultado = archivoService.gestionarOperacionTitularidad(request);
-        assertEquals(1l, resultado);
+        String resultado = archivoService.gestionarOperacionTitularidad(request);
+        assertEquals("Archivo restaurado correctamente", resultado);
     }
 
     @Test

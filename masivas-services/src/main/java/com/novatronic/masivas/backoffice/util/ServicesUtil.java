@@ -79,54 +79,106 @@ public final class ServicesUtil {
         return fecha.format(formatter);
     }
 
-    public static String obtenerMensajeRespuestaCambioEstado(int numExito, int totalIds, String estado) {
+    public static String obtenerMensajeRespuestaCambioEstado(int numExito, int totalIds, String estado, String pantalla) {
 
         boolean esMultiplesIds = totalIds > 1;
         boolean esEstadoActivo = ConstantesServices.ESTADO_ACTIVO.equals(estado);
         String mensaje;
 
         if (numExito == totalIds) {
-            mensaje = obtenerMensajeRespuesta(true, esMultiplesIds, esEstadoActivo);
+            mensaje = esEstadoActivo ? mensajeExitoActivarPorPantalla(pantalla, esMultiplesIds) : mensajeExitoDesactivarPorPantalla(pantalla, esMultiplesIds);
         } else if (numExito > 0 && numExito < totalIds) {
-            mensaje = estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_OPERACIONES;
+            mensaje = mensajeParcialPorPantalla(pantalla, estado);
             mensaje = String.format(mensaje, numExito, totalIds - numExito);
         } else {
-            mensaje = obtenerMensajeRespuesta(false, esMultiplesIds, esEstadoActivo);
+            mensaje = esEstadoActivo ? mensajeErrorActivarPorPantalla(pantalla, esMultiplesIds) : mensajeErrorDesactivarPorPantalla(pantalla, esMultiplesIds);
         }
         return mensaje;
     }
 
-    public static String obtenerMensajeRespuesta(boolean esExitoTotal, boolean esMultiplesIds, boolean esEstadoActivo) {
-        String mensaje;
+    public static String mensajeParcialPorPantalla(String pantalla, String estado) {
 
-        if (esExitoTotal) {
-            mensaje = obtenerMensajeExito(esMultiplesIds, esEstadoActivo);
-        } else {
-            mensaje = obtenerMensajeError(esMultiplesIds, esEstadoActivo);
-        }
-        return mensaje;
+        return switch (pantalla) {
+            case ConstantesServices.APLICACION ->
+                estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_APLICACIONES : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_APLICACIONES;
+            case ConstantesServices.ENTIDAD_FINANCIERA ->
+                estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_ENTIDADES : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_ENTIDADES;
+            case ConstantesServices.GRUPO_PARAMETRO ->
+                estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_GRUPOS_PARAMETROS : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_GRUPOS_PARAMETROS;
+            case ConstantesServices.PARAMETRO ->
+                estado.equals(ConstantesServices.ESTADO_ACTIVO) ? ConstantesServices.MENSAJE_EXITO_PARCIAL_ACTIVAR_PARAMETROS : ConstantesServices.MENSAJE_EXITO_PARCIAL_DESACTIVAR_PARAMETROS;
+            default ->
+                "";
+        };
+
     }
 
-    public static String obtenerMensajeExito(boolean esMultiplesIds, boolean esEstadoActivo) {
-        String mensaje;
-        // Mensajes para éxito total
-        if (esMultiplesIds) {
-            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACIONES;
-        } else {
-            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_OPERACION;
-        }
-        return mensaje;
+    public static String mensajeExitoActivarPorPantalla(String pantalla, boolean esMultiplesIds) {
+
+        return switch (pantalla) {
+            case ConstantesServices.APLICACION ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_APLICACION : ConstantesServices.MENSAJE_EXITO_ACTIVAR_APLICACIONES;
+            case ConstantesServices.ENTIDAD_FINANCIERA ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_ENTIDAD : ConstantesServices.MENSAJE_EXITO_ACTIVAR_ENTIDADES;
+            case ConstantesServices.GRUPO_PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_GRUPO_PARAMETRO : ConstantesServices.MENSAJE_EXITO_ACTIVAR_GRUPOS_PARAMETROS;
+            case ConstantesServices.PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_ACTIVAR_PARAMETRO : ConstantesServices.MENSAJE_EXITO_ACTIVAR_PARAMETROS;
+            default ->
+                "";
+        };
+
     }
 
-    public static String obtenerMensajeError(boolean esMultiplesIds, boolean esEstadoActivo) {
-        String mensaje;
-        // Mensajes para error total
-        if (esMultiplesIds) {
-            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACIONES : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACIONES;
-        } else {
-            mensaje = esEstadoActivo ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_OPERACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_OPERACION;
-        }
-        return mensaje;
+    public static String mensajeErrorActivarPorPantalla(String pantalla, boolean esMultiplesIds) {
+
+        return switch (pantalla) {
+            case ConstantesServices.APLICACION ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_APLICACION : ConstantesServices.MENSAJE_ERROR_ACTIVAR_APLICACIONES;
+            case ConstantesServices.ENTIDAD_FINANCIERA ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_ENTIDAD : ConstantesServices.MENSAJE_ERROR_ACTIVAR_ENTIDADES;
+            case ConstantesServices.GRUPO_PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_GRUPO_PARAMETRO : ConstantesServices.MENSAJE_ERROR_ACTIVAR_GRUPOS_PARAMETROS;
+            case ConstantesServices.PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_ACTIVAR_PARAMETRO : ConstantesServices.MENSAJE_ERROR_ACTIVAR_PARAMETROS;
+            default ->
+                "";
+        };
+
+    }
+
+    public static String mensajeExitoDesactivarPorPantalla(String pantalla, boolean esMultiplesIds) {
+
+        return switch (pantalla) {
+            case ConstantesServices.APLICACION ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_DESACTIVAR_APLICACION : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_APLICACIONES;
+            case ConstantesServices.ENTIDAD_FINANCIERA ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_DESACTIVAR_ENTIDAD : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_ENTIDADES;
+            case ConstantesServices.GRUPO_PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_DESACTIVAR_GRUPO_PARAMETRO : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_GRUPOS_PARAMETROS;
+            case ConstantesServices.PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_EXITO_DESACTIVAR_PARAMETRO : ConstantesServices.MENSAJE_EXITO_DESACTIVAR_PARAMETROS;
+            default ->
+                "";
+        };
+
+    }
+
+    public static String mensajeErrorDesactivarPorPantalla(String pantalla, boolean esMultiplesIds) {
+
+        return switch (pantalla) {
+            case ConstantesServices.APLICACION ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_DESACTIVAR_APLICACION : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_APLICACIONES;
+            case ConstantesServices.ENTIDAD_FINANCIERA ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_DESACTIVAR_ENTIDAD : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_ENTIDADES;
+            case ConstantesServices.GRUPO_PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_DESACTIVAR_GRUPO_PARAMETRO : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_GRUPOS_PARAMETROS;
+            case ConstantesServices.PARAMETRO ->
+                !esMultiplesIds ? ConstantesServices.MENSAJE_ERROR_DESACTIVAR_PARAMETRO : ConstantesServices.MENSAJE_ERROR_DESACTIVAR_PARAMETROS;
+            default ->
+                "";
+        };
+
     }
 
     public static String hashData(String data) throws NoSuchAlgorithmException {

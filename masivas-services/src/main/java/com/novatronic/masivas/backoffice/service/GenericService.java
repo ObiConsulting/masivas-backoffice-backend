@@ -174,6 +174,19 @@ public class GenericService {
         }
     }
 
+    public Long getIdEntidadPropietaria() {
+        List<EntidadDTO> listaEntidad = parametroCacheService.getAllEntities();
+        Optional<EntidadDTO> propietaria = listaEntidad.stream()
+                .filter(entidad -> entidad.getPropietario().equals(ConstantesServices.PROPIETARIO))
+                .findFirst();
+        if (propietaria.isPresent()) {
+            return propietaria.get().getIdEntidad();
+        } else {
+            LOGGER.error("No se encontró ninguna entidad con propietario = 1.");
+            return null;
+        }
+    }
+
     public String getNombreMotivoRechazo(String codMotivoRechazo) {
         List<ParametroDTO> lista = getAllMotivoRechazo();
         String nombre = getGenericName(lista, codMotivoRechazo);

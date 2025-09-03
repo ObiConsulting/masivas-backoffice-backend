@@ -51,7 +51,7 @@ public class ParametroControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(parametroService.crearParametro(any(), any())).thenReturn(1l);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.registrar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -64,7 +64,7 @@ public class ParametroControllerTest {
         CustomPaginate<DetalleConsultaParametroDTO> response = new CustomPaginate<>();
 
         when(parametroService.buscarParametro(any())).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.buscar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -76,7 +76,7 @@ public class ParametroControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(parametroService.editarParametro(any(), any())).thenReturn(1l);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.editar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -89,7 +89,7 @@ public class ParametroControllerTest {
         DetalleRegistroParametroDTO response = new DetalleRegistroParametroDTO();
 
         when(parametroService.obtenerParametro(any())).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.obtener(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -102,7 +102,7 @@ public class ParametroControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(parametroService.cambiarEstadoParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.activar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -115,7 +115,7 @@ public class ParametroControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(parametroService.cambiarEstadoParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.desactivar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -128,7 +128,7 @@ public class ParametroControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(parametroService.descargarParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.descargarPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -141,7 +141,7 @@ public class ParametroControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(parametroService.descargarParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.descargarXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -153,7 +153,7 @@ public class ParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(genericService.getAllEstadoArchivo()).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.listarEstadoArchivos(userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -165,7 +165,7 @@ public class ParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(genericService.getAllCategoriaDirectorio()).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.listarCategoriaDirectorio(userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -177,7 +177,7 @@ public class ParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(genericService.getAllTipoArchivo()).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.listarTipoArchivo(userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -189,7 +189,7 @@ public class ParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(genericService.getAllExtensionBase()).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.listarExtensionBase(userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -201,7 +201,7 @@ public class ParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(genericService.getAllExtensionControl()).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.listarExtensionControl(userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -213,7 +213,7 @@ public class ParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(genericService.getAllTipoTransaccion()).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.listarTipoTransaccion(userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -225,7 +225,7 @@ public class ParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(genericService.getAllMotivoRechazo()).thenReturn(response);
-        doNothing().when(parametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(parametroService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = parametroController.listarMotivoRechazo(userContext);
         assertEquals(200, resultado.getStatusCodeValue());

@@ -7,7 +7,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ProcesoService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
-import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.annotation.Audit;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -41,10 +41,10 @@ public class ProcesoController {
      * @return
      */
     @PostMapping("/buscar")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PROCESO)
     public ResponseEntity<MasivasResponse<Object>> buscarProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Map<String, List<DetalleConsultaProcesoDTO>> objPageable = procesoService.buscarProceso(request);
-        procesoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PROCESO,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        procesoService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION, objPageable));
     }
 
@@ -57,11 +57,11 @@ public class ProcesoController {
      * @return
      */
     @PostMapping("/editar")
+    @Audit(accion = Evento.EV_ACTUALIZA_CONFIG_SISTEMA, origen = ConstantesServices.ACCION_UPDATE, recursosAfectados = ConstantesServices.TABLA_PROCESO)
     public ResponseEntity<MasivasResponse<Object>> editarProceso(@Valid @RequestBody List<DetalleRegistroProcesoDTO> request, @AuthenticationPrincipal UserContext userContext) {
         Long idProceso = procesoService.editarProceso(request, userContext.getUsername());
-        procesoService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PROCESO,
-                ConstantesServices.ACCION_UPDATE, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idProceso));
+        procesoService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_EDITAR_SCHEDULER);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_SCHEDULER, idProceso));
     }
 
     /**
@@ -73,10 +73,10 @@ public class ProcesoController {
      * @return
      */
     @PostMapping("/obtener")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_READ, recursosAfectados = ConstantesServices.TABLA_PROCESO)
     public ResponseEntity<MasivasResponse<Object>> obtenerProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Map<String, List<DetalleRegistroProcesoDTO>> objPageable = procesoService.obtenerProceso(request);
-        procesoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PROCESO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
+        procesoService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, objPageable));
     }
 

@@ -19,8 +19,6 @@ import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.masivas.backoffice.util.GenerarReporte;
 import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
-import com.novatronic.novalog.audit.util.Estado;
-import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -186,9 +184,8 @@ public class RutaService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
-        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
-                null, accion, null, null, mensajeExito);
+    public <T> void logAuditoria(T request, UserContext userContext, String mensajeExito) {
+        LOGGER.auditSuccess(null, request, userContext.getUsername(), userContext.getScaProfile(), userContext.getIp(), ConstantesServices.VACIO, mensajeExito, ConstantesServices.RESPUESTA_OK_API);
     }
 
 }

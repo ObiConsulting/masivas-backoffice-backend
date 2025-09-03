@@ -21,8 +21,6 @@ import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.masivas.backoffice.util.GenerarReporte;
 import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
-import com.novatronic.novalog.audit.util.Estado;
-import com.novatronic.novalog.audit.util.Evento;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -68,7 +66,7 @@ public class EntidadService {
             TpEntidad entidad = new TpEntidad(
                     request.getCodigo(),
                     request.getNombre(),
-                    ConstantesServices.ESTADO_INACTIVO,
+                    ConstantesServices.ESTADO_ACTIVO,
                     ConstantesServices.ID_PERFIL,
                     ConstantesServices.NO_PROPIETARIO,
                     null,//Extensión Base
@@ -232,7 +230,7 @@ public class EntidadService {
                 numExito++;
             }
 
-            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado);
+            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado, ConstantesServices.ENTIDAD_FINANCIERA);
 
             return new EstadoDTO(mensaje, numExito);
 
@@ -302,9 +300,8 @@ public class EntidadService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
-        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
-                null, accion, null, null, mensajeExito);
+    public <T> void logAuditoria(T request, UserContext userContext, String mensajeExito) {
+        LOGGER.auditSuccess(null, request, userContext.getUsername(), userContext.getScaProfile(), userContext.getIp(), ConstantesServices.VACIO, mensajeExito, ConstantesServices.RESPUESTA_OK_API);
     }
 
 }

@@ -202,7 +202,16 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.14.0</version> <!-- última versión estable a abril 2025 -->
         </dependency>
-               
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.6</version>
+        </dependency>
         <!-- Jasper Reports -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -220,13 +229,13 @@
         <dependency>
             <groupId>com.novatronic.log</groupId>
             <artifactId>NovaLog</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>    
     
         <dependency>
             <groupId>com.novatronic.log</groupId>
             <artifactId>NovaLog-Audit</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
         
         <dependency>

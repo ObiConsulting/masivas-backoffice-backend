@@ -35,6 +35,9 @@ public class TpAplicacion extends ModelAudit<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TP_APLICACION")
     private Long idAplicacion;
     @Basic(optional = false)
+    @Column(name = "ID_ENTIDAD")
+    private Long idEntidad;
+    @Basic(optional = false)
     @Size(max = 20)
     @Column(name = "COD_APLICACION")
     private String codigo;
@@ -47,7 +50,8 @@ public class TpAplicacion extends ModelAudit<String> implements Serializable {
     @Column(name = "ESTADO")
     private String estado;
 
-    public TpAplicacion(String codigo, String nombre, String estado, LocalDateTime fecCreacion, String usuCreacion) {
+    public TpAplicacion(Long idEntidad, String codigo, String nombre, String estado, LocalDateTime fecCreacion, String usuCreacion) {
+        this.idEntidad = idEntidad;
         this.codigo = codigo;
         this.nombre = nombre;
         this.estado = estado;

@@ -126,6 +126,7 @@ public class ParametroCacheService {
         Map<String, EntidadDTO> cache = hazelcastInstance.getMap(ConstantesServices.MAP_ENTIDADES);
         entidadRepository.findAll().stream()
                 .map(entity -> new EntidadDTO(
+                entity.getIdEntidad(),
                 String.valueOf(entity.getCodigo()),
                 entity.getNombre(),
                 entity.getPropietario()))

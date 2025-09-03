@@ -70,19 +70,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
 
         } catch (ExpiredJwtException ex) {
-            logger.equals(ex);
+            logger.error("401 - Token expirado", ex);
             sendUnauthorizedResponse(response, "401", "Token expirado");
         } catch (SignatureException | MalformedJwtException ex) {
-            logger.equals(ex);
+            logger.error("401 - Token inválido", ex);
             sendUnauthorizedResponse(response, "401", "Token inválido");
         } catch (IllegalArgumentException ex) {
-            logger.equals(ex);
+            logger.error("401 - Token no proporcionado", ex);
             sendUnauthorizedResponse(response, "401", "Token no proporcionado");
         } catch (ClassCastException ex) {
-            logger.equals(ex);
+            logger.error("401 - Error en sesión. Por favor inicie sesión nuevamente.", ex);
             sendUnauthorizedResponse(response, "401", "Error en sesión. Por favor inicie sesión nuevamente.");
         } catch (ServletException | IOException ex) {
-            logger.equals(ex);
+            logger.error("401 - Error interno de autenticación", ex);
             sendUnauthorizedResponse(response, "401", "Error interno de autenticación");
         }
     }

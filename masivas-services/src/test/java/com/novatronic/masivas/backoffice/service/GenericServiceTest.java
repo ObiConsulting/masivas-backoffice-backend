@@ -193,7 +193,7 @@ public class GenericServiceTest {
 
     @Test
     void obtenerNombreEntidad_exito() {
-        EntidadDTO entidad = new EntidadDTO("001", "Entidad 1", "0");
+        EntidadDTO entidad = new EntidadDTO(1l, "001", "Entidad 1", "0");
 
         when(parametroCacheService.getEntity(any())).thenReturn(entidad);
         String resultado = genericService.getNombreEntidad("001");
@@ -248,9 +248,9 @@ public class GenericServiceTest {
     @Test
     void obtenerCodigoEntidadPropietaria_exito() {
         List<EntidadDTO> listaParametro = new ArrayList<>();
-        listaParametro.add(new EntidadDTO("001", "Entidad 1", "0"));
-        listaParametro.add(new EntidadDTO("002", "Entidad 2", "0"));
-        listaParametro.add(new EntidadDTO("003", "Entidad 3", "1"));
+        listaParametro.add(new EntidadDTO(1l, "001", "Entidad 1", "0"));
+        listaParametro.add(new EntidadDTO(2l, "002", "Entidad 2", "0"));
+        listaParametro.add(new EntidadDTO(3l, "003", "Entidad 3", "1"));
 
         when(parametroCacheService.getAllEntities()).thenReturn(listaParametro);
         String resultado = genericService.getCodigoEntidadPropietaria();
@@ -260,12 +260,35 @@ public class GenericServiceTest {
     @Test
     void obtenerCodigoEntidadPropietaria_sinExito() {
         List<EntidadDTO> listaParametro = new ArrayList<>();
-        listaParametro.add(new EntidadDTO("001", "Entidad 1", "0"));
-        listaParametro.add(new EntidadDTO("002", "Entidad 2", "0"));
+        listaParametro.add(new EntidadDTO(1l, "001", "Entidad 1", "0"));
+        listaParametro.add(new EntidadDTO(2l, "002", "Entidad 2", "0"));
 
         when(parametroCacheService.getAllEntities()).thenReturn(listaParametro);
         String resultado = genericService.getCodigoEntidadPropietaria();
         assertEquals("-1", resultado);
+    }
+
+    @Test
+    void obtenerIdEntidadPropietaria_exito() {
+        List<EntidadDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new EntidadDTO(1l, "001", "Entidad 1", "0"));
+        listaParametro.add(new EntidadDTO(2l, "002", "Entidad 2", "0"));
+        listaParametro.add(new EntidadDTO(3l, "003", "Entidad 3", "1"));
+
+        when(parametroCacheService.getAllEntities()).thenReturn(listaParametro);
+        Long resultado = genericService.getIdEntidadPropietaria();
+        assertEquals(3l, resultado);
+    }
+
+    @Test
+    void obtenerIdEntidadPropietaria_sinExito() {
+        List<EntidadDTO> listaParametro = new ArrayList<>();
+        listaParametro.add(new EntidadDTO(1l, "001", "Entidad 1", "0"));
+        listaParametro.add(new EntidadDTO(2l, "002", "Entidad 2", "0"));
+
+        when(parametroCacheService.getAllEntities()).thenReturn(listaParametro);
+        Long resultado = genericService.getIdEntidadPropietaria();
+        assertEquals(null, resultado);
     }
 
 }

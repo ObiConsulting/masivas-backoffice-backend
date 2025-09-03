@@ -13,7 +13,7 @@ import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.GenericService;
 import com.novatronic.masivas.backoffice.service.ParametroService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
-import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.annotation.Audit;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -50,11 +50,11 @@ public class ParametroController {
      * @return
      */
     @PostMapping("/crear")
+    @Audit(accion = Evento.EV_REGISTRO_CONFIG_SISTEMA, origen = ConstantesServices.ACCION_CREATE, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> registrar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idParametro = parametroService.crearParametro(request, userContext.getUsername());
-        parametroService.logAuditoria(request, Evento.EV_REGISTRO_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_CREATE, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_OPERACION, idParametro));
+        parametroService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_CREAR_PARAMETRO);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_PARAMETRO, idParametro));
     }
 
     /**
@@ -67,10 +67,10 @@ public class ParametroController {
      * @return
      */
     @PostMapping("/buscar")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> buscar(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaParametroDTO> objPageable = parametroService.buscarParametro(request);
-        parametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
+        parametroService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_BUSCAR_OPERACION, objPageable));
     }
 
@@ -83,11 +83,11 @@ public class ParametroController {
      * @return
      */
     @PostMapping("/editar")
+    @Audit(accion = Evento.EV_ACTUALIZA_CONFIG_SISTEMA, origen = ConstantesServices.ACCION_UPDATE, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> editar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idParametro = parametroService.editarParametro(request, userContext.getUsername());
-        parametroService.logAuditoria(request, Evento.EV_ACTUALIZACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_UPDATE, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION);
-        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_OPERACION, idParametro));
+        parametroService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_EDITAR_PARAMETRO);
+        return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_PARAMETRO, idParametro));
     }
 
     /**
@@ -99,10 +99,10 @@ public class ParametroController {
      * @return
      */
     @PostMapping("/obtener")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_READ, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> obtener(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroParametroDTO parametroDTO = parametroService.obtenerParametro(request);
-        parametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
+        parametroService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, parametroDTO));
     }
 
@@ -114,10 +114,10 @@ public class ParametroController {
      * @return
      */
     @PostMapping("/activar")
+    @Audit(accion = Evento.EV_ELIMINA_CONFIG_SISTEMA, origen = ConstantesServices.ACCION_UPDATE, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> activar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = parametroService.cambiarEstadoParametro(request, userContext.getUsername(), ConstantesServices.ESTADO_ACTIVO);
-        parametroService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_DELETE, estadoDTO.getMensaje());
+        parametroService.logAuditoria(request, userContext, estadoDTO.getMensaje());
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
@@ -129,10 +129,10 @@ public class ParametroController {
      * @return
      */
     @PostMapping("/desactivar")
+    @Audit(accion = Evento.EV_ELIMINA_CONFIG_SISTEMA, origen = ConstantesServices.ACCION_UPDATE, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> desactivar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = parametroService.cambiarEstadoParametro(request, userContext.getUsername(), ConstantesServices.ESTADO_INACTIVO);
-        parametroService.logAuditoria(request, Evento.EV_ELIMINACION_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_DELETE, estadoDTO.getMensaje());
+        parametroService.logAuditoria(request, userContext, estadoDTO.getMensaje());
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
@@ -148,8 +148,7 @@ public class ParametroController {
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = parametroService.descargarParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
-        parametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        parametroService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -165,8 +164,7 @@ public class ParametroController {
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = parametroService.descargarParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
-        parametroService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
+        parametroService.logAuditoria(request, userContext, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -178,10 +176,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarEstadoArchivos")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarEstadoArchivos(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllEstadoArchivo();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
@@ -193,10 +191,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarCategoriaDirectorio")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarCategoriaDirectorio(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllCategoriaDirectorio();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
@@ -207,10 +205,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarTipoArchivo")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarTipoArchivo(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllTipoArchivo();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
@@ -221,10 +219,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarExtensionBase")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarExtensionBase(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllExtensionBase();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
@@ -236,10 +234,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarExtensionControl")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarExtensionControl(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllExtensionControl();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
@@ -250,10 +248,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarTipoTransaccion")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarTipoTransaccion(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllTipoTransaccion();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
@@ -264,10 +262,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarMotivoRechazo")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarMotivoRechazo(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaEstado = genericService.getAllMotivoRechazo();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaEstado));
     }
 
@@ -278,10 +276,10 @@ public class ParametroController {
      * @return
      */
     @GetMapping("/listarMoneda")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_PARAMETRO)
     public ResponseEntity<MasivasResponse<Object>> listarMoneda(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> listaMoneda = genericService.getAllMoneda();
-        parametroService.logAuditoria(null, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_PARAMETRO,
-                ConstantesServices.ACCION_VIEW, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
+        parametroService.logAuditoria(null, userContext, ConstantesServices.MENSAJE_EXITO_CONSULTA_OPERACION);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, listaMoneda));
     }
 }

@@ -49,7 +49,7 @@ public class ArchivoControllerTest {
         CustomPaginate<DetalleConsultaArchivoDirectorioDTO> response = new CustomPaginate<>();
 
         when(archivoService.buscarArchivoDirectorio(any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.buscarArchivoDirectorio(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -62,7 +62,7 @@ public class ArchivoControllerTest {
         CustomPaginate<DetalleConsultaArchivoMasivasDTO> response = new CustomPaginate<>();
 
         when(archivoService.buscarArchivoMasivas(any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.buscarArchivoMasivas(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -75,7 +75,7 @@ public class ArchivoControllerTest {
         CustomPaginate<DetalleConsultaArchivoTitularidadDTO> response = new CustomPaginate<>();
 
         when(archivoService.buscarArchivoTitularidad(any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.buscarArchivoTitularidad(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -88,7 +88,7 @@ public class ArchivoControllerTest {
         CustomPaginate<DetalleRegistroArchivoMasivasDTO> response = new CustomPaginate<>();
 
         when(detalleMasivasService.buscarDetalleMasivas(any())).thenReturn(response);
-        doNothing().when(detalleMasivasService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(detalleMasivasService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.buscarDetalleMasivas(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -101,7 +101,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(archivoService.descargarArchivoDirectorio(any(), any(), any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarArchivoDirectorioPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -114,7 +114,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(archivoService.descargarArchivoDirectorio(any(), any(), any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarArchivoDirectorioXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -127,7 +127,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(archivoService.descargarArchivoMasivas(any(), any(), any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarArchivoMasivasPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -140,7 +140,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(archivoService.descargarArchivoMasivas(any(), any(), any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarArchivoMasivasXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -153,7 +153,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(archivoService.descargarArchivoTitularidad(any(), any(), any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarArchivoTitularidadPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -166,7 +166,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(archivoService.descargarArchivoTitularidad(any(), any(), any())).thenReturn(response);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarArchivoTitularidadXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -179,7 +179,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(detalleMasivasService.descargarDetalleArchivoMasivas(any(), any(), any())).thenReturn(response);
-        doNothing().when(detalleMasivasService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(detalleMasivasService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarDetalleArchivoMasivasPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -192,7 +192,7 @@ public class ArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(detalleMasivasService.descargarDetalleArchivoMasivas(any(), any(), any())).thenReturn(response);
-        doNothing().when(detalleMasivasService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(detalleMasivasService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.descargarDetalleMasivasXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -203,8 +203,8 @@ public class ArchivoControllerTest {
     void gestionarOperacionDirectorio_exito() {
         FiltroMasivasRequest request = new FiltroMasivasRequest();
 
-        when(archivoService.gestionarOperacionDirectorio(any())).thenReturn(1l);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        when(archivoService.gestionarOperacionDirectorio(any())).thenReturn("OK");
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.gestionarOperacionDirectorio(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -215,8 +215,8 @@ public class ArchivoControllerTest {
     void gestionarOperacionMasivas_exito() {
         FiltroMasivasRequest request = new FiltroMasivasRequest();
 
-        when(archivoService.gestionarOperacionMasivas(any())).thenReturn(1l);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        when(archivoService.gestionarOperacionMasivas(any())).thenReturn("OK");
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.gestionarOperacionMasivas(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -227,8 +227,8 @@ public class ArchivoControllerTest {
     void gestionarOperacionTitularidad_exito() {
         FiltroMasivasRequest request = new FiltroMasivasRequest();
 
-        when(archivoService.gestionarOperacionTitularidad(any())).thenReturn(1l);
-        doNothing().when(archivoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        when(archivoService.gestionarOperacionTitularidad(any())).thenReturn("OK");
+        doNothing().when(archivoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = archivoController.gestionarOperacionTitularidad(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());

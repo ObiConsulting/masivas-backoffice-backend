@@ -6,6 +6,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleRegistroGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
+import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.entity.TpGrupoParametro;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
@@ -75,7 +76,6 @@ public class GrupoParametroServiceTest {
                     ReflectionTestUtils.setField(grupoGuardado, "idGrupoParametro", 123l);
                     return grupoGuardado;
                 });
-//        when(parametroCacheService.loadParametersGroupInCache());
         Long resultado = grupoParametroService.crearGrupoParametro(request, "usuario");
         assertEquals(123, resultado);
     }
@@ -135,9 +135,9 @@ public class GrupoParametroServiceTest {
         request.setCodigo("1593");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        TpGrupoParametro aplicacion = new TpGrupoParametro("COD001", "Grupo de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
-        aplicacion.setIdGrupoParametro(1L);
-        List<TpGrupoParametro> gruposList = Collections.singletonList(aplicacion);
+        TpGrupoParametro grupo = new TpGrupoParametro("COD001", "Grupo de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
+        grupo.setIdGrupoParametro(1L);
+        List<TpGrupoParametro> gruposList = Collections.singletonList(grupo);
         Page<TpGrupoParametro> paginaSimulada = new PageImpl<>(gruposList, Pageable.ofSize(10), 1);
 
         when(grupoParametroRepository.buscarPorFiltros(any(), any(), any(), any(Pageable.class))).thenReturn(paginaSimulada);
@@ -481,5 +481,22 @@ public class GrupoParametroServiceTest {
             grupoParametroService.descargarGrupoParametro(null, "usuario", ConstantesServices.TIPO_ARCHIVO_PDF);
         });
         assertTrue(thrown instanceof GenericException);
+    }
+
+    @Test
+    void listarGrupoParametro_exito() {
+        List<TpGrupoParametro> response = new ArrayList();
+        TpGrupoParametro grupo1 = new TpGrupoParametro("001", "Grupo de Prueba1", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
+        grupo1.setIdGrupoParametro(1l);
+        TpGrupoParametro grupo2 = new TpGrupoParametro("002", "Grupo de Prueba2", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
+        grupo2.setIdGrupoParametro(2l);
+
+        response.add(grupo1);
+        response.add(grupo2);
+
+        when(grupoParametroRepository.findAll()).thenReturn(response);
+
+        List<ParametroDTO> resultado = grupoParametroService.getAllGrupoParametro();
+        assertNotNull(resultado);
     }
 }

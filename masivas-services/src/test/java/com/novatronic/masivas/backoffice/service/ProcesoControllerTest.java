@@ -47,7 +47,7 @@ public class ProcesoControllerTest {
         Map<String, List<DetalleConsultaProcesoDTO>> response = new HashMap<>();
 
         when(procesoService.buscarProceso(any())).thenReturn(response);
-        doNothing().when(procesoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(procesoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = procesoController.buscarProceso(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -59,7 +59,7 @@ public class ProcesoControllerTest {
         List<DetalleRegistroProcesoDTO> request = new ArrayList();
 
         when(procesoService.editarProceso(any(), any())).thenReturn(1l);
-        doNothing().when(procesoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(procesoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = procesoController.editarProceso(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -72,7 +72,7 @@ public class ProcesoControllerTest {
         Map<String, List<DetalleRegistroProcesoDTO>> response = new HashMap<>();
 
         when(procesoService.obtenerProceso(any())).thenReturn(response);
-        doNothing().when(procesoService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(procesoService).logAuditoria(any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = procesoController.obtenerProceso(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());

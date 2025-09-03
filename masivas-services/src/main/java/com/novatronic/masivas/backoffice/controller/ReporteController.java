@@ -9,6 +9,7 @@ import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ReporteService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.annotation.Audit;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.validation.Valid;
@@ -41,6 +42,7 @@ public class ReporteController {
      * @return
      */
     @PostMapping("/cierre/buscar")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_DETALLE_MASIVAS)
     public ResponseEntity<MasivasResponse<Object>> reporteCierre(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteCierreDTO reporte = reporteService.reporteCierre(request);
         reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CIERRE,
@@ -58,6 +60,7 @@ public class ReporteController {
      * @return
      */
     @PostMapping("/totalizado")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_DETALLE_MASIVAS)
     public ResponseEntity<MasivasResponse<Object>> reporteTotalizado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteTotalizadoDTO reporte = reporteService.reporteTotalizado(request);
         reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_TOTALIZADO,
@@ -74,6 +77,7 @@ public class ReporteController {
      * @return
      */
     @PostMapping("/consolidado")
+    @Audit(accion = Evento.EV_CONSULTA_REPORTE, origen = ConstantesServices.ACCION_VIEW, recursosAfectados = ConstantesServices.TABLA_DETALLE_MASIVAS)
     public ResponseEntity<MasivasResponse<Object>> reporteConsolidado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         List<DetalleReporteConsolidadoDTO> reporte = reporteService.reporteConsolidadoPorEntidadDestino(request);
         reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CONSOLIDADO,

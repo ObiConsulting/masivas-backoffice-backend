@@ -96,8 +96,6 @@ public class ConstantesServices {
     public static final String METODO_ACTIVAR_DESACTIVAR = "Activar/Desactivar";
     public static final String METODO_DESCARGAR = "Descargar";
 
-    public static final String LISTAR_PARAMETROS = "Listar Parámetros por grupo";
-
     public static final String LOGIN = "Login";
     public static final String LOGOUT = "Logout";
     public static final String CAMBIAR_CONTRASENA = "Cambiar Contraseña";
@@ -150,12 +148,12 @@ public class ConstantesServices {
 
     //Codigos del Sistema
     public static final String RESPUESTA_OK_API = "0000";
+    public static final String ERROR_BADREQUEST = "0001";
+    public static final String CODIGO_ERROR_API_CORE = "0096";
+    public static final String CODIGO_ERROR_JASPER = "0097";
     public static final String CODIGO_ERROR_BD = "0098";
     public static final String CODIGO_ERROR_GENERICO = "0099";
-    public static final String ERROR_BADREQUEST = "0001";
     public static final String RESPUESTA_ERROR_9999 = "9999";
-    public static final String CODIGO_ERROR_JASPER = "0097";
-    public static final String CODIGO_ERROR_API_CORE = "0096";
 
     public static final String CODIGO_ERROR_COD_ENTIDAD_UNICA = "0010";
     public static final String CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO = "0011";
@@ -165,13 +163,66 @@ public class ConstantesServices {
     public static final String CODIGO_ERROR_API_CORE_ACCION = "0015";
 
     //Mensajes del Sistema
-    public static final String MENSAJE_EXITO_CREAR_OPERACION = "Operación creada correctamente";
+    //Aplicación
+    public static final String MENSAJE_EXITO_CREAR_APLICACION = "Aplicación creada correctamente";
+    public static final String MENSAJE_EXITO_EDITAR_APLICACION = "Aplicación editada correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_APLICACION = "Aplicación activada correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_APLICACIONES = "Aplicaciones activadas correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_APLICACION = "Aplicación desactivada correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_APLICACIONES = "Aplicaciones desactivadas correctamente";
+    public static final String MENSAJE_EXITO_PARCIAL_ACTIVAR_APLICACIONES = "Se activaron %d aplicaciones. %d aplicaciones no pudieron ser activadas.";
+    public static final String MENSAJE_EXITO_PARCIAL_DESACTIVAR_APLICACIONES = "Se desactivaron %d aplicaciones. %d aplicaciones no pudieron ser desactivadas.";
+    public static final String MENSAJE_ERROR_ACTIVAR_APLICACION = "Error al activar la aplicación";
+    public static final String MENSAJE_ERROR_ACTIVAR_APLICACIONES = "Error al activar las aplicaciones";
+    public static final String MENSAJE_ERROR_DESACTIVAR_APLICACION = "Error al desactivar la aplicación";
+    public static final String MENSAJE_ERROR_DESACTIVAR_APLICACIONES = "Error al desactivar las aplicaciones";
+    //Entidad
+    public static final String MENSAJE_EXITO_CREAR_ENTIDAD = "Entidad creada correctamente";
+    public static final String MENSAJE_EXITO_EDITAR_ENTIDAD = "Entidad editada correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_ENTIDAD = "Entidad activada correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_ENTIDADES = "Entidades activadas correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_ENTIDAD = "Entidad desactivada correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_ENTIDADES = "Entidades desactivadas correctamente";
+    public static final String MENSAJE_EXITO_PARCIAL_ACTIVAR_ENTIDADES = "Se activaron %d entidades. %d entidades no pudieron ser activadas.";
+    public static final String MENSAJE_EXITO_PARCIAL_DESACTIVAR_ENTIDADES = "Se desactivaron %d entidades. %d entidades no pudieron ser desactivadas.";
+    public static final String MENSAJE_ERROR_ACTIVAR_ENTIDAD = "Error al activar la entidad";
+    public static final String MENSAJE_ERROR_ACTIVAR_ENTIDADES = "Error al activar las entidades";
+    public static final String MENSAJE_ERROR_DESACTIVAR_ENTIDAD = "Error al desactivar la entidad";
+    public static final String MENSAJE_ERROR_DESACTIVAR_ENTIDADES = "Error al desactivar las entidades";
+    //Ruta
+    public static final String MENSAJE_EXITO_EDITAR_RUTA = "Ruta editada correctamente";
+    //Archivos
+    public static final String MENSAJE_EXITO_RESPALDAR_ARCHIVO = "Archivo respaldado correctamente";
+    public static final String MENSAJE_EXITO_RESTAURAR_ARCHIVO = "Archivo restaurado correctamente";
+    public static final String MENSAJE_EXITO_EDITAR_SCHEDULER = "Scheduler editado correctamente";
+    //Grupo Parámetro
+    public static final String MENSAJE_EXITO_CREAR_GRUPO_PARAMETRO = "Grupo Parámetro creado correctamente";
+    public static final String MENSAJE_EXITO_EDITAR_GRUPO_PARAMETRO = "Grupo Parámetro editado correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_GRUPO_PARAMETRO = "Grupo Parámetro activado correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_GRUPOS_PARAMETROS = "Grupos Parámetros activados correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_GRUPO_PARAMETRO = "Grupo Parámetro desactivado correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_GRUPOS_PARAMETROS = "Grupos Parámetros desactivados correctamente";
+    public static final String MENSAJE_EXITO_PARCIAL_ACTIVAR_GRUPOS_PARAMETROS = "Se activaron %d grupos parámetros. %d grupos parámetros no pudieron ser activados.";
+    public static final String MENSAJE_EXITO_PARCIAL_DESACTIVAR_GRUPOS_PARAMETROS = "Se desactivaron %d grupos parámetros. %d grupos parámetros no pudieron ser desactivados.";
+    public static final String MENSAJE_ERROR_ACTIVAR_GRUPO_PARAMETRO = "Error al activar el grupo parámetro";
+    public static final String MENSAJE_ERROR_ACTIVAR_GRUPOS_PARAMETROS = "Error al activar los grupos parámetros";
+    public static final String MENSAJE_ERROR_DESACTIVAR_GRUPO_PARAMETRO = "Error al desactivar el grupo parámetro";
+    public static final String MENSAJE_ERROR_DESACTIVAR_GRUPOS_PARAMETROS = "Error al desactivar los grupos parámetros";
+    //Parámetro
+    public static final String MENSAJE_EXITO_CREAR_PARAMETRO = "Parámetro creado correctamente";
+    public static final String MENSAJE_EXITO_EDITAR_PARAMETRO = "Parámetro editado correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_PARAMETRO = "Parámetro activado correctamente";
+    public static final String MENSAJE_EXITO_ACTIVAR_PARAMETROS = "Parámetros activados correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_PARAMETRO = "Parámetro desactivado correctamente";
+    public static final String MENSAJE_EXITO_DESACTIVAR_PARAMETROS = "Parámetros desactivados correctamente";
+    public static final String MENSAJE_EXITO_PARCIAL_ACTIVAR_PARAMETROS = "Se activaron %d parámetros. %d parámetros no pudieron ser activados.";
+    public static final String MENSAJE_EXITO_PARCIAL_DESACTIVAR_PARAMETROS = "Se desactivaron %d parámetros. %d parámetros no pudieron ser desactivados.";
+    public static final String MENSAJE_ERROR_ACTIVAR_PARAMETRO = "Error al activar el parámetro";
+    public static final String MENSAJE_ERROR_ACTIVAR_PARAMETROS = "Error al activar los parámetros";
+    public static final String MENSAJE_ERROR_DESACTIVAR_PARAMETRO = "Error al desactivar el parámetro";
+    public static final String MENSAJE_ERROR_DESACTIVAR_PARAMETROS = "Error al desactivar los parámetros";
+
     public static final String MENSAJE_EXITO_BUSCAR_OPERACION = "Operación buscada correctamente";
-    public static final String MENSAJE_EXITO_EDITAR_OPERACION = "Operación editada correctamente";
-    public static final String MENSAJE_EXITO_ACTIVAR_OPERACION = "Operación activada correctamente";
-    public static final String MENSAJE_EXITO_ACTIVAR_OPERACIONES = "Operaciones activadas correctamente";
-    public static final String MENSAJE_EXITO_DESACTIVAR_OPERACION = "Operación desactivada correctamente";
-    public static final String MENSAJE_EXITO_DESACTIVAR_OPERACIONES = "Operaciones desactivadas correctamente";
     public static final String MENSAJE_EXITO_DESCARGAR_OPERACION = "Operación descargada correctamente";
     public static final String MENSAJE_EXITO_OBTENER_OPERACION = "Operación obtenida correctamente";
     public static final String MENSAJE_EXITO_CONSULTA_OPERACION = "Operación consultada correctamente";
@@ -180,18 +231,6 @@ public class ConstantesServices {
     public static final String MENSAJE_EXITO_CAMBIAR_CONTRASENA = "Cambio de contraseña realizado correctamente";
     public static final String MENSAJE_EXITO_GENERICO = "Operación completada correctamente";
 
-    public static final String MENSAJE_ERROR_CREAR_OPERACION = "Falló al crear operación";
-    public static final String MENSAJE_ERROR_BUSCAR_OPERACION = "Falló al buscar operación";
-    public static final String MENSAJE_ERROR_EDITAR_OPERACION = "Falló al editar operación";
-    public static final String MENSAJE_ERROR_ACTIVAR_OPERACION = "Falló al activar operación";
-    public static final String MENSAJE_ERROR_ACTIVAR_OPERACIONES = "Falló al activar operaciones";
-    public static final String MENSAJE_ERROR_DESACTIVAR_OPERACION = "Falló al desactivar operación";
-    public static final String MENSAJE_ERROR_DESACTIVAR_OPERACIONES = "Falló al desactivar operaciones";
-    public static final String MENSAJE_ERROR_DESCARGAR_OPERACION = "Falló al descargar operación";
-    public static final String MENSAJE_ERROR_OBTENER_OPERACION = "Falló al obtener operación";
-
-    public static final String MENSAJE_EXITO_PARCIAL_ACTIVAR_OPERACIONES = "Se activaron %d operaciones. %d operaciones no pudieron ser activadas.";
-    public static final String MENSAJE_EXITO_PARCIAL_DESACTIVAR_OPERACIONES = "Se desactivaron %d operaciones. %d operaciones no pudieron ser desactivadas.";
     public static final String MENSAJE_ERROR_GENERICO = "Se ha producido un error inesperado. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_BD = "Se ha producido un error con la base de datos. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_BAD_REQUEST = "Campos Inesperados";

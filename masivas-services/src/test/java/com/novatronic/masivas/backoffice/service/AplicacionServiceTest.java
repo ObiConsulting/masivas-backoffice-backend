@@ -48,6 +48,8 @@ public class AplicacionServiceTest {
 
     @Mock
     private AplicacionRepository aplicacionRepository;
+    @Mock
+    private GenericService genericService;
     @InjectMocks
     private AplicacionService aplicacionService;
 
@@ -67,6 +69,7 @@ public class AplicacionServiceTest {
     @Test
     void crearAplicacion_exito() {
         MasivasRequestDTO request = crearRequest();
+        when(genericService.getIdEntidadPropietaria()).thenReturn(1l);
         when(aplicacionRepository.save(any(TpAplicacion.class)))
                 .thenAnswer(invocation -> {
                     TpAplicacion aplicacionGuardada = invocation.getArgument(0);
@@ -80,6 +83,7 @@ public class AplicacionServiceTest {
     @Test
     void crearAplicacion_error_campoUnico() {
         MasivasRequestDTO request = crearRequest();
+        when(genericService.getIdEntidadPropietaria()).thenReturn(1l);
 
         ConstraintViolationException constraintEx = new ConstraintViolationException("", null, "");
         RollbackException rollbackEx = new RollbackException("");
@@ -99,6 +103,7 @@ public class AplicacionServiceTest {
     @Test
     void crearAplicacion_excepcion_bd() {
         MasivasRequestDTO request = crearRequest();
+        when(genericService.getIdEntidadPropietaria()).thenReturn(1l);
 
         RollbackException rollbackEx = new RollbackException("");
         RuntimeException genericEx = new RuntimeException("", rollbackEx);
@@ -114,6 +119,7 @@ public class AplicacionServiceTest {
     @Test
     void crearAplicacion_excepcion_generic() {
         MasivasRequestDTO request = crearRequest();
+        when(genericService.getIdEntidadPropietaria()).thenReturn(1l);
 
         RuntimeException genericEx = new RuntimeException("");
 
@@ -133,7 +139,7 @@ public class AplicacionServiceTest {
         request.setNombre("App de Prueba");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        TpAplicacion aplicacion = new TpAplicacion("COD001", "App de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
+        TpAplicacion aplicacion = new TpAplicacion(1l, "COD001", "App de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
         aplicacion.setIdAplicacion(1L);
         List<TpAplicacion> aplicacionesList = Collections.singletonList(aplicacion);
         Page<TpAplicacion> paginaSimulada = new PageImpl<>(aplicacionesList, Pageable.ofSize(10), 1);
@@ -432,7 +438,7 @@ public class AplicacionServiceTest {
         request.setNombre("App de Prueba");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        TpAplicacion aplicacion = new TpAplicacion("COD001", "App de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
+        TpAplicacion aplicacion = new TpAplicacion(1l, "COD001", "App de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
         aplicacion.setIdAplicacion(1L);
         List<TpAplicacion> aplicacionesList = Collections.singletonList(aplicacion);
         Page<TpAplicacion> paginaSimulada = new PageImpl<>(aplicacionesList, Pageable.ofSize(10), 1);
@@ -450,7 +456,7 @@ public class AplicacionServiceTest {
         request.setNombre("App de Prueba");
         request.setEstado(ConstantesServices.ESTADO_ACTIVO);
 
-        TpAplicacion aplicacion = new TpAplicacion("COD001", "App de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
+        TpAplicacion aplicacion = new TpAplicacion(1l, "COD001", "App de Prueba", ConstantesServices.ESTADO_ACTIVO, LocalDateTime.now(), "usuario");
         aplicacion.setIdAplicacion(1L);
         List<TpAplicacion> aplicacionesList = Collections.singletonList(aplicacion);
         Page<TpAplicacion> paginaSimulada = new PageImpl<>(aplicacionesList, Pageable.ofSize(10), 1);

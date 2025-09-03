@@ -272,8 +272,8 @@ public class ReporteService {
     }
 
     public <T> void logAuditoria(T request, Evento evento, Estado estado, UserContext userContext, String nombreTabla, String accion, String mensajeExito) {
-        LOGGER.audit(null, request, evento, estado, userContext.getUsername(), userContext.getScaProfile(), nombreTabla, userContext.getIp(),
-                null, accion, null, null, mensajeExito);
+        LOGGER.auditSuccess(null, request,userContext.getUsername(),userContext.getScaProfile(),
+                userContext.getIp(), ConstantesServices.VACIO,mensajeExito,ConstantesServices.RESPUESTA_OK_API);
     }
 
     public void logError(String mensajeError, Exception e) {
