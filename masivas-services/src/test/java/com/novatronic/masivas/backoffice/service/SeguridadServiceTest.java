@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,8 @@ class SeguridadServiceTest {
     @Mock
     private HazelcastInstance hazelcastInstance;
     @Mock
+    private MessageSource messageSource;
+    @Mock
     private HttpServletRequest request;
     @Mock
     private SCAService sCAService;
@@ -51,7 +54,7 @@ class SeguridadServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        authService = new SeguridadService(hazelcastInstance, request, sCAService, jwtUtil, restTemplate);
+        authService = new SeguridadService(hazelcastInstance, request, sCAService, jwtUtil, restTemplate, messageSource);
         lenient().when(request.getRemoteAddr()).thenReturn("127.0.0.1");
         ReflectionTestUtils.setField(authService, "captchaUrl", "http://172.29.42.30:8381/captcha/validate");
     }

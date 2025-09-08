@@ -2,6 +2,7 @@ package com.novatronic.masivas.backoffice.config;
 
 import com.hazelcast.config.*;
 import com.novatronic.novalog.audit.logger.NovaLogger;
+import java.io.File;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -55,6 +58,9 @@ public class ApplicationConfig {
 
     @Value("${masivas.captcha.readtimeout}")
     private int readTimeout;
+
+    @Value("${mensajes.ruta:}")
+    private String rutaExterna;
 
     @Bean
     public AuditorAware<String> auditorProvider() {
@@ -118,4 +124,17 @@ public class ApplicationConfig {
         return properties;
     }
 
+    @Bean(name = "usuarioMessageSource")
+    public MessageSource usuarioMessageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        if (rutaExterna != null && !rutaExterna.isBlank() && new File(rutaExterna).exists()) {
+            // Ruta externa (archivo del sistema)
+            messageSource.setBasename("file:" + rutaExterna.replace("\\", "/").replace(".properties", ""));
+        } else {
+            // Ruta por defecto (classpath)
+            messageSource.setBasename("classpath:mensaje");
+        }
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
+    }
 }

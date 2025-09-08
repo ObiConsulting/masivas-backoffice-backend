@@ -46,7 +46,7 @@ public class AplicacionControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(aplicacionService.crearAplicacion(any(), any())).thenReturn(1l);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.registrarAplicacion(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -59,7 +59,7 @@ public class AplicacionControllerTest {
         CustomPaginate<DetalleConsultaAplicacionDTO> response = new CustomPaginate<>();
 
         when(aplicacionService.buscarAplicacion(any())).thenReturn(response);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(),any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.buscarAplicacion(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -71,7 +71,7 @@ public class AplicacionControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(aplicacionService.editarAplicacion(any(), any())).thenReturn(1l);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(),any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.editarAplicacion(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -84,7 +84,7 @@ public class AplicacionControllerTest {
         DetalleRegistroAplicacionDTO response = new DetalleRegistroAplicacionDTO();
 
         when(aplicacionService.obtenerAplicacion(any())).thenReturn(response);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(),any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.obtenerAplicacion(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -97,7 +97,7 @@ public class AplicacionControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(aplicacionService.cambiarEstadoAplicacion(any(), any(), any())).thenReturn(response);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(),any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.activar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -110,7 +110,7 @@ public class AplicacionControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(aplicacionService.cambiarEstadoAplicacion(any(), any(), any())).thenReturn(response);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(),any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.desactivar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -123,7 +123,7 @@ public class AplicacionControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(aplicacionService.descargarAplicacion(any(), any(), any())).thenReturn(response);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(),any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.descargarPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -136,7 +136,7 @@ public class AplicacionControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(aplicacionService.descargarAplicacion(any(), any(), any())).thenReturn(response);
-        doNothing().when(aplicacionService).logAuditoria(any(), any(), any());
+        doNothing().when(aplicacionService).logAuditoria(any(), any(), any(), any(), any(), any(),any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = aplicacionController.descargarXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());

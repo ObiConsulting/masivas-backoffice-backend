@@ -11,6 +11,8 @@ import com.novatronic.masivas.backoffice.security.service.SCAService;
 import com.novatronic.masivas.backoffice.security.util.JwtUtil;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.novalog.audit.logger.NovaLogger;
+import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.util.Evento;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -45,6 +49,7 @@ public class SeguridadService {
     private final SCAService scaAutentication;
     private final JwtUtil jwtUtil;
     private final RestTemplate restTemplate;
+    private final MessageSource messageSource;
 
     @Value("${masivas.captcha.active}")
     private String captchaActive;
@@ -61,12 +66,14 @@ public class SeguridadService {
             HttpServletRequest request,
             SCAService scaAutentication,
             JwtUtil jwtUtil,
-            RestTemplate restTemplate) {
+            RestTemplate restTemplate,
+            @Qualifier("usuarioMessageSource") MessageSource messageSource) {
         this.hazelcastInstance = hazelcastInstance;
         this.request = request;
         this.scaAutentication = scaAutentication;
         this.jwtUtil = jwtUtil;
         this.restTemplate = restTemplate;
+        this.messageSource = messageSource;
     }
 
     /**
@@ -96,7 +103,7 @@ public class SeguridadService {
 
         SCAResponseDto result = scaAutentication.login(empresa, aplicacion, username, password);
         respuesta.setCodigo(result.getResponseCode());
-        respuesta.setMensaje(result.getResponseDescription());
+        respuesta.setMensaje(messageSource.getMessage(result.getResponseCode(), null, Locale.getDefault()));
 
         switch (result.getResponseCode()) {
 
@@ -134,8 +141,7 @@ public class SeguridadService {
                                 e -> (Serializable) e.getValue()
                         ));
 
-                int tiempoSesion = Integer.parseInt(atributos.get(TIMEOUT_ATTR).toString());
-
+                int tiempoSesion = Integer.parseInt(atributos.get(TIMEOUT_ATTR).toString()) * 6;
                 List<String> permisos = scaAutentication.listarRecursos(result.getToken());
                 permisos.add(ConstantesServices.PERMISO_USUARIO_VALIDO);
 
@@ -144,14 +150,14 @@ public class SeguridadService {
                 UserContext userContext = buildUserContext(username, permisos, safeAttributes, tiempoSesion, result);
 
                 List<String> permisosjwt = List.of(ConstantesServices.PERMISO_USUARIO_VALIDO);
-                String token = jwtUtil.generateToken(username, permisosjwt, userContext.getScaProfile(), tiempoSesion * 6);
+                String token = jwtUtil.generateToken(username, permisosjwt, userContext.getScaProfile(), tiempoSesion);
                 userContext.setToken(token);
 
                 hazelcastInstance.getMap(ConstantesServices.MAP_LOGUEADOS).put(userContext.getUsername(), userContext, tiempoSesion, TimeUnit.MINUTES);
 
                 respuesta.setResult(LoginResponse.builder()
                         .token(token)
-                        .tiempoSesion(tiempoSesion)
+                        .tiempoSesion(tiempoSesion / 6)
                         .build());
             }
         }
@@ -224,9 +230,9 @@ public class SeguridadService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, UserContext userContext, String mensajeExito) {
-        LOGGER.auditSuccess(null, request,userContext.getUsername(),userContext.getScaProfile(),
-                userContext.getIp(), ConstantesServices.VACIO,mensajeExito,ConstantesServices.RESPUESTA_OK_API);
+    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
     public void logError(String mensajeError, Exception e) {

@@ -12,7 +12,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -47,9 +46,9 @@ public class JwtUtil {
         }
 
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("scopes", scope.stream().map(s -> s.toString()).collect(Collectors.toList()));
+        claims.put("scopes", scope.stream().map(s -> s.toString()).toList());
         claims.put("ip", clientIp);
-        claims.put("tiempoSesion", tiempoExpiracion);
+        claims.put("tiempoSesion", tiempoExpiracion / 6);
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + tiempoExpiracion * 60_000L);

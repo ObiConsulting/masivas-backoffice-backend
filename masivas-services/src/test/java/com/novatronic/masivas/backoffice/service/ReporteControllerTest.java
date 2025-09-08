@@ -47,7 +47,7 @@ public class ReporteControllerTest {
         DetalleConsultaReporteCierreDTO response = new DetalleConsultaReporteCierreDTO();
 
         when(reporteService.reporteCierre(any())).thenReturn(response);
-        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = reporteController.reporteCierre(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -60,7 +60,7 @@ public class ReporteControllerTest {
         DetalleConsultaReporteTotalizadoDTO response = new DetalleConsultaReporteTotalizadoDTO();
 
         when(reporteService.reporteTotalizado(any())).thenReturn(response);
-        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = reporteController.reporteTotalizado(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -73,7 +73,7 @@ public class ReporteControllerTest {
         List<DetalleReporteConsolidadoDTO> response = new ArrayList<>();
 
         when(reporteService.reporteConsolidadoPorEntidadDestino(any())).thenReturn(response);
-        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = reporteController.reporteConsolidado(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -86,7 +86,7 @@ public class ReporteControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(reporteService.descargarConsolidado(any(), any(), any())).thenReturn(response);
-        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = reporteController.descargarConsolidadoPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -99,7 +99,7 @@ public class ReporteControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(reporteService.descargarConsolidado(any(), any(), any())).thenReturn(response);
-        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(reporteService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = reporteController.descargarConsolidadoXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());

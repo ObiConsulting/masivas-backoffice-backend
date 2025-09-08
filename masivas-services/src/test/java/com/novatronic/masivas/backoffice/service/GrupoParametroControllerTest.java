@@ -51,7 +51,7 @@ public class GrupoParametroControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(grupoParametroService.crearGrupoParametro(any(), any())).thenReturn(1l);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.registrar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -64,7 +64,7 @@ public class GrupoParametroControllerTest {
         CustomPaginate<DetalleConsultaGrupoParametroDTO> response = new CustomPaginate<>();
 
         when(grupoParametroService.buscarGrupoParametro(any())).thenReturn(response);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.buscar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -76,7 +76,7 @@ public class GrupoParametroControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(grupoParametroService.editarGrupoParametro(any(), any())).thenReturn(1l);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.editar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -89,7 +89,7 @@ public class GrupoParametroControllerTest {
         DetalleRegistroGrupoParametroDTO response = new DetalleRegistroGrupoParametroDTO();
 
         when(grupoParametroService.obtenerGrupoParametro(any())).thenReturn(response);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.obtener(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -102,7 +102,7 @@ public class GrupoParametroControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(grupoParametroService.cambiarEstadoGrupoParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.activar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -115,7 +115,7 @@ public class GrupoParametroControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(grupoParametroService.cambiarEstadoGrupoParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.desactivar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -128,7 +128,7 @@ public class GrupoParametroControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(grupoParametroService.descargarGrupoParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.descargarPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -141,7 +141,7 @@ public class GrupoParametroControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(grupoParametroService.descargarGrupoParametro(any(), any(), any())).thenReturn(response);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.descargarXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -153,7 +153,7 @@ public class GrupoParametroControllerTest {
         List<ParametroDTO> response = new ArrayList();
 
         when(grupoParametroService.getAllGrupoParametro()).thenReturn(response);
-        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any());
+        doNothing().when(grupoParametroService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = grupoParametroController.listarGrupoParametro(userContext);
         assertEquals(200, resultado.getStatusCodeValue());

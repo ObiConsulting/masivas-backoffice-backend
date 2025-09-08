@@ -46,7 +46,7 @@ public class GenericService {
         List<ParametroDTO> listaEstadoArchivo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_ESTADO_ARCHIVOS);
         return listaEstadoArchivo.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -59,7 +59,7 @@ public class GenericService {
         return listaCategoriaDirectorio.stream()
                 .filter(estado -> "1000".equals(estado.getCodigo()) || "2000".equals(estado.getCodigo()))
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -71,7 +71,7 @@ public class GenericService {
         List<ParametroDTO> listaTipoArchivo = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_TIPO_ARCHIVO);
         return listaTipoArchivo.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -83,7 +83,7 @@ public class GenericService {
         List<ParametroDTO> listaExtensionBase = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_EXTENSION_BASE);
         return listaExtensionBase.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -95,7 +95,7 @@ public class GenericService {
         List<ParametroDTO> listaExtensionControl = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_EXTENSION_CONTROL);
         return listaExtensionControl.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -108,7 +108,7 @@ public class GenericService {
         List<ParametroDTO> listaRptaOperadora = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_RPTA_OPERADORA);
         return Stream.concat(listaMotivoRechazo.stream(), listaRptaOperadora.stream())
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -120,14 +120,14 @@ public class GenericService {
         List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_TIPO_TRANSACCION);
         return listaTipoTransaccion.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<ParametroDTO> getAllMoneda() {
         List<ParametroDTO> listaTipoTransaccion = parametroCacheService.getParametersByGroup(ConstantesServices.ID_GRUPO_MONEDA);
         return listaTipoTransaccion.stream()
                 .sorted(Comparator.comparing(ParametroDTO::getCodigo))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public String getNombreEstadoArchivo(String codEstado) {

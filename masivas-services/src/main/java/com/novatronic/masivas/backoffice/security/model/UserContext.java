@@ -108,7 +108,7 @@ public class UserContext implements Serializable, UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities.stream()
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getAuthoritiesList() {

@@ -8,6 +8,8 @@ import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.repository.DetalleArchivoMasivasRepository;
+import com.novatronic.novalog.audit.util.Estado;
+import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
@@ -157,9 +159,9 @@ public class DetalleMasivasService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, UserContext userContext, String mensajeExito) {
-        LOGGER.auditSuccess(null, request,userContext.getUsername(),userContext.getScaProfile(),
-                userContext.getIp(), ConstantesServices.VACIO,mensajeExito,ConstantesServices.RESPUESTA_OK_API);
+    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
+                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
     }
 
 }
