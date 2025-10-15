@@ -44,16 +44,18 @@ public class ParametroService {
     private final ParametroRepository parametroRepository;
     private final GenericService genericService;
     private final ParametroCacheService parametroCacheService;
+    private final CoreService coreService;
 
     @Value("${reporte.logo}")
     private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ParametroService.class);
 
-    public ParametroService(ParametroRepository parametroRepository, ParametroCacheService parametroCacheService, GenericService genericService) {
+    public ParametroService(ParametroRepository parametroRepository, ParametroCacheService parametroCacheService, GenericService genericService, CoreService coreService) {
         this.parametroRepository = parametroRepository;
         this.parametroCacheService = parametroCacheService;
         this.genericService = genericService;
+        this.coreService = coreService;
     }
 
     /**
@@ -81,6 +83,7 @@ public class ParametroService {
 
             //Actualizamos cache
             parametroCacheService.loadParametersInCache();
+            coreService.refrescarCacheCore();
 
             return parametro.getIdParametro();
 
@@ -89,7 +92,7 @@ public class ParametroService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_UNICO, e);
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, e);
                 }
                 throw new DataBaseException(e);
             }
@@ -153,6 +156,7 @@ public class ParametroService {
 
             //Actualizamos cache
             parametroCacheService.loadParametersInCache();
+            coreService.refrescarCacheCore();
 
             return parametro.getIdParametro();
 
@@ -165,7 +169,7 @@ public class ParametroService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_UNICO, e);
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, e);
                 }
                 throw new DataBaseException(e);
             }
@@ -229,10 +233,11 @@ public class ParametroService {
                 numExito++;
             }
 
-            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado, ConstantesServices.PARAMETRO);
-
             //Actualizamos cache
             parametroCacheService.loadParametersInCache();
+            coreService.refrescarCacheCore();
+
+            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado, ConstantesServices.PARAMETRO);
 
             return new EstadoDTO(mensaje, numExito);
 
@@ -303,6 +308,6 @@ public class ParametroService {
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 }

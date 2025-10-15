@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,15 +46,17 @@ public class GrupoParametroService {
     @Autowired
     private final GrupoParametroRepository grupoParametroRepository;
     private final ParametroCacheService parametroCacheService;
+    private final CoreService coreService;
 
     @Value("${reporte.logo}")
     private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(GrupoParametroService.class);
 
-    public GrupoParametroService(GrupoParametroRepository grupoParametroRepository, ParametroCacheService parametroCacheService) {
+    public GrupoParametroService(GrupoParametroRepository grupoParametroRepository, ParametroCacheService parametroCacheService, CoreService coreService) {
         this.grupoParametroRepository = grupoParametroRepository;
         this.parametroCacheService = parametroCacheService;
+        this.coreService = coreService;
     }
 
     /**
@@ -82,6 +83,7 @@ public class GrupoParametroService {
 
             //Actualizamos cache
             parametroCacheService.loadParametersGroupInCache();
+            coreService.refrescarCacheCore();
 
             return grupoParametro.getIdGrupoParametro();
 
@@ -157,6 +159,7 @@ public class GrupoParametroService {
 
             //Actualizamos cache
             parametroCacheService.loadParametersGroupInCache();
+            coreService.refrescarCacheCore();
 
             return grupoParametro.getIdGrupoParametro();
 
@@ -233,10 +236,11 @@ public class GrupoParametroService {
                 numExito++;
             }
 
-            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado, ConstantesServices.GRUPO_PARAMETRO);
-
             //Actualizamos cache
             parametroCacheService.loadParametersGroupInCache();
+            coreService.refrescarCacheCore();
+
+            mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado, ConstantesServices.GRUPO_PARAMETRO);
 
             return new EstadoDTO(mensaje, numExito);
 

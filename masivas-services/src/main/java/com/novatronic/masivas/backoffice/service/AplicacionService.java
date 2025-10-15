@@ -43,15 +43,17 @@ public class AplicacionService {
     @Autowired
     private final AplicacionRepository aplicacionRepository;
     private final GenericService genericService;
+    private final CoreService coreService;
 
     @Value("${reporte.logo}")
     private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(AplicacionService.class);
 
-    public AplicacionService(AplicacionRepository aplicacionRepository, GenericService genericService) {
+    public AplicacionService(AplicacionRepository aplicacionRepository, GenericService genericService, CoreService coreService) {
         this.aplicacionRepository = aplicacionRepository;
         this.genericService = genericService;
+        this.coreService = coreService;
     }
 
     /**
@@ -76,6 +78,8 @@ public class AplicacionService {
                     usuario
             );
             aplicacion = aplicacionRepository.save(aplicacion);
+            coreService.refrescarCacheCore();
+
             return aplicacion.getIdAplicacion();
 
         } catch (Exception e) {
@@ -152,6 +156,7 @@ public class AplicacionService {
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateAplicacion(aplicacion, request, usuario, ConstantesServices.OPERACION_EDITAR);
             aplicacionRepository.save(aplicacion);
+            coreService.refrescarCacheCore();
 
             return aplicacion.getIdAplicacion();
 
@@ -230,6 +235,7 @@ public class AplicacionService {
                 aplicacionRepository.save(aplicacion);
                 numExito++;
             }
+            coreService.refrescarCacheCore();
 
             mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado, ConstantesServices.APLICACION);
 
@@ -301,7 +307,7 @@ public class AplicacionService {
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

@@ -27,7 +27,7 @@ import org.springframework.http.ResponseEntity;
  * @author Obi Consulting
  */
 @ExtendWith(MockitoExtension.class)
-public class RutaControllerTest {
+public class RutaArchivoControllerTest {
 
     @Mock
     private RutaService rutaService;

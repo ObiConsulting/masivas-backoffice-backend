@@ -32,11 +32,13 @@ public class ProcesoService {
 
     @Autowired
     private final ProcesoRepository procesoRepository;
+    private final CoreService coreService;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(ProcesoService.class);
 
-    public ProcesoService(ProcesoRepository procesoRepository) {
+    public ProcesoService(ProcesoRepository procesoRepository, CoreService coreService) {
         this.procesoRepository = procesoRepository;
+        this.coreService = coreService;
     }
 
     /**
@@ -96,6 +98,8 @@ public class ProcesoService {
                 updateProceso(proceso, procesoDetalle, usuario, ConstantesServices.OPERACION_EDITAR);
                 procesoRepository.save(proceso);
             }
+            coreService.refrescarCacheCore();
+
             return 1l;
 
         } catch (NoOperationExistsException e) {
@@ -168,7 +172,7 @@ public class ProcesoService {
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

@@ -85,6 +85,7 @@ public class ConstantesServices {
     //Para log
     public static final String MENSAJE_TRAZABILIDAD = "Procesando [{}]. Método [{}]. Valores: {}";
     public static final String MENSAJE_TRAZABILIDAD_ACCION = "Procesando [{}]. Valores: {}";
+    public static final String MENSAJE_TRAZABILIDAD_PROCESO = "Procesando [{}].";
     public static final String MENSAJE_TRAZABILIDAD_RESULTADOS = "Total de registros obtenidos: [{}]";
     public static final String MENSAJE_TRAZABILIDAD_RESULTADOS_REPORTE = "Total de registros obtenidos {}: [{}]";
     public static final String MENSAJE_TRAZABILIDAD_API_RESPONSE = "Respuesta de API {{}}: [{}]";
@@ -114,6 +115,7 @@ public class ConstantesServices {
     public static final String REPORTE_CONSOLIDADO = "Reporte Consolidado por Entidad Destino";
     public static final String RESPALDAR_ARCHIVO = "Respaldar Archivo";
     public static final String RESTAURAR_ARCHIVO = "Restaurar Archivo";
+    public static final String REFRESCAR_CACHE_CORE = "Refrescar Cache del Core";
 
     //Para reporte
     public static final String PARAM_IN_ESTADO = "IN_ESTADO";
@@ -157,10 +159,11 @@ public class ConstantesServices {
 
     public static final String CODIGO_ERROR_COD_ENTIDAD_UNICA = "0010";
     public static final String CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO = "0011";
-    public static final String CODIGO_ERROR_COD_PARAMETRO_UNICO = "0012";
+    public static final String CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO = "0012";
     public static final String CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA = "0013";
     public static final String CODIGO_ERROR_COD_APLICACION_UNICA = "0014";
     public static final String CODIGO_ERROR_API_CORE_ACCION = "0015";
+    public static final String CODIGO_ERROR_API_CORE_RECARGAR = "0016";
 
     //Mensajes del Sistema
     //Aplicación
@@ -191,10 +194,11 @@ public class ConstantesServices {
     public static final String MENSAJE_ERROR_DESACTIVAR_ENTIDADES = "Error al desactivar las entidades";
     //Ruta
     public static final String MENSAJE_EXITO_EDITAR_RUTA = "Ruta editada correctamente";
+    //Scheduler
+    public static final String MENSAJE_EXITO_EDITAR_SCHEDULER = "Scheduler editado correctamente";
     //Archivos
     public static final String MENSAJE_EXITO_RESPALDAR_ARCHIVO = "Archivo respaldado correctamente";
     public static final String MENSAJE_EXITO_RESTAURAR_ARCHIVO = "Archivo restaurado correctamente";
-    public static final String MENSAJE_EXITO_EDITAR_SCHEDULER = "Scheduler editado correctamente";
     //Grupo Parámetro
     public static final String MENSAJE_EXITO_CREAR_GRUPO_PARAMETRO = "Grupo Parámetro creado correctamente";
     public static final String MENSAJE_EXITO_EDITAR_GRUPO_PARAMETRO = "Grupo Parámetro editado correctamente";
@@ -236,12 +240,13 @@ public class ConstantesServices {
     public static final String MENSAJE_BAD_REQUEST = "Campos Inesperados";
     public static final String MENSAJE_ERROR_COD_ENTIDAD_UNICA = "El codigo entidad ya existe";
     public static final String MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO = "El codigo grupo parámetro ya existe";
-    public static final String MENSAJE_ERROR_COD_PARAMETRO_UNICO = "El codigo parámetro ya existe";
+    public static final String MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO = "La combinación de código y grupo de parámetro ya existe";
     public static final String MENSAJE_ERROR_OPERACION_NO_ENCONTRADA = "Operación no encontrada";
     public static final String MENSAJE_ERROR_COD_APLICACION_UNICA = "El codigo aplicación ya existe";
     public static final String MENSAJE_ERROR_JASPER = "Se ha producido un error al generar el archivo jasper. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_EXCEPTION = "Se ha producido un error. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_API_CORE = "Se ha producido un error en la comunicación con la api core. Por favor, inténtalo de nuevo en unos minutos.";
     public static final String MENSAJE_ERROR_API_CORE_ACCION = "Se ha producido un error ejecutar la acción respaldar/restaurar. Por favor, inténtalo de nuevo en unos minutos.";
+    public static final String MENSAJE_ERROR_API_CORE_RECARGAR = "Se ha producido un error ejecutar la acción recargar. Por favor, inténtalo de nuevo en unos minutos.";
 
 }

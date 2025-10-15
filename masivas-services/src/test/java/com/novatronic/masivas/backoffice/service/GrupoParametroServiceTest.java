@@ -51,6 +51,8 @@ public class GrupoParametroServiceTest {
     private GrupoParametroRepository grupoParametroRepository;
     @Mock
     private ParametroCacheService parametroCacheService;
+    @Mock
+    private CoreService coreService;
     @InjectMocks
     private GrupoParametroService grupoParametroService;
 

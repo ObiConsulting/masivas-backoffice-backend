@@ -39,15 +39,17 @@ public class RutaService {
     @Autowired
     private final RutaRepository rutaRepository;
     private final GenericService genericService;
+    private final CoreService coreService;
 
     @Value("${reporte.logo}")
     private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(RutaService.class);
 
-    public RutaService(RutaRepository rutaRepository, GenericService genericService) {
+    public RutaService(RutaRepository rutaRepository, GenericService genericService, CoreService coreService) {
         this.rutaRepository = rutaRepository;
         this.genericService = genericService;
+        this.coreService = coreService;
     }
 
     /**
@@ -101,6 +103,7 @@ public class RutaService {
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateRuta(ruta, request, usuario, ConstantesServices.OPERACION_EDITAR);
             rutaRepository.save(ruta);
+            coreService.refrescarCacheCore();
 
             return ruta.getIdRuta();
 
@@ -188,7 +191,7 @@ public class RutaService {
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

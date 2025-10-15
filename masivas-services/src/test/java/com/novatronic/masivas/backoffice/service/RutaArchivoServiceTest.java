@@ -46,6 +46,8 @@ public class RutaArchivoServiceTest {
     private RutaRepository rutaArchivoRepository;
     @Mock
     private GenericService genericService;
+    @Mock
+    private CoreService coreService;
     @InjectMocks
     private RutaService rutaArchivoService;
 

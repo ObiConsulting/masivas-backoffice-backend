@@ -42,14 +42,16 @@ public class EntidadService {
 
     @Autowired
     private final EntidadRepository entidadRepository;
+    private final CoreService coreService;
 
     @Value("${reporte.logo}")
     private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(EntidadService.class);
 
-    public EntidadService(EntidadRepository entidadRepository) {
+    public EntidadService(EntidadRepository entidadRepository, CoreService coreService) {
         this.entidadRepository = entidadRepository;
+        this.coreService = coreService;
     }
 
     /**
@@ -77,6 +79,8 @@ public class EntidadService {
                     usuario
             );
             entidad = entidadRepository.save(entidad);
+            coreService.refrescarCacheCore();
+
             return entidad.getIdEntidad();
 
         } catch (Exception e) {
@@ -153,6 +157,7 @@ public class EntidadService {
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateEntidad(entidad, request, usuario, ConstantesServices.OPERACION_EDITAR);
             entidadRepository.save(entidad);
+            coreService.refrescarCacheCore();
 
             return entidad.getIdEntidad();
 
@@ -231,6 +236,7 @@ public class EntidadService {
                 entidadRepository.save(entidad);
                 numExito++;
             }
+            coreService.refrescarCacheCore();
 
             mensaje = ServicesUtil.obtenerMensajeRespuestaCambioEstado(numExito, totalIds, estado, ConstantesServices.ENTIDAD_FINANCIERA);
 
@@ -304,7 +310,7 @@ public class EntidadService {
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

@@ -66,8 +66,8 @@ public class ArchivoService {
     private final GenericService genericService;
     private final RestTemplate restTemplate;
 
-    @Value("${masivas.core.url}")
-    private String apiCoreUrl;
+    @Value("${masivas.core.url.ejecutar}")
+    private String apiCoreUrlEjecutar;
     @Value("${reporte.logo}")
     private String logo;
 
@@ -521,7 +521,7 @@ public class ArchivoService {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<EjecutarRequestDTO> entity = new HttpEntity<>(ejecutarRequestDTO, headers);
-            ResponseEntity<EjecutarResponseDTO> response = restTemplate.exchange(apiCoreUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<EjecutarResponseDTO>() {
+            ResponseEntity<EjecutarResponseDTO> response = restTemplate.exchange(apiCoreUrlEjecutar, HttpMethod.POST, entity, new ParameterizedTypeReference<EjecutarResponseDTO>() {
             });
 
             EjecutarResponseDTO ejecutarResponseDTO = response.getBody();
@@ -529,7 +529,7 @@ public class ArchivoService {
                 throw new ActionRestCoreException(ConstantesServices.CODIGO_ERROR_API_CORE_ACCION, ConstantesServices.MENSAJE_ERROR_API_CORE_ACCION);
             }
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_API_RESPONSE, apiCoreUrl, ejecutarResponseDTO);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_API_RESPONSE, apiCoreUrlEjecutar, ejecutarResponseDTO);
 
             //Verificamos si existe un error en el response
             if (!ejecutarResponseDTO.getCodigoRespuesta().equals(ConstantesServices.CODIGO_OK_WS)) {
@@ -548,7 +548,7 @@ public class ArchivoService {
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
     public void logError(String mensajeError, Exception e) {

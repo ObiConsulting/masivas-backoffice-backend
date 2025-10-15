@@ -37,6 +37,8 @@ public class ProcesoServiceTest {
 
     @Mock
     private ProcesoRepository procesoRepository;
+    @Mock
+    private CoreService coreService;
     @InjectMocks
     private ProcesoService procesoService;
 
@@ -194,34 +196,31 @@ public class ProcesoServiceTest {
         Map<String, List<DetalleRegistroProcesoDTO>> resultado = procesoService.obtenerProceso(request);
         assertNotNull(resultado);
     }
-//
-//    @Test
-//    void obtenerRutaArchivo_excepcion_bd() {
-//        FiltroMasivasRequest request = new FiltroMasivasRequest();
-//        request.setIdRuta(1l);
-//
-//        RollbackException rollbackEx = new RollbackException("");
-//        RuntimeException genericEx = new RuntimeException("", rollbackEx);
-//        when(procesoRepository.buscarPorId(any())).thenThrow(genericEx);
-//
-//        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
-//            procesoService.obtenerRuta(request);
-//        });
-//        assertTrue(thrown instanceof DataBaseException);
-//    }
-//
-//    @Test
-//    void obtenerRutaArchivo_excepcion_generico() {
-//        FiltroMasivasRequest request = new FiltroMasivasRequest();
-//        request.setIdRuta(1l);
-//
-//        RuntimeException genericEx = new RuntimeException("");
-//        when(procesoRepository.buscarPorId(any())).thenThrow(genericEx);
-//
-//        GenericException thrown = assertThrows(GenericException.class, () -> {
-//            procesoService.obtenerRuta(request);
-//        });
-//        assertTrue(thrown instanceof GenericException);
-//    }
-//
+
+    @Test
+    void obtenerProceso_excepcion_bd() {
+        FiltroMasivasRequest request = new FiltroMasivasRequest();
+
+        InvalidDataAccessResourceUsageException genericEx = new InvalidDataAccessResourceUsageException("");
+        when(procesoRepository.findByCodServerInAndCodigoAccionInAndCodigoOperacion(any(), any(), any())).thenThrow(genericEx);
+
+        DataBaseException thrown = assertThrows(DataBaseException.class, () -> {
+            procesoService.obtenerProceso(request);
+        });
+        assertTrue(thrown instanceof DataBaseException);
+    }
+
+    @Test
+    void obtenerProceso_excepcion_generico() {
+        FiltroMasivasRequest request = new FiltroMasivasRequest();
+
+        RuntimeException genericEx = new RuntimeException("");
+        when(procesoRepository.findByCodServerInAndCodigoAccionInAndCodigoOperacion(any(), any(), any())).thenThrow(genericEx);
+
+        GenericException thrown = assertThrows(GenericException.class, () -> {
+            procesoService.obtenerProceso(request);
+        });
+        assertTrue(thrown instanceof GenericException);
+    }
+
 }

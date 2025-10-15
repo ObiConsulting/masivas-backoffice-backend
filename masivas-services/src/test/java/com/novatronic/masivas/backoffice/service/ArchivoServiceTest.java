@@ -67,7 +67,7 @@ public class ArchivoServiceTest {
     @Mock
     private GenericService genericService;
     @Mock
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate;    
     @InjectMocks
     private ArchivoService archivoService;
 
@@ -75,7 +75,7 @@ public class ArchivoServiceTest {
     void setUp() {
         archivoService = new ArchivoService(archivoDirectorioRepository, archivoMasivasRepository, archivoTitularidadRepository, genericService, restTemplate);
         ReflectionTestUtils.setField(archivoService, "logo", "logo.png");
-        ReflectionTestUtils.setField(archivoService, "apiCoreUrl", "http://172.29.42.30:8408/gestor/tareas/ejecutar");
+        ReflectionTestUtils.setField(archivoService, "apiCoreUrlEjecutar", "http://172.29.42.30:8408/gestor/tareas/ejecutar");
     }
 
     @Test

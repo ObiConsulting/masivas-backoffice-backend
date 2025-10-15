@@ -50,6 +50,8 @@ public class AplicacionServiceTest {
     private AplicacionRepository aplicacionRepository;
     @Mock
     private GenericService genericService;
+    @Mock
+    private CoreService coreService;
     @InjectMocks
     private AplicacionService aplicacionService;
 

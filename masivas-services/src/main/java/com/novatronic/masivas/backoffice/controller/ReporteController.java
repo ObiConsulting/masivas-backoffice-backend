@@ -43,8 +43,8 @@ public class ReporteController {
     @PostMapping("/cierre/buscar")
     public ResponseEntity<MasivasResponse<Object>> reporteCierre(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteCierreDTO reporte = reporteService.reporteCierre(request);
-        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CIERRE,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_GENERICO, ConstantesServices.RESPUESTA_OK_API);
+        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CIERRE, ConstantesServices.ACCION_READ,
+                ConstantesServices.MENSAJE_EXITO_GENERICO, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));
     }
 
@@ -60,8 +60,8 @@ public class ReporteController {
     @PostMapping("/totalizado")
     public ResponseEntity<MasivasResponse<Object>> reporteTotalizado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteTotalizadoDTO reporte = reporteService.reporteTotalizado(request);
-        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CIERRE,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_GENERICO, ConstantesServices.RESPUESTA_OK_API);
+        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CIERRE, ConstantesServices.ACCION_READ,
+                ConstantesServices.MENSAJE_EXITO_GENERICO, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));
     }
 
@@ -76,8 +76,8 @@ public class ReporteController {
     @PostMapping("/consolidado")
     public ResponseEntity<MasivasResponse<Object>> reporteConsolidado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         List<DetalleReporteConsolidadoDTO> reporte = reporteService.reporteConsolidadoPorEntidadDestino(request);
-        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CONSOLIDADO,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_GENERICO, ConstantesServices.RESPUESTA_OK_API);
+        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CONSOLIDADO, ConstantesServices.ACCION_READ,
+                ConstantesServices.MENSAJE_EXITO_GENERICO, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_GENERICO, reporte));
     }
 
@@ -92,8 +92,8 @@ public class ReporteController {
     @PostMapping("/consolidado/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarConsolidadoPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = reporteService.descargarConsolidado(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
-        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CONSOLIDADO,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CONSOLIDADO, ConstantesServices.ACCION_READ,
+                ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -108,8 +108,8 @@ public class ReporteController {
     @PostMapping("/consolidado/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarConsolidadoXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = reporteService.descargarConsolidado(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
-        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CONSOLIDADO,
-                ConstantesServices.ACCION_READ, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        reporteService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.REPORTE_CONSOLIDADO, ConstantesServices.ACCION_READ,
+                ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 }

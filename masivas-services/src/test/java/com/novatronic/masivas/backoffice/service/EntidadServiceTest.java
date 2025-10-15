@@ -48,6 +48,8 @@ public class EntidadServiceTest {
 
     @Mock
     private EntidadRepository entidadRepository;
+    @Mock
+    private CoreService coreService;
     @InjectMocks
     private EntidadService entidadService;
 

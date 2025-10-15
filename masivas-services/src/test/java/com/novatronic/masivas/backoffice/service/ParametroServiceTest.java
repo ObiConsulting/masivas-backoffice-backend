@@ -52,6 +52,8 @@ public class ParametroServiceTest {
     private ParametroCacheService parametroCacheService;
     @Mock
     private GenericService genericService;
+    @Mock
+    private CoreService coreService;
     @InjectMocks
     private ParametroService parametroService;
 
@@ -97,8 +99,8 @@ public class ParametroServiceTest {
             parametroService.crearParametro(request, "usuario");
         });
 
-        assertEquals(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_UNICO, thrown.getErrorCode());
-        assertEquals(ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_UNICO, thrown.getMessage());
+        assertEquals(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, thrown.getErrorCode());
+        assertEquals(ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, thrown.getMessage());
     }
 
     @Test
@@ -219,8 +221,8 @@ public class ParametroServiceTest {
             parametroService.editarParametro(request, "usuario");
         });
 
-        assertEquals(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_UNICO, thrown.getErrorCode());
-        assertEquals(ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_UNICO, thrown.getMessage());
+        assertEquals(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, thrown.getErrorCode());
+        assertEquals(ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, thrown.getMessage());
     }
 
     @Test
