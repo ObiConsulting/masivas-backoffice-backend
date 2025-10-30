@@ -117,7 +117,7 @@ public class GrupoParametroService {
             ModelMapper modelMapper = new ModelMapper();
             Pageable pageable = ServicesUtil.configurarPageSort(request);
 
-            Page<TpGrupoParametro> objPageable = grupoParametroRepository.buscarPorFiltros(request.getCodigo(), request.getDescripcion(), request.getEstado(), pageable);
+            Page<TpGrupoParametro> objPageable = grupoParametroRepository.buscarPorFiltros(request.getCodigo(), request.getDescripcion(), request.getEstadoSearch(), pageable);
 
             Page<DetalleConsultaGrupoParametroDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaGrupoParametroDTO.class));
 

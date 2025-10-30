@@ -23,13 +23,13 @@ public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas
 
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoMasivasDTO("
             + "m.idArchivo, m.nombre, m.fechaObtencion, m.fechaProcesada, m.cantidadDeclarado, m.cantidadProcesado, m.montoProcesadoDolar, m.montoProcesadoSol, m.montoRechazadoDolar, m.montoRechazadoSol, "
-            + "    CASE "
+            + "    CAST(CASE "
             + "        WHEN m.estadoEnviadoCliente IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0703') "
             + "        WHEN m.estadoObtenidoCCE IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0702') "
             + "        WHEN m.estadoEnviadoCCE IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0701') "
             + "        WHEN m.estadoObtenidoCliente IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0700') "
             + "        ELSE 'Pendiente' "
-            + "    END, "
+            + "    END AS string), "
             + "    CASE "
             + "        WHEN m.estadoEnviadoCliente = 600L AND m.estadoFisico IS NULL AND FUNCTION('TO_CHAR', m.fecCreacion, 'YYYY-MM-DD') <> FUNCTION('TO_CHAR', CURRENT_DATE, 'YYYY-MM-DD') THEN true"
             + "        ELSE false"
@@ -39,18 +39,18 @@ public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas
             + "        ELSE false"
             + "    END)"
             + "FROM TpArchivoMasivas m\n"
-            + "     WHERE (:fechaInicioObtencion IS NULL OR m.fechaObtencion >= :fechaInicioObtencion)\n"
-            + "      AND (:fechaFinObtencion IS NULL OR m.fechaObtencion <= :fechaFinObtencion)\n"
-            + "      AND (:fechaInicioProcesada IS NULL OR m.fechaProcesada >= :fechaInicioProcesada)\n"
-            + "      AND (:fechaFinProcesada IS NULL OR m.fechaProcesada <= :fechaFinProcesada)\n"
+            + "     WHERE (COALESCE(:fechaInicioObtencion, m.fechaObtencion) IS NULL OR m.fechaObtencion >= :fechaInicioObtencion)\n"
+            + "      AND (COALESCE(:fechaFinObtencion, m.fechaObtencion) IS NULL OR m.fechaObtencion <= :fechaFinObtencion)\n"
+            + "      AND (COALESCE(:fechaInicioProcesada, m.fechaProcesada) IS NULL OR m.fechaProcesada >= :fechaInicioProcesada)\n"
+            + "      AND (COALESCE(:fechaFinProcesada, m.fechaProcesada) IS NULL OR m.fechaProcesada <= :fechaFinProcesada)\n"
             + "      AND (:estado IS NULL OR "
-            + "         CASE "
+            + "         CAST(CASE "
             + "            WHEN m.estadoEnviadoCliente IS NOT NULL THEN '0703' "
             + "            WHEN m.estadoObtenidoCCE IS NOT NULL THEN '0702' "
             + "            WHEN m.estadoEnviadoCCE IS NOT NULL THEN '0701' "
             + "            WHEN m.estadoObtenidoCliente IS NOT NULL THEN '0700' "
             + "            ELSE 'Pendiente' "
-            + "         END = :estado)")
+            + "         END AS string) = :estado)")
     Page<DetalleConsultaArchivoMasivasDTO> buscarPorFiltros(
             @Param("fechaInicioObtencion") LocalDateTime fechaInicioObtencion,
             @Param("fechaFinObtencion") LocalDateTime fechaFinObtencion,
@@ -61,7 +61,7 @@ public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas
     );
 
     @Query("SELECT "
-            + "CASE "
+            + "CAST(CASE "
             + "    WHEN m.estadoEnviadoCliente IS NOT NULL THEN 'Enviado Cliente' "
             + "    WHEN m.estadoProcesadoCCE IS NOT NULL THEN 'Obtenido CCE' "
             + "    WHEN m.estadoObtenidoCCE IS NOT NULL THEN 'Obtenido CCE' "
@@ -69,13 +69,13 @@ public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas
             + "    WHEN m.estadoProcesadoCliente IS NOT NULL THEN 'Obtenido Cliente' "
             + "    WHEN m.estadoObtenidoCliente IS NOT NULL THEN 'Obtenido Cliente' "
             + "    ELSE 'Pendiente' "
-            + "END, "
+            + "END AS string), "
             + "COUNT(m.idArchivo)"
             + "FROM TpArchivoMasivas m "
-            + "WHERE (:fechaInicio IS NULL OR m.fechaObtencion >= :fechaInicio) "
-            + "AND (:fechaFin IS NULL OR m.fechaObtencion <= :fechaFin) "
+            + "WHERE (COALESCE(:fechaInicio, m.fechaObtencion) IS NULL OR m.fechaObtencion >= :fechaInicio) "
+            + "AND (COALESCE(:fechaFin, m.fechaObtencion) IS NULL OR m.fechaObtencion <= :fechaFin) "
             + "GROUP BY "
-            + "CASE "
+            + "CAST(CASE "
             + "    WHEN m.estadoEnviadoCliente IS NOT NULL THEN 'Enviado Cliente' "
             + "    WHEN m.estadoProcesadoCCE IS NOT NULL THEN 'Obtenido CCE' "
             + "    WHEN m.estadoObtenidoCCE IS NOT NULL THEN 'Obtenido CCE' "
@@ -83,14 +83,14 @@ public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas
             + "    WHEN m.estadoProcesadoCliente IS NOT NULL THEN 'Obtenido Cliente' "
             + "    WHEN m.estadoObtenidoCliente IS NOT NULL THEN 'Obtenido Cliente' "
             + "    ELSE 'Pendiente' "
-            + "END")
+            + "END AS string)")
     List<Object[]> totalesPorEstado(
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin
     );
 
     @Query("SELECT "
-            + "CASE "
+            + "CAST(CASE "
             + "    WHEN m.estadoEnviadoCliente IS NOT NULL THEN 'Procesado' "
             + "    WHEN m.estadoProcesadoCCE IS NOT NULL THEN 'Pendiente por Procesar' "
             + "    WHEN m.estadoObtenidoCCE IS NOT NULL THEN 'Pendiente por Procesar' "
@@ -98,17 +98,17 @@ public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas
             + "    WHEN m.estadoProcesadoCliente IS NOT NULL THEN 'Pendiente por Procesar' "
             + "    WHEN m.estadoObtenidoCliente IS NOT NULL THEN 'Pendiente por Procesar' "
             + "    ELSE 'Pendiente' "
-            + "END, "
+            + "END AS string), "
             + "COUNT(m.idArchivo), "
             + "SUM(CASE WHEN m.estadoEnviadoCliente IS NOT NULL THEN m.montoProcesadoDolar ELSE 0 END), "
             + "SUM(CASE WHEN m.estadoEnviadoCliente IS NOT NULL THEN m.montoProcesadoSol ELSE 0 END), "
             + "SUM(CASE WHEN m.estadoEnviadoCliente IS NOT NULL THEN m.montoRechazadoDolar ELSE 0 END), "
             + "SUM(CASE WHEN m.estadoEnviadoCliente IS NOT NULL THEN m.montoRechazadoSol ELSE 0 END) "
             + "FROM TpArchivoMasivas m "
-            + "WHERE (:fechaInicio IS NULL OR m.fechaObtencion >= :fechaInicio) "
-            + "AND (:fechaFin IS NULL OR m.fechaObtencion <= :fechaFin) "
+            + "WHERE (COALESCE(:fechaInicio, m.fechaObtencion) IS NULL OR m.fechaObtencion >= :fechaInicio) "
+            + "AND (COALESCE(:fechaFin, m.fechaObtencion) IS NULL OR m.fechaObtencion <= :fechaFin) "
             + "GROUP BY "
-            + "CASE "
+            + "CAST(CASE "
             + "    WHEN m.estadoEnviadoCliente IS NOT NULL THEN 'Procesado' "
             + "    WHEN m.estadoProcesadoCCE IS NOT NULL THEN 'Pendiente por Procesar' "
             + "    WHEN m.estadoObtenidoCCE IS NOT NULL THEN 'Pendiente por Procesar' "
@@ -116,7 +116,7 @@ public interface ArchivoMasivasRepository extends JpaRepository<TpArchivoMasivas
             + "    WHEN m.estadoProcesadoCliente IS NOT NULL THEN 'Pendiente por Procesar' "
             + "    WHEN m.estadoObtenidoCliente IS NOT NULL THEN 'Pendiente por Procesar' "
             + "    ELSE 'Pendiente' "
-            + "END")
+            + "END AS string)")
     List<Object[]> reporteTotalizado(
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin

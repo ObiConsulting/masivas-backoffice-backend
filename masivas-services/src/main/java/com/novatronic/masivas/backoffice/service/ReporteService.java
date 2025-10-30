@@ -152,7 +152,7 @@ public class ReporteService {
             LocalDateTime fechaInicio = request.getFecha().atStartOfDay();
             LocalDateTime fechaFin = request.getFecha().atTime(LocalTime.MAX);
 
-            List<DetalleReporteConsolidadoDTO> listaReporte = detalleArchivoMasivasRepository.totalesPorEntidadDestino(fechaInicio, fechaFin, request.getMoneda());
+            List<DetalleReporteConsolidadoDTO> listaReporte = detalleArchivoMasivasRepository.totalesPorEntidadDestino(fechaInicio, fechaFin, request.getMonedaSearch());
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, listaReporte.size());
 

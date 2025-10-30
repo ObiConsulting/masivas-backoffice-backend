@@ -66,7 +66,7 @@ public class RutaService {
 
             Pageable pageable = ServicesUtil.configurarPageSort(request);
 
-            Page<DetalleConsultaRutaDTO> objPageable = rutaRepository.buscarPorFiltros(request.getCodTipoArchivo(), request.getCodCategoriaDirectorio(), pageable);
+            Page<DetalleConsultaRutaDTO> objPageable = rutaRepository.buscarPorFiltros(request.getCodTipoArchivoSearch(), request.getCodCategoriaDirectorioSearch(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();

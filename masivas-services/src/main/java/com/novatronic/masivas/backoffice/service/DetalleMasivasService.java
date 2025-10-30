@@ -23,6 +23,9 @@ import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;
+import net.sf.jasperreports.engine.util.JRSwapFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -47,6 +50,7 @@ public class DetalleMasivasService {
     private String maskActive;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(DetalleMasivasService.class);
+    private static final int MAX_REPORT_OBJECTS_IN_RAM = 500;
 
     public DetalleMasivasService(DetalleArchivoMasivasRepository detalleArchivoMasivasRepository, CryptoService cryptoServiceImpl, MaskUtil maskUtil, GenericService genericService) {
         this.detalleArchivoMasivasRepository = detalleArchivoMasivasRepository;
@@ -83,7 +87,7 @@ public class DetalleMasivasService {
             logEvento("Hash Cuenta Destino {}", request.getCuentaDestino());
 
             Page<DetalleRegistroArchivoMasivasDTO> objPageable = detalleArchivoMasivasRepository.buscarPorFiltros(request.getNombreArchivo(), fechaInicioObtencion, fechaFinObtencion, fechaInicioProcesada, fechaFinProcesada,
-                    request.getCuentaOrigen(), request.getCuentaDestino(), request.getMotivoRechazo(), request.getTipoTransaccion(), pageable);
+                    request.getCuentaOrigen(), request.getCuentaDestino(), request.getMotivoRechazoSearch(), request.getTipoTransaccionSearch(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
@@ -129,14 +133,24 @@ public class DetalleMasivasService {
      */
     public ReporteDTO descargarDetalleArchivoMasivas(FiltroMasivasRequest request, String usuario, String tipoArchivo) {
 
+        JRSwapFileVirtualizer virtualizer = null;
+
         try {
+            
             request.setNumeroPagina(0);
             request.setRegistrosPorPagina(0);
+
+            //Virtualizer
+            JRSwapFile swapFile = new JRSwapFile(System.getProperty("java.io.tmpdir"), 1024, 5);
+
+            virtualizer = new JRSwapFileVirtualizer(MAX_REPORT_OBJECTS_IN_RAM, swapFile, true);
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.DETALLE_MASIVAS, ConstantesServices.METODO_DESCARGAR, request.toStringDetalleMasivas());
             CustomPaginate<DetalleRegistroArchivoMasivasDTO> resultado = buscarDetalleMasivas(request);
 
             HashMap<String, Object> parameters = new HashMap<>();
+            //Virtualizacion
+            parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
             //Filtros
             parameters.put("IN_NOMBRE_ARCHIVO", request.getNombreArchivo());
             parameters.put("IN_FECHA_OBTENCION", ServicesUtil.formatearLocalDateToString(request.getFechaObtencion()));
@@ -151,6 +165,10 @@ public class DetalleMasivasService {
             throw e;
         } catch (Exception e) {
             throw new GenericException(e);
+        } finally {
+            if (virtualizer != null) {
+                virtualizer.cleanup();
+            }
         }
 
     }
@@ -161,7 +179,7 @@ public class DetalleMasivasService {
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

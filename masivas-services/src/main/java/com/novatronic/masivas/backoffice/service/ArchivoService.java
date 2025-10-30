@@ -100,7 +100,7 @@ public class ArchivoService {
             LocalDateTime fechaInicio = request.getFechaInicio().atStartOfDay();
             LocalDateTime fechaFin = request.getFechaFin().atTime(LocalTime.MAX);
 
-            Page<DetalleConsultaArchivoDirectorioDTO> objPageable = archivoDirectorioRepository.buscarPorFiltros(fechaInicio, fechaFin, request.getEstado(), pageable);
+            Page<DetalleConsultaArchivoDirectorioDTO> objPageable = archivoDirectorioRepository.buscarPorFiltros(fechaInicio, fechaFin, request.getEstadoSearch(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
@@ -136,7 +136,7 @@ public class ArchivoService {
             Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             Page<DetalleConsultaArchivoMasivasDTO> objPageable = archivoMasivasRepository.buscarPorFiltros(request.getFechaInicioObtencion(), request.getFechaFinObtencion(),
-                    request.getFechaInicioProcesada(), request.getFechaFinProcesada(), request.getEstado(), pageable);
+                    request.getFechaInicioProcesada(), request.getFechaFinProcesada(), request.getEstadoSearch(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();
@@ -172,7 +172,7 @@ public class ArchivoService {
             Pageable pageable = ServicesUtil.configurarPageSort(request);
 
             Page<DetalleConsultaArchivoTitularidadDTO> objPageable = archivoTitularidadRepository.buscarPorFiltros(request.getFechaInicioObtencion(), request.getFechaFinObtencion(),
-                    request.getFechaInicioProcesada(), request.getFechaFinProcesada(), request.getEstado(), pageable);
+                    request.getFechaInicioProcesada(), request.getFechaFinProcesada(), request.getEstadoSearch(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();

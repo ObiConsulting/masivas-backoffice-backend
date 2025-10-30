@@ -116,7 +116,7 @@ public class ParametroService {
 
             Pageable pageable = ServicesUtil.configurarPageSort(request);
 
-            Page<DetalleConsultaParametroDTO> objPageable = parametroRepository.buscarPorFiltros(request.getCodigo(), request.getIdGrupoParametro(), request.getEstado(), pageable);
+            Page<DetalleConsultaParametroDTO> objPageable = parametroRepository.buscarPorFiltros(request.getCodigo(), request.getIdGrupoParametro(), request.getEstadoSearch(), pageable);
 
             int totalPaginas = objPageable.getTotalPages();
             long totalRegistrosLong = objPageable.getTotalElements();

@@ -23,11 +23,11 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
 
     @Query("    SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleConsultaArchivoDirectorioDTO("
             + "d.idArchivo, d.nombre, d.cantidadDeclarado, d.fechaObtencion,"
-            + "    CASE "
+            + "    CAST(CASE "
             + "        WHEN d.estadoEnviado IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0703') "
             + "        WHEN d.estadoObtenido IS NOT NULL THEN (SELECT p.valor FROM TpParametro p WHERE p.codigo = '0702')  "
             + "        ELSE 'Pendiente' "
-            + "    END, "
+            + "    END AS string), "
             + "    CASE "
             + "        WHEN d.estadoEnviado = 600L AND d.estadoFisico IS NULL AND FUNCTION('TO_CHAR', d.fecCreacion, 'YYYY-MM-DD') <> FUNCTION('TO_CHAR', CURRENT_DATE, 'YYYY-MM-DD') THEN true"
             + "        ELSE false"
@@ -37,14 +37,14 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
             + "        ELSE false"
             + "    END)"
             + "FROM TpArchivoDirectorio d\n"
-            + "     WHERE (:fechaInicio IS NULL OR d.fechaObtencion >= :fechaInicio)\n"
-            + "      AND (:fechaFin IS NULL OR d.fechaObtencion <= :fechaFin)\n"
+            + "     WHERE (COALESCE(:fechaInicio,d.fechaObtencion) IS NULL OR d.fechaObtencion >= :fechaInicio)\n"
+            + "      AND (COALESCE(:fechaFin,d.fechaObtencion) IS NULL OR d.fechaObtencion <= :fechaFin)\n"
             + "      AND (:estado IS NULL OR "
-            + "         CASE "
+            + "         CAST(CASE "
             + "            WHEN d.estadoEnviado IS NOT NULL THEN '0703' "
             + "            WHEN d.estadoObtenido IS NOT NULL THEN '0702' "
             + "            ELSE 'Pendiente' "
-            + "         END = :estado)")
+            + "         END AS string) = :estado)")
     Page<DetalleConsultaArchivoDirectorioDTO> buscarPorFiltros(
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin,
@@ -53,23 +53,23 @@ public interface ArchivoDirectorioRepository extends JpaRepository<TpArchivoDire
     );
 
     @Query("SELECT "
-            + "CASE "
+            + "CAST(CASE "
             + "    WHEN d.estadoEnviado IS NOT NULL THEN 'Enviado Cliente' "
             + "    WHEN d.estadoProcesado IS NOT NULL THEN 'Obtenido CCE' "
             + "    WHEN d.estadoObtenido IS NOT NULL THEN 'Obtenido CCE' "
             + "    ELSE 'Pendiente' "
-            + "END, "
+            + "END AS string), "
             + "COUNT(d.idArchivo) "
             + "FROM TpArchivoDirectorio d "
-            + "WHERE (:fechaInicio IS NULL OR d.fechaObtencion >= :fechaInicio) "
-            + "AND (:fechaFin IS NULL OR d.fechaObtencion <= :fechaFin) "
+            + "WHERE (COALESCE(:fechaInicio, d.fechaObtencion) IS NULL OR d.fechaObtencion >= :fechaInicio) "
+            + "AND (COALESCE(:fechaFin, d.fechaObtencion) IS NULL OR d.fechaObtencion <= :fechaFin) "
             + "GROUP BY "
-            + "CASE "
+            + "CAST(CASE "
             + "    WHEN d.estadoEnviado IS NOT NULL THEN 'Enviado Cliente' "
             + "    WHEN d.estadoProcesado IS NOT NULL THEN 'Obtenido CCE' "
             + "    WHEN d.estadoObtenido IS NOT NULL THEN 'Obtenido CCE' "
             + "    ELSE 'Pendiente' "
-            + "END")
+            + "END AS string)")
     List<Object[]> totalesPorEstado(
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin

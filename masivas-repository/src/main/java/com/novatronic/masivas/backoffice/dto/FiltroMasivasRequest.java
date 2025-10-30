@@ -110,6 +110,10 @@ public class FiltroMasivasRequest {
         return estado != null ? estado : "";
     }
 
+    public String getEstadoSearch() {
+        return estado == null || estado.trim().isEmpty() ? null : estado;
+    }
+
     public Long getIdEntidad() {
         return idEntidad;
     }
@@ -154,8 +158,16 @@ public class FiltroMasivasRequest {
         return codTipoArchivo;
     }
 
+    public String getCodTipoArchivoSearch() {
+        return codTipoArchivo == null || codTipoArchivo.trim().isEmpty() ? null : codTipoArchivo;
+    }
+
     public String getCodCategoriaDirectorio() {
         return codCategoriaDirectorio;
+    }
+
+    public String getCodCategoriaDirectorioSearch() {
+        return codCategoriaDirectorio == null || codCategoriaDirectorio.trim().isEmpty() ? null : codCategoriaDirectorio;
     }
 
     public String getCodOperacion() {
@@ -194,8 +206,16 @@ public class FiltroMasivasRequest {
         return motivoRechazo != null ? motivoRechazo : "";
     }
 
+    public String getMotivoRechazoSearch() {
+        return motivoRechazo == null || motivoRechazo.trim().isEmpty() ? null : motivoRechazo;
+    }
+
     public String getTipoTransaccion() {
         return tipoTransaccion != null ? tipoTransaccion : "";
+    }
+
+    public String getTipoTransaccionSearch() {
+        return tipoTransaccion == null || tipoTransaccion.trim().isEmpty() ? null : tipoTransaccion;
     }
 
     public String getTipoAccion() {
@@ -208,6 +228,10 @@ public class FiltroMasivasRequest {
 
     public String getMoneda() {
         return moneda != null ? moneda : "";
+    }
+
+    public String getMonedaSearch() {
+        return moneda == null || moneda.trim().isEmpty() ? null : moneda;
     }
 
     public String toStringGrupoParametro() {

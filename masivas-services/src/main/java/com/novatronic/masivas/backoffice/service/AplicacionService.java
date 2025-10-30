@@ -112,7 +112,7 @@ public class AplicacionService {
             ModelMapper modelMapper = new ModelMapper();
             Pageable pageable = ServicesUtil.configurarPageSort(request);
 
-            Page<TpAplicacion> objPageable = aplicacionRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstado(), pageable);
+            Page<TpAplicacion> objPageable = aplicacionRepository.buscarPorFiltros(request.getCodigo(), request.getNombre(), request.getEstadoSearch(), pageable);
 
             Page<DetalleConsultaAplicacionDTO> dtoPage = objPageable.map(e -> modelMapper.map(e, DetalleConsultaAplicacionDTO.class));
 
