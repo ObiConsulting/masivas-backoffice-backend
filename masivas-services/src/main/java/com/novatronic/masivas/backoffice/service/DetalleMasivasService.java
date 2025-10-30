@@ -19,7 +19,6 @@ import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.masivas.backoffice.util.GenerarReporte;
 import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
