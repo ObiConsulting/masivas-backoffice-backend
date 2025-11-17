@@ -2,6 +2,7 @@ package com.novatronic.masivas.backoffice.service;
 
 import com.novatronic.masivas.backoffice.exception.ActionRestCoreException;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -47,9 +48,9 @@ public class CoreService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_API_RESPONSE, apiCoreUrlRecargar, responseMessage);
 
         } catch (ActionRestCoreException ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_API_CORE_ACCION,ex.getMessage(),null), ex);
         } catch (RestClientException ex) {
-            LOGGER.error(ConstantesServices.MENSAJE_ERROR_API_CORE, ex);
+            LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_API_CORE_RECARGAR,ConstantesServices.MENSAJE_ERROR_API_CORE,null), ex);
         }
     }
 

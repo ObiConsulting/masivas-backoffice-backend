@@ -115,7 +115,11 @@
             <artifactId>hibernate-community-dialects</artifactId> <!-- debe coincidir con tu hibernate-core -->
         </dependency>
 
-        
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.1</version>
+        </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>

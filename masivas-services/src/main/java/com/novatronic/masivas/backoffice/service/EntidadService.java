@@ -65,7 +65,6 @@ public class EntidadService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_REGISTRAR, request.toStringEntidad());
 
             TpEntidad entidad = new TpEntidad(
                     request.getCodigo(),
@@ -80,6 +79,8 @@ public class EntidadService {
             );
             entidad = entidadRepository.save(entidad);
             coreService.refrescarCacheCore();
+
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_REGISTRAR, entidad.toString());
 
             return entidad.getIdEntidad();
 
@@ -151,12 +152,12 @@ public class EntidadService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTUALIZAR, request.toStringEntidad());
-
             TpEntidad entidad = entidadRepository.findById(request.getIdEntidad())
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateEntidad(entidad, request, usuario, ConstantesServices.OPERACION_EDITAR);
             entidadRepository.save(entidad);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTUALIZAR, request.toStringEntidad());
+
             coreService.refrescarCacheCore();
 
             return entidad.getIdEntidad();
@@ -221,8 +222,6 @@ public class EntidadService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
-
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
             String mensaje;
@@ -234,6 +233,8 @@ public class EntidadService {
                 request.setEstado(estado);
                 updateEntidad(entidad, request, usuario, ConstantesServices.BLANCO);
                 entidadRepository.save(entidad);
+                logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ENTIDAD_FINANCIERA, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
+
                 numExito++;
             }
             coreService.refrescarCacheCore();

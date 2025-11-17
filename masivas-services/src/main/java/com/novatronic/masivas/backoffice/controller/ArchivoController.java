@@ -8,6 +8,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleRegistroArchivoMasivasDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ArchivoService;
 import com.novatronic.masivas.backoffice.service.DetalleMasivasService;
@@ -63,6 +64,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/masivas/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaArchivoMasivasDTO> objPageable = archivoService.buscarArchivoMasivas(request);
@@ -81,6 +83,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/titularidad/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarArchivoTitularidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaArchivoTitularidadDTO> objPageable = archivoService.buscarArchivoTitularidad(request);
@@ -99,6 +102,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/masivas/detalle/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarDetalleMasivas(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleRegistroArchivoMasivasDTO> objPageable = detalleMasivasService.buscarDetalleMasivas(request);
@@ -116,6 +120,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/directorio/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoDirectorioPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoDirectorio(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -133,6 +138,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/directorio/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoDirectorioXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoDirectorio(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -150,6 +156,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/masivas/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoMasivasPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -167,6 +174,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/masivas/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoMasivasXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -184,6 +192,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/titularidad/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoTitularidadPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoTitularidad(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -201,6 +210,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/titularidad/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoTitularidadXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoTitularidad(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -218,6 +228,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/masivas/detalle/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarDetalleArchivoMasivasPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = detalleMasivasService.descargarDetalleArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -235,6 +246,7 @@ public class ArchivoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/masivas/detalle/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarDetalleMasivasXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = detalleMasivasService.descargarDetalleArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

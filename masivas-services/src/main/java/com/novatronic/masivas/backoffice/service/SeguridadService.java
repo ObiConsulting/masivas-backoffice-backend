@@ -10,6 +10,7 @@ import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.security.service.SCAService;
 import com.novatronic.masivas.backoffice.security.util.JwtUtil;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
@@ -217,10 +218,10 @@ public class SeguridadService {
 
         } catch (ResourceAccessException e) {
             // Timeout o problema de red
-            LOGGER.error(ConstantesServices.MENSAJE_ERROR_EXCEPTION, e);
+            LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_EXCEPTION,null), e);
             return null;
         } catch (RestClientException e) {
-            LOGGER.error(ConstantesServices.MENSAJE_ERROR_EXCEPTION, e);
+            LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_EXCEPTION,null), e);
             return null;
 
         }
@@ -236,7 +237,9 @@ public class SeguridadService {
     }
 
     public void logError(String mensajeError, Exception e) {
-        LOGGER.error(mensajeError, e);
+        if (LOGGER.isErrorEnabled()) {
+            LOGGER.error(LogUtil.generarMensajeLogError("9999",mensajeError,null), e);
+        }
     }
 
 }

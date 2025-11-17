@@ -90,13 +90,12 @@ public class ProcesoService {
         try {
 
             for (DetalleRegistroProcesoDTO procesoDetalle : request) {
-
-                logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PROCESO, ConstantesServices.METODO_ACTUALIZAR, procesoDetalle.toStringProceso());
-
                 TpProceso proceso = procesoRepository.findById(procesoDetalle.getIdProceso())
                         .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
                 updateProceso(proceso, procesoDetalle, usuario, ConstantesServices.OPERACION_EDITAR);
                 procesoRepository.save(proceso);
+                logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PROCESO, ConstantesServices.METODO_ACTUALIZAR, procesoDetalle.toStringProceso());
+
             }
             coreService.refrescarCacheCore();
 

@@ -8,6 +8,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroEntidadDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.EntidadService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -41,11 +42,12 @@ public class EntidadController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse<Object>> registrarEntidad(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idEntidad = entidadService.crearEntidad(request, userContext.getUsername());
         entidadService.logAuditoria(request, Evento.EV_REGISTRO_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD, ConstantesServices.ACCION_CREATE,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_CREAR_ENTIDAD, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CREAR_ENTIDAD, idEntidad));
     }
 
@@ -58,6 +60,7 @@ public class EntidadController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarEntidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaEntidadDTO> objPageable = entidadService.buscarEntidad(request);
@@ -74,11 +77,12 @@ public class EntidadController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarEntidad(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idEntidad = entidadService.editarEntidad(request, userContext.getUsername());
         entidadService.logAuditoria(request, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD, ConstantesServices.ACCION_UPDATE,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_EDITAR_ENTIDAD, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_EDITAR_ENTIDAD, idEntidad));
     }
 
@@ -94,7 +98,7 @@ public class EntidadController {
     public ResponseEntity<MasivasResponse<Object>> obtenerEntidad(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroEntidadDTO entidadDTO = entidadService.obtenerEntidad(request);
         entidadService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD, ConstantesServices.ACCION_READ,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_OBTENER_OPERACION, entidadDTO));
     }
 
@@ -124,7 +128,7 @@ public class EntidadController {
     public ResponseEntity<MasivasResponse<Object>> desactivar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         EstadoDTO estadoDTO = entidadService.cambiarEstadoEntidad(request, userContext.getUsername(), ConstantesServices.ESTADO_INACTIVO);
         entidadService.logAuditoria(request, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ENTIDAD, ConstantesServices.ACCION_UPDATE,
-                ConstantesServices.MENSAJE_EXITO_DESACTIVAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_DESACTIVAR_ENTIDAD, ConstantesServices.RESPUESTA_OK_API);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, estadoDTO.getMensaje(), estadoDTO.getNumExitos()));
     }
 
@@ -137,6 +141,7 @@ public class EntidadController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = entidadService.descargarEntidades(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -154,6 +159,7 @@ public class EntidadController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = entidadService.descargarEntidades(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

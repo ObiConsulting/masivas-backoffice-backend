@@ -1,6 +1,7 @@
 package com.novatronic.masivas.backoffice.config;
 
 import com.hazelcast.config.*;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.io.File;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,15 +109,15 @@ public class ApplicationConfig {
         // 2. Si no existe en classpath, intentar desde ruta externa
         String configPath = System.getenv("SIXCFG");
         if (configPath == null || configPath.isBlank()) {
-            LOGGER.error("Variable de entorno SIXCFG no está definida.");
-            throw new IOException("Variable de entorno SIXCFG no está definida.");
+            LOGGER.error(LogUtil.generarMensajeLogError("9999","Variable de entorno SIXCFG no está definida.",null));
+            throw new IOException();
         }
 
         String externalFilePath = configPath + EXTERNAL_FILE_RELATIVE;
         Resource externalResource = new FileSystemResource(externalFilePath);
         if (!externalResource.exists()) {
-            LOGGER.error("El archivo de configuración no existe: {}", externalFilePath);
-            throw new IOException("El archivo de configuración no existe: " + externalFilePath);
+            LOGGER.error(LogUtil.generarMensajeLogError(null,"El archivo de configuración no existe: "+externalFilePath,null));
+            throw new IOException();
         }
 
         LOGGER.info("Cargando archivo de configuración desde ruta externa: {}", externalFilePath);

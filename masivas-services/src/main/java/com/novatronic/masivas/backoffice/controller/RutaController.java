@@ -7,6 +7,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroRutaDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.RutaService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -41,6 +42,7 @@ public class RutaController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarRuta(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaRutaDTO> objPageable = rutaService.buscarRuta(request);
@@ -57,6 +59,7 @@ public class RutaController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarRuta(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idRuta = rutaService.editarRuta(request, userContext.getUsername());
@@ -73,6 +76,7 @@ public class RutaController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerRuta(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroRutaDTO entidadDTO = rutaService.obtenerRuta(request);
@@ -90,6 +94,7 @@ public class RutaController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = rutaService.descargarRutas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -107,6 +112,7 @@ public class RutaController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = rutaService.descargarRutas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

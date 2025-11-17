@@ -49,8 +49,12 @@ public class TpArchivoMasivas extends ModelAudit<String> implements Serializable
     private LocalDateTime fechaProcesada;
     @Column(name = "CANT_DECLARADO_CCE")
     private Long cantidadDeclarado;
+    @Column(name = "CANT_DECLARADO_CLIENTE")
+    private Long cantidadDeclaradoCliente;
     @Column(name = "CANT_PROCESADO_CCE")
     private Long cantidadProcesado;
+    @Column(name = "CANT_PROCESADO_CLIENTE")
+    private Long cantidadProcesadoCliente;
     @Column(name = "ESTADO_OBTENCION_CLIENTE")
     private Long estadoObtenidoCliente;
     @Column(name = "ESTADO_PROCESADO_CLIENTE")

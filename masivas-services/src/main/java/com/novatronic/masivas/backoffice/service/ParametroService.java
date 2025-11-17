@@ -69,7 +69,6 @@ public class ParametroService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_REGISTRAR, request.toStringParametro());
 
             TpParametro parametro = new TpParametro(
                     request.getCodigo(),
@@ -80,6 +79,7 @@ public class ParametroService {
                     usuario
             );
             parametro = parametroRepository.save(parametro);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_REGISTRAR, parametro.toString());
 
             //Actualizamos cache
             parametroCacheService.loadParametersInCache();
@@ -147,12 +147,11 @@ public class ParametroService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringParametro());
-
             TpParametro parametro = parametroRepository.findById(request.getIdParametro())
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateParametro(parametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
             parametroRepository.save(parametro);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringParametro());
 
             //Actualizamos cache
             parametroCacheService.loadParametersInCache();
@@ -218,8 +217,6 @@ public class ParametroService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
-
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
             String mensaje;
@@ -230,6 +227,8 @@ public class ParametroService {
                 request.setEstado(estado);
                 updateParametro(parametro, request, usuario, ConstantesServices.BLANCO);
                 parametroRepository.save(parametro);
+                logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.PARAMETRO, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
+
                 numExito++;
             }
 

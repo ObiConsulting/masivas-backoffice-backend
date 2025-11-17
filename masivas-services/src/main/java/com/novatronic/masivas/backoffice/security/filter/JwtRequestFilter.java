@@ -6,6 +6,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.security.util.JwtUtil;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -70,19 +71,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
 
         } catch (ExpiredJwtException ex) {
-            logger.error("401 - Token expirado", ex);
+            logger.error(LogUtil.generarMensajeLogError("401","Token expirado",null), ex);
             sendUnauthorizedResponse(response, "401", "Token expirado");
         } catch (SignatureException | MalformedJwtException ex) {
-            logger.error("401 - Token inválido", ex);
+            logger.error(LogUtil.generarMensajeLogError("401","Token inválido",null), ex);
             sendUnauthorizedResponse(response, "401", "Token inválido");
         } catch (IllegalArgumentException ex) {
-            logger.error("401 - Token no proporcionado", ex);
+            logger.error(LogUtil.generarMensajeLogError("401","Token no proporcionado",null), ex);
             sendUnauthorizedResponse(response, "401", "Token no proporcionado");
         } catch (ClassCastException ex) {
-            logger.error("401 - Error en sesión. Por favor inicie sesión nuevamente.", ex);
+            logger.error(LogUtil.generarMensajeLogError("401","Error en sesión. Por favor inicie sesión nuevamente.",null), ex);
             sendUnauthorizedResponse(response, "401", "Error en sesión. Por favor inicie sesión nuevamente.");
         } catch (ServletException | IOException ex) {
-            logger.error("401 - Error interno de autenticación", ex);
+            logger.error(LogUtil.generarMensajeLogError("401","Error interno de autenticación",null), ex);
             sendUnauthorizedResponse(response, "401", "Error interno de autenticación");
         }
     }

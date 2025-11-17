@@ -70,8 +70,6 @@ public class GrupoParametroService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_REGISTRAR, request.toStringGrupoParametro());
-
             TpGrupoParametro grupoParametro = new TpGrupoParametro(
                     request.getCodigo(),
                     request.getDescripcion(),
@@ -80,6 +78,7 @@ public class GrupoParametroService {
                     usuario
             );
             grupoParametro = grupoParametroRepository.save(grupoParametro);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_REGISTRAR, grupoParametro.toString());
 
             //Actualizamos cache
             parametroCacheService.loadParametersGroupInCache();
@@ -150,12 +149,11 @@ public class GrupoParametroService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringGrupoParametro());
-
             TpGrupoParametro grupoParametro = grupoParametroRepository.findById(request.getIdGrupoParametro())
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.OPERACION_EDITAR);
             grupoParametroRepository.save(grupoParametro);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_ACTUALIZAR, request.toStringGrupoParametro());
 
             //Actualizamos cache
             parametroCacheService.loadParametersGroupInCache();
@@ -221,8 +219,6 @@ public class GrupoParametroService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
-
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
             String mensaje;
@@ -233,6 +229,8 @@ public class GrupoParametroService {
                 request.setEstado(estado);
                 updateGrupoParametro(grupoParametro, request, usuario, ConstantesServices.BLANCO);
                 grupoParametroRepository.save(grupoParametro);
+                logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.GRUPO_PARAMETRO, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
+
                 numExito++;
             }
 

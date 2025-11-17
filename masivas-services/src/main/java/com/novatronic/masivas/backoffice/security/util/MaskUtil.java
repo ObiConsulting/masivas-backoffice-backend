@@ -1,5 +1,6 @@
 package com.novatronic.masivas.backoffice.security.util;
 
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -40,7 +41,7 @@ public class MaskUtil {
                     field;
             };
         } catch (Exception e) {
-            LOGGER.error("Error while formatting field: " + e.getMessage());
+            LOGGER.error(LogUtil.generarMensajeLogError(null,"Error mientras se formatea el campo: " + e.getMessage(),null));
             return field;
         }
     }

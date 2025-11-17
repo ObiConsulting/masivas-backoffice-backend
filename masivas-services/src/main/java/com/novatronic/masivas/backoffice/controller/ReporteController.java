@@ -6,6 +6,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleReporteConsolidadoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ReporteService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -40,6 +41,7 @@ public class ReporteController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/cierre/buscar")
     public ResponseEntity<MasivasResponse<Object>> reporteCierre(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteCierreDTO reporte = reporteService.reporteCierre(request);
@@ -57,6 +59,7 @@ public class ReporteController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/totalizado")
     public ResponseEntity<MasivasResponse<Object>> reporteTotalizado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleConsultaReporteTotalizadoDTO reporte = reporteService.reporteTotalizado(request);
@@ -73,6 +76,7 @@ public class ReporteController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/consolidado")
     public ResponseEntity<MasivasResponse<Object>> reporteConsolidado(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         List<DetalleReporteConsolidadoDTO> reporte = reporteService.reporteConsolidadoPorEntidadDestino(request);
@@ -89,6 +93,7 @@ public class ReporteController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/consolidado/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarConsolidadoPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = reporteService.descargarConsolidado(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -105,6 +110,7 @@ public class ReporteController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/consolidado/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarConsolidadoXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = reporteService.descargarConsolidado(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

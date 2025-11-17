@@ -33,4 +33,10 @@ public class ModelAudit<U> {
     @Column(name = "FEC_MODIFICACION")
     private LocalDateTime fecModificacion;
 
+    @PrePersist
+    public void prePersist(){
+        this.usuModificacion=null;
+        this.fecModificacion=null;
+    }
+
 }

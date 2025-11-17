@@ -21,6 +21,7 @@ import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.repository.ArchivoDirectorioRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoMasivasRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoTitularidadRepository;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,8 @@ import com.novatronic.novalog.audit.logger.NovaLogger;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.DataAccessException;
@@ -96,7 +95,6 @@ public class ArchivoService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ARCHIVO_DIRECTORIO, ConstantesServices.METODO_CONSULTAR, request.toStringArchivoDirectorio());
 
             Pageable pageable = ServicesUtil.configurarPageSort(request);
-
             LocalDateTime fechaInicio = request.getFechaInicio().atStartOfDay();
             LocalDateTime fechaFin = request.getFechaFin().atTime(LocalTime.MAX);
 
@@ -134,7 +132,6 @@ public class ArchivoService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ARCHIVO_MASIVAS, ConstantesServices.METODO_CONSULTAR, request.toStringArchivoMasivas());
 
             Pageable pageable = ServicesUtil.configurarPageSort(request);
-
             Page<DetalleConsultaArchivoMasivasDTO> objPageable = archivoMasivasRepository.buscarPorFiltros(request.getFechaInicioObtencion(), request.getFechaFinObtencion(),
                     request.getFechaInicioProcesada(), request.getFechaFinProcesada(), request.getEstadoSearch(), pageable);
 
@@ -170,7 +167,6 @@ public class ArchivoService {
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.ARCHIVO_TITULARIDAD, ConstantesServices.METODO_CONSULTAR, request.toStringArchivoTitularidad());
 
             Pageable pageable = ServicesUtil.configurarPageSort(request);
-
             Page<DetalleConsultaArchivoTitularidadDTO> objPageable = archivoTitularidadRepository.buscarPorFiltros(request.getFechaInicioObtencion(), request.getFechaFinObtencion(),
                     request.getFechaInicioProcesada(), request.getFechaFinProcesada(), request.getEstadoSearch(), pageable);
 
@@ -542,6 +538,17 @@ public class ArchivoService {
         }
     }
 
+    public void modificarFiltrosGeneral(FiltroMasivasRequest request){
+        if((Objects.equals(request.getEstado(), "0703"))){
+            return;
+        }
+        if((Objects.equals(request.getEstado(), "0702") || Objects.equals(request.getEstado(), "0703"))){
+            return;
+        }
+        request.setFechaInicioProcesada(null);
+        request.setFechaFinProcesada(null);
+    }
+
     public void logEvento(String mensaje, Object... param) {
         LOGGER.info(mensaje, param);
     }
@@ -552,7 +559,7 @@ public class ArchivoService {
     }
 
     public void logError(String mensajeError, Exception e) {
-        LOGGER.error(mensajeError, e);
+        LOGGER.error(LogUtil.generarMensajeLogError("9999",mensajeError,null), e);
     }
 
 }

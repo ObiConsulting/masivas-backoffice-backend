@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.controller;
 import com.hazelcast.core.HazelcastInstance;
 import com.novatronic.masivas.backoffice.dto.CustomPaginate;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
+import com.novatronic.masivas.backoffice.log.LogSecurity;
 import com.novatronic.masivas.backoffice.security.model.AuthRequest;
 import com.novatronic.masivas.backoffice.security.model.ChangePassRequest;
 import com.novatronic.masivas.backoffice.security.model.LoginResponse;
@@ -43,13 +44,13 @@ public class SeguridadController {
             respuesta = seguridadService.authenticate(authRequest.getUsername(), authRequest.getPassword(), authRequest.getCaptchaId(), authRequest.getUserInput());
 
             seguridadService.logEvento(respuesta.getMensaje());
-
+            LogSecurity.log("Inicio de sesión",authRequest.getUsername());
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 
         } catch (Exception e) {
 
             seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
-
+            LogSecurity.alert(authRequest.getUsername(),"Inicio de sesión",null);
             respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
@@ -63,7 +64,7 @@ public class SeguridadController {
         try {
 
             respuesta = seguridadService.changePassword(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
-
+            LogSecurity.log("Cambio de contraseña por primer login",authRequest.getUsername());
             seguridadService.logEvento(respuesta.getMensaje());
 
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
@@ -71,7 +72,7 @@ public class SeguridadController {
         } catch (Exception e) {
 
             seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
-
+            LogSecurity.alert(authRequest.getUsername(),"Cambio de contraseña por primer login",null);
             respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
@@ -142,7 +143,7 @@ public class SeguridadController {
             seguridadService.logEvento(respuesta.getMensaje());
             seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD,
                     respuesta.getMensaje(), ConstantesServices.RESPUESTA_OK_API);
-
+            LogSecurity.log("Cambio de contraseña",authRequest.getUsername());
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 
         } catch (Exception e) {
@@ -152,6 +153,7 @@ public class SeguridadController {
                     ConstantesServices.MENSAJE_ERROR_GENERICO, ConstantesServices.CODIGO_ERROR_GENERICO);
 
             respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
+            LogSecurity.alert(authRequest.getUsername(),"Cambio de contraseña",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }

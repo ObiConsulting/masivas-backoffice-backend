@@ -9,6 +9,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroParametroDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.GenericService;
 import com.novatronic.masivas.backoffice.service.ParametroService;
@@ -49,6 +50,7 @@ public class ParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse<Object>> registrar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idParametro = parametroService.crearParametro(request, userContext.getUsername());
@@ -66,6 +68,7 @@ public class ParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscar(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaParametroDTO> objPageable = parametroService.buscarParametro(request);
@@ -82,6 +85,7 @@ public class ParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idParametro = parametroService.editarParametro(request, userContext.getUsername());
@@ -98,6 +102,7 @@ public class ParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtener(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroParametroDTO parametroDTO = parametroService.obtenerParametro(request);
@@ -145,6 +150,7 @@ public class ParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = parametroService.descargarParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -162,6 +168,7 @@ public class ParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = parametroService.descargarParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

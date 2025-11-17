@@ -8,6 +8,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasRequestDTO;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.AplicacionService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -41,6 +42,7 @@ public class AplicacionController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse<Object>> registrarAplicacion(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idAplicacion = aplicacionService.crearAplicacion(request, userContext.getUsername());
@@ -57,6 +59,7 @@ public class AplicacionController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarAplicacion(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaAplicacionDTO> objPageable = aplicacionService.buscarAplicacion(request);
@@ -72,6 +75,7 @@ public class AplicacionController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarAplicacion(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idAplicacion = aplicacionService.editarAplicacion(request, userContext.getUsername());
@@ -87,6 +91,7 @@ public class AplicacionController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerAplicacion(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroAplicacionDTO aplicacionDTO = aplicacionService.obtenerAplicacion(request);
@@ -131,6 +136,7 @@ public class AplicacionController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = aplicacionService.descargarAplicacion(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -147,6 +153,7 @@ public class AplicacionController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = aplicacionService.descargarAplicacion(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);

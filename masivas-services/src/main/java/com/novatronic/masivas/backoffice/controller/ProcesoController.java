@@ -4,6 +4,7 @@ import com.novatronic.masivas.backoffice.dto.DetalleConsultaProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroProcesoDTO;
 import com.novatronic.masivas.backoffice.dto.FiltroMasivasRequest;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ProcesoService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -40,6 +41,7 @@ public class ProcesoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscarProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Map<String, List<DetalleConsultaProcesoDTO>> objPageable = procesoService.buscarProceso(request);
@@ -56,6 +58,7 @@ public class ProcesoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editarProceso(@Valid @RequestBody List<DetalleRegistroProcesoDTO> request, @AuthenticationPrincipal UserContext userContext) {
         Long idProceso = procesoService.editarProceso(request, userContext.getUsername());
@@ -72,6 +75,7 @@ public class ProcesoController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtenerProceso(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         Map<String, List<DetalleRegistroProcesoDTO>> objPageable = procesoService.obtenerProceso(request);

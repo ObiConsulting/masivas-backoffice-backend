@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.service;
 import com.novatronic.masivas.backoffice.dto.EntidadDTO;
 import com.novatronic.masivas.backoffice.dto.ParametroDTO;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.util.Comparator;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.PROP_NO_ENCONTRADA;
 
 /**
  *
@@ -169,7 +172,7 @@ public class GenericService {
         if (propietaria.isPresent()) {
             return propietaria.get().getCodigo();
         } else {
-            LOGGER.error("No se encontró ninguna entidad con propietario = 1.");
+            LOGGER.error(LogUtil.generarMensajeLogError("9999",PROP_NO_ENCONTRADA,null));
             return "-1";
         }
     }
@@ -182,7 +185,7 @@ public class GenericService {
         if (propietaria.isPresent()) {
             return propietaria.get().getIdEntidad();
         } else {
-            LOGGER.error("No se encontró ninguna entidad con propietario = 1.");
+            LOGGER.error(LogUtil.generarMensajeLogError("9999",PROP_NO_ENCONTRADA,null));
             return null;
         }
     }

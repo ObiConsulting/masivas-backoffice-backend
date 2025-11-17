@@ -7,6 +7,7 @@ import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({UniqueFieldException.class, NoOperationExistsException.class, ActionRestCoreException.class})
     public ResponseEntity<MasivasResponse<Object>> handleBusinessExceptions(RuntimeException ex) {
-        LOGGER.error(ex.getMessage(), ex);
+        LOGGER.error(LogUtil.generarMensajeLogError("9999",ex.getMessage(),null), ex);
         String errorCode = "";
 
         if (ex instanceof UniqueFieldException uniqueFieldException) {
@@ -51,19 +52,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataBaseException.class)
     public ResponseEntity<MasivasResponse<Object>> handleDataBaseException(DataBaseException ex) {
-        LOGGER.error(ConstantesServices.MENSAJE_ERROR_BD, ex);
+        LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_BD,null), ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null));
     }
 
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<MasivasResponse<Object>> handleRestClientException(RestClientException ex) {
-        LOGGER.error(ConstantesServices.MENSAJE_ERROR_API_CORE, ex);
+        LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_API_CORE,null),ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_API_CORE, ConstantesServices.MENSAJE_ERROR_API_CORE, null));
     }
 
     @ExceptionHandler(GenericException.class)
     public ResponseEntity<MasivasResponse<Object>> handleGenericException(GenericException ex) {
-        LOGGER.error(ConstantesServices.MENSAJE_ERROR_GENERICO, ex);
+        LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_GENERICO,null), ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null));
     }
 

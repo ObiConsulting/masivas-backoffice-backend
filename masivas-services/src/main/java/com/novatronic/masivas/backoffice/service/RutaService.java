@@ -97,12 +97,13 @@ public class RutaService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_ACTUALIZAR, request.toStringRuta());
 
             TpRuta ruta = rutaRepository.findById(request.getIdRuta())
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateRuta(ruta, request, usuario, ConstantesServices.OPERACION_EDITAR);
             rutaRepository.save(ruta);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.RUTA, ConstantesServices.METODO_ACTUALIZAR, request.toStringRuta());
+
             coreService.refrescarCacheCore();
 
             return ruta.getIdRuta();

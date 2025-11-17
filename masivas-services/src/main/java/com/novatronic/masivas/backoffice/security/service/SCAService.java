@@ -1,5 +1,6 @@
 package com.novatronic.masivas.backoffice.security.service;
 
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -60,9 +61,9 @@ public class SCAService {
             log.info("Inicio Recursos Correctamente");
 
         } catch (AASException ex) {
-            log.error("Error AASException ", ex);
+            log.error(LogUtil.generarMensajeLogError("9999","Error AASException ",null), ex);
         } catch (IllegalStateException e) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
+            log.error(LogUtil.generarMensajeLogError("9999",Constantes.MENSAJE_ERROR_BD_USUARIO,null), e);
         }
     }
 
@@ -72,9 +73,9 @@ public class SCAService {
             aaService.shutdown();
             log.info("Cierre de recursos correctamente");
         } catch (AASException ex) {
-            log.error("Error al detener los servicios, ", ex);
+            log.error(LogUtil.generarMensajeLogError("9999","Error al detener los servicios, ",null), ex);
         } catch (Exception e) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
+            log.error(LogUtil.generarMensajeLogError("9999",Constantes.MENSAJE_ERROR_BD_USUARIO,null), e);
         }
     }
 
@@ -134,7 +135,7 @@ public class SCAService {
         try {
             mapaAtributos = aaService.getUserAttributes(token);
         } catch (AASException ex) {
-            log.error("Error al obtener lista de recursos, ", ex);
+            log.error(LogUtil.generarMensajeLogError(null,"Error al obtener lista de recursos, ",null), ex);
         } catch (Exception e) {
             log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
         }
@@ -145,7 +146,7 @@ public class SCAService {
         try {
             resources = aaService.listResources(token);
         } catch (AASException ex) {
-            log.error("Error al obtener lista de recursos, ", ex);
+            log.error(LogUtil.generarMensajeLogError(null,"Error al obtener lista de recursos, ",null), ex);
         } catch (Exception e) {
             log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
         }
@@ -156,7 +157,7 @@ public class SCAService {
         try {
             profile = aaService.listProfiles(token);
         } catch (AASException ex) {
-            log.error("Error al obtener lista de Profiles, ", ex);
+            log.error(LogUtil.generarMensajeLogError(null,"Error al obtener lista de Profiles, ",null), ex);
         } catch (Exception e) {
             log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
         }
@@ -189,7 +190,7 @@ public class SCAService {
             objRespuesta.setResponseDescription(ConstantesServices.MENSAJE_EXITO_CAMBIAR_CONTRASENA);
 
         } catch (AASException ex) {
-            log.error("Error al generar token. ", ex);
+            log.error(LogUtil.generarMensajeLogError("9999","Error al generar token. ",null), ex);
             objRespuesta.setToken("");
             objRespuesta.setResponseCode(ex.getExternalCode());
             objRespuesta.setResponseDescription(ex.getCause().fillInStackTrace().getMessage());

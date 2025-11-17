@@ -19,6 +19,7 @@ import com.novatronic.masivas.backoffice.util.ConstantesServices;
 import com.novatronic.masivas.backoffice.util.GenerarReporte;
 import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -132,12 +133,12 @@ public class DetalleMasivasService {
      */
     public ReporteDTO descargarDetalleArchivoMasivas(FiltroMasivasRequest request, String usuario, String tipoArchivo) {
 
+        request.setNumeroPagina(0);
+        request.setRegistrosPorPagina(0);
+
         JRSwapFileVirtualizer virtualizer = null;
 
         try {
-            
-            request.setNumeroPagina(0);
-            request.setRegistrosPorPagina(0);
 
             //Virtualizer
             JRSwapFile swapFile = new JRSwapFile(System.getProperty("java.io.tmpdir"), 1024, 5);

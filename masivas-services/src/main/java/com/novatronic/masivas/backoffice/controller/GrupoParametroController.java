@@ -9,6 +9,7 @@ import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.DetalleRegistroGrupoParametroDTO;
 import com.novatronic.masivas.backoffice.dto.EstadoDTO;
 import com.novatronic.masivas.backoffice.dto.ReporteDTO;
+import com.novatronic.masivas.backoffice.log.Performance;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.GrupoParametroService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
@@ -47,6 +48,7 @@ public class GrupoParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/crear")
     public ResponseEntity<MasivasResponse<Object>> registrar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idEntidad = grupoParametroService.crearGrupoParametro(request, userContext.getUsername());
@@ -64,6 +66,7 @@ public class GrupoParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/buscar")
     public ResponseEntity<MasivasResponse<Object>> buscar(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         CustomPaginate<DetalleConsultaGrupoParametroDTO> objPageable = grupoParametroService.buscarGrupoParametro(request);
@@ -81,6 +84,7 @@ public class GrupoParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/editar")
     public ResponseEntity<MasivasResponse<Object>> editar(@Valid @RequestBody MasivasRequestDTO request, @AuthenticationPrincipal UserContext userContext) {
         Long idGrupoParametro = grupoParametroService.editarGrupoParametro(request, userContext.getUsername());
@@ -97,6 +101,7 @@ public class GrupoParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/obtener")
     public ResponseEntity<MasivasResponse<Object>> obtener(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         DetalleRegistroGrupoParametroDTO grupoParametroDTO = grupoParametroService.obtenerGrupoParametro(request);
@@ -145,6 +150,7 @@ public class GrupoParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarPDF")
     public ResponseEntity<MasivasResponse<Object>> descargarPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = grupoParametroService.descargarGrupoParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
@@ -162,6 +168,7 @@ public class GrupoParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @PostMapping("/descargarXLSX")
     public ResponseEntity<MasivasResponse<Object>> descargarXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = grupoParametroService.descargarGrupoParametro(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
@@ -176,6 +183,7 @@ public class GrupoParametroController {
      * @param userContext
      * @return
      */
+    @Performance
     @GetMapping("/listar")
     public ResponseEntity<MasivasResponse<Object>> listarGrupoParametro(@AuthenticationPrincipal UserContext userContext) {
         List<ParametroDTO> lista = grupoParametroService.getAllGrupoParametro();

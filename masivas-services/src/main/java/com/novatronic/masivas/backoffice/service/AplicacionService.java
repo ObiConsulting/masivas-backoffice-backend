@@ -14,6 +14,7 @@ import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
 import com.novatronic.masivas.backoffice.repository.AplicacionRepository;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,6 @@ public class AplicacionService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_REGISTRAR, request.toStringAplicacion());
 
             TpAplicacion aplicacion = new TpAplicacion(
                     genericService.getIdEntidadPropietaria(),
@@ -77,7 +77,10 @@ public class AplicacionService {
                     LocalDateTime.now(),
                     usuario
             );
+
             aplicacion = aplicacionRepository.save(aplicacion);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_REGISTRAR, aplicacion.toString());
+
             coreService.refrescarCacheCore();
 
             return aplicacion.getIdAplicacion();
@@ -87,7 +90,8 @@ public class AplicacionService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA, ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA,ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA,null),e);
+                    //throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA, ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA, e);
                 }
                 throw new DataBaseException(e);
             }
@@ -150,12 +154,12 @@ public class AplicacionService {
 
         try {
 
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_ACTUALIZAR, request.toStringAplicacion());
-
             TpAplicacion aplicacion = aplicacionRepository.findById(request.getIdAplicacion())
                     .orElseThrow(() -> new NoOperationExistsException(ConstantesServices.CODIGO_ERROR_COD_OPERACION_NO_ENCONTRADA, ConstantesServices.MENSAJE_ERROR_OPERACION_NO_ENCONTRADA));
             updateAplicacion(aplicacion, request, usuario, ConstantesServices.OPERACION_EDITAR);
             aplicacionRepository.save(aplicacion);
+            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_ACTUALIZAR, request.toStringAplicacion());
+
             coreService.refrescarCacheCore();
 
             return aplicacion.getIdAplicacion();
@@ -219,9 +223,6 @@ public class AplicacionService {
     public EstadoDTO cambiarEstadoAplicacion(MasivasRequestDTO request, String usuario, String estado) {
 
         try {
-
-            logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
-
             int numExito = 0;
             int totalIds = request.getIdsOperacion().size();
             String mensaje;
@@ -233,6 +234,8 @@ public class AplicacionService {
                 request.setEstado(estado);
                 updateAplicacion(aplicacion, request, usuario, ConstantesServices.BLANCO);
                 aplicacionRepository.save(aplicacion);
+                logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD, ConstantesServices.APLICACION, ConstantesServices.METODO_ACTIVAR_DESACTIVAR, request.toStringActivarDesactivar());
+
                 numExito++;
             }
             coreService.refrescarCacheCore();

@@ -16,7 +16,7 @@ public class FuncionesUtil {
 
     private static final String SDF = "dd/MM/yyyy";
     private static final String SDFWS = "yyyyMMdd";
-    private static final String FORMAT_fechaConHora = "dd/MM/yyyy HH:mm:ss";
+    private static final String FORMAT_FECHA_CON_HORA = "dd/MM/yyyy HH:mm:ss";
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(FuncionesUtil.class);
 
@@ -98,7 +98,7 @@ public class FuncionesUtil {
 
     public static String formatearLocalDateTimeToString_conHora(LocalDateTime fecha) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_fechaConHora);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_FECHA_CON_HORA);
             return fecha.format(formatter);
         } catch (Exception e) {
             return "-";
