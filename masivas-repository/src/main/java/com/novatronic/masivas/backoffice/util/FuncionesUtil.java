@@ -114,7 +114,7 @@ public class FuncionesUtil {
             return BigDecimal.valueOf(long1);
         }
         // Si llega aquí, es un tipo inesperado
-        LOGGER.error("Advertencia: Tipo de dato inesperado para la suma: " + valor.getClass().getName());
+        LOGGER.error("{} Advertencia: Tipo de dato inesperado para la suma: {}", 9999, valor.getClass().getName());
         return BigDecimal.ZERO;
     }
 }

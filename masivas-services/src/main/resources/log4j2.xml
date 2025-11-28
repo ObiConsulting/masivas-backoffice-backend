@@ -4,19 +4,17 @@
     <Properties>
         <Property name="SIXLOG">${env:SIXLOG}</Property>
         <Property name="DATE_FORMAT">yyyyMMdd-HH</Property>
-        <Property name="LOG_PATTERN">03 %.-1p %d{EEE MMM dd HH:mm:ss.SSS yyyy}        NovaLog-Test-BO 03.01.00 %10.10pid %22.22T NODOID000001 00000000000000000000000000000000 %80.80c{10} %20.20M %5.5L %m%n
+        <Property name="LOG_PATTERN">03 %.-1p %d{EEE MMM dd HH:mm:ss.SSS yyyy}         msvbasbo 01.00.00            %-22.22t NODOID000001 %32.32X{trxId} %80.80c{10} %20.20M %5.5L %m%n
         </Property>
-        
-        <Property name="LOG_PATTERN_AUDIT">03 %.-1p %d{EEE MMM dd HH:mm:ss.SSS yyyy}        NovaLog-Test-BO 03.01.00 %10.10pid %22.22T NODOID000001 00000000000000000000000000000000 %80.80c{10} %20.20M %5.5L %m%n
+
+        <Property name="LOG_PATTERN_AUDIT">03 %.-1p %d{EEE MMM dd HH:mm:ss.SSS yyyy}         msvbasbo 01.00.00 %10.10pid %-22.22t NODOID000001 %32.32X{idMensaje} %80.80c{10} %20.20M %5.5L %-30.30X{codEmpresa} %-30.30X{codApp} %-50.50X{username} %-30.30X{userrol} %-40.40X{ipServidor} %-40.40X{ipTerminal} %-2.2X{idEvento} %-30.30X{tipoEvento} %-1.1X{idEstado} %-100.100M %-30.30X{recursosAfectados} %-100.100X{origen} %-40.40X{sesion} %-4.4X{codResp} %-100.100m %-1000.1000X{dataVariable} %-100.100X{contexto} %-32.32X{mac}%n
         </Property>
-        <!--                <Property name="LOG_PATTERN_AUDIT">03 %.-1p %d{EEE MMM dd HH:mm:ss.SSS yyyy}        NovaLog-Test-BO 03.01.00 %10.10pid %22.22T NODOID000001   00000000000000000000000000000000 %80.80c{10} %20.20M %5.5L %-30.30X{codEmpresa} %-30.30X{codApp} %-20.20X{username} %-30.30X{userrol} %-40.40X{ipServidor} %-40.40X{ipTerminal} %-2.2X{idEvento} %-30.30X{tipoEvento} %-1.1X{idEstado} %-100.100M %-30.30X{tabla} %-100.100X{origen} %-40.40X{sesion} %-4.4X{codResp} %-100.100m %-1000.1000X{dataVariable} %-100.100X{contexto} %-32.32X{mac}%n
-        </Property>-->
 
         <Property name="APP_CODE">MASIVAS-Back</Property>
         <Property name="LOG_FOLDER">MASIVAS\MASIVAS-Back</Property>
 
-        <Property name="SECURITY_CLASS">com.novatronic.tarifario.core.log.LogSeg</Property>
-        <Property name="PERFORMANCE_CLASS">com.novatronic.testlog.interceptor.PerformanceInterceptor</Property>
+        <Property name="SECURITY_CLASS">com.novatronic.masivas.backoffice.log.LogSecurity</Property>
+        <Property name="PERFORMANCE_CLASS">com.novatronic.masivas.backoffice.log.PerformanceInterceptor</Property>
 
         <Property name="MAX_SIZE">300 MB</Property>
         <Property name="MAX_TIME_ROLL">24</Property>

@@ -46,7 +46,7 @@ public class RutaArchivoControllerTest {
         CustomPaginate<DetalleConsultaRutaDTO> response = new CustomPaginate<>();
 
         when(rutaService.buscarRuta(any())).thenReturn(response);
-        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = rutaController.buscarRuta(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -58,7 +58,7 @@ public class RutaArchivoControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(rutaService.editarRuta(any(), any())).thenReturn(1l);
-        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = rutaController.editarRuta(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -71,7 +71,7 @@ public class RutaArchivoControllerTest {
         DetalleRegistroRutaDTO response = new DetalleRegistroRutaDTO();
 
         when(rutaService.obtenerRuta(any())).thenReturn(response);
-        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = rutaController.obtenerRuta(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -84,7 +84,7 @@ public class RutaArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(rutaService.descargarRutas(any(), any(), any())).thenReturn(response);
-        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = rutaController.descargarPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -97,7 +97,7 @@ public class RutaArchivoControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(rutaService.descargarRutas(any(), any(), any())).thenReturn(response);
-        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(rutaService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = rutaController.descargarXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());

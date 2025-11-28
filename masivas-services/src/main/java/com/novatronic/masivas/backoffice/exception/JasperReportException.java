@@ -16,6 +16,9 @@ public class JasperReportException extends RuntimeException {
         super(message);
         this.errorCode = errorCode;
     }
+    public JasperReportException(Throwable cause) {
+        super(cause);
+    }
 
     public String getErrorCode() {
         return errorCode;

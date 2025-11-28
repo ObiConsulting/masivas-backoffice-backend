@@ -172,7 +172,8 @@ public class GenericService {
         if (propietaria.isPresent()) {
             return propietaria.get().getCodigo();
         } else {
-            LOGGER.error(LogUtil.generarMensajeLogError("9999",PROP_NO_ENCONTRADA,null));
+            String log=LogUtil.generarMensajeLogError(PROP_NO_ENCONTRADA);
+            LOGGER.error(log);
             return "-1";
         }
     }
@@ -185,7 +186,8 @@ public class GenericService {
         if (propietaria.isPresent()) {
             return propietaria.get().getIdEntidad();
         } else {
-            LOGGER.error(LogUtil.generarMensajeLogError("9999",PROP_NO_ENCONTRADA,null));
+            String log=LogUtil.generarMensajeLogError(PROP_NO_ENCONTRADA);
+            LOGGER.error(log);
             return null;
         }
     }

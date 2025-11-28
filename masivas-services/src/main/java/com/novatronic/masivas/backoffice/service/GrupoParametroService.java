@@ -14,6 +14,8 @@ import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
+
 /**
  *
  * @author Obi Consulting
@@ -52,6 +56,7 @@ public class GrupoParametroService {
     private String logo;
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(GrupoParametroService.class);
+
 
     public GrupoParametroService(GrupoParametroRepository grupoParametroRepository, ParametroCacheService parametroCacheService, CoreService coreService) {
         this.grupoParametroRepository = grupoParametroRepository;
@@ -91,10 +96,13 @@ public class GrupoParametroService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al crear grupo parámetro"));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al crear grupo parámetro"));
             throw new GenericException(e);
         }
 
@@ -170,10 +178,13 @@ public class GrupoParametroService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al editar grupo parámetro"));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al editar grupo parámetro"));
             throw new GenericException(e);
         }
     }
@@ -277,12 +288,14 @@ public class GrupoParametroService {
             //Filtros
             parameters.put("IN_CODIGO", request.getCodigo());
             parameters.put("IN_ESTADO", request.getEstado());
-
+            LOGGER.info(EXITO_DESCARGA_GRUPO_PARAMETRO);
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteGrupoParametro.jrxml", "grupoParametro", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -317,8 +330,9 @@ public class GrupoParametroService {
     }
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

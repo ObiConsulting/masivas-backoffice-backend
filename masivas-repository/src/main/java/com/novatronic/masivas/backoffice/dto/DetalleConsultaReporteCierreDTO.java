@@ -1,7 +1,6 @@
 package com.novatronic.masivas.backoffice.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,8 +22,8 @@ public class DetalleConsultaReporteCierreDTO implements Serializable {
     private Long totalObtenidoCCE = 0L;
     private Long totalEnviadoCliente = 0L;
 
-    private List<Object[]> detalleArchivoDirectorio;
-    private List<Object[]> detalleArchivoMasivas;
-    private List<Object[]> detalleArchivoTitularidad;
+    private transient List<Object[]> detalleArchivoDirectorio;
+    private transient List<Object[]> detalleArchivoMasivas;
+    private transient List<Object[]> detalleArchivoTitularidad;
 
 }

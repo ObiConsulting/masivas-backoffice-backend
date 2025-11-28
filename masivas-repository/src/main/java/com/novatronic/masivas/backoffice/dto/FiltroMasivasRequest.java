@@ -234,30 +234,33 @@ public class FiltroMasivasRequest {
         return moneda == null || moneda.trim().isEmpty() ? null : moneda;
     }
 
+    private static final String CODIGO="codigo=";
+    private static final String ESTADO=", estado=";
+
     public String toStringGrupoParametro() {
-        return "{" + "codigo=" + codigo + ", estado=" + estado + '}';
+        return "{" + CODIGO + codigo + ESTADO + estado + '}';
     }
 
     public String toStringParametro() {
-        return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", estado=" + estado + '}';
+        return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ESTADO + estado + '}';
     }
 
     public String toStringEntidadAplicacion() {
-        return "{" + "codigo=" + codigo + ", nombre=" + nombre + ", estado=" + estado + '}';
+        return "{" + CODIGO + codigo + ", nombre=" + nombre + ESTADO + estado + '}';
     }
 
     public String toStringArchivoDirectorio() {
-        return "{" + "fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", estado=" + estado + '}';
+        return "{" + "fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ESTADO + estado + '}';
     }
 
     public String toStringArchivoMasivas() {
         return "{" + "fechaInicioObtencion=" + fechaInicioObtencion + ", fechaFinObtencion=" + fechaFinObtencion + "fechaInicioProcesada=" + fechaInicioProcesada
-                + ", fechaFinProcesada=" + fechaFinProcesada + ", estado=" + estado + '}';
+                + ", fechaFinProcesada=" + fechaFinProcesada + ESTADO + estado + '}';
     }
 
     public String toStringArchivoTitularidad() {
         return "{" + "fechaInicioObtencion=" + fechaInicioObtencion + ", fechaFinObtencion=" + fechaFinObtencion + "fechaInicioProcesada=" + fechaInicioProcesada
-                + ", fechaFinProcesada=" + fechaFinProcesada + ", estado=" + estado + '}';
+                + ", fechaFinProcesada=" + fechaFinProcesada + ESTADO + estado + '}';
     }
 
     public String toStringRuta() {

@@ -10,16 +10,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
 
 public class PerformanceInterceptor implements HandlerInterceptor {
     public static final NovaLogger LOG = NovaLogger.getLogger(PerformanceInterceptor.class);
-    private long inicio = 0;
     private long fin = 0;
     private String methodName = "";
     private String className = "";
+    private static final String START_TIME_ATTR = "PERF_START_TIME";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -27,8 +28,8 @@ public class PerformanceInterceptor implements HandlerInterceptor {
 
         HandlerMethod hm = null;
         try {
+            request.setAttribute(START_TIME_ATTR, Instant.now());
             hm = (HandlerMethod) handler;
-            inicio = System.currentTimeMillis();
             Method metodo = hm.getMethod();
             methodName = metodo.getName();
             className = metodo.getDeclaringClass().getName();
@@ -63,6 +64,12 @@ public class PerformanceInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
+        long inicio;
+        Instant startTime = (Instant) request.getAttribute(START_TIME_ATTR);
+        inicio=startTime.toEpochMilli();
+        Instant endTime = Instant.now();
+        fin=endTime.toEpochMilli();
+
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
         String space = " ";
         String log= String.format("%1$-16s", MODULO_ORIGEN) +

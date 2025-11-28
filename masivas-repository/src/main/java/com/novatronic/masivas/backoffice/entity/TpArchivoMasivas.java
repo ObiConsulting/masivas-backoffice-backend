@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -67,14 +69,14 @@ public class TpArchivoMasivas extends ModelAudit<String> implements Serializable
     private Long estadoProcesadoCCE;
     @Column(name = "ESTADO_ENVIO_CLIENTE")
     private Long estadoEnviadoCliente;
-    @Column(name = "MONTO_PROCESADO_CCE_DOLAR", precision = 16, scale = 0)
-    private Long montoProcesadoDolar;
-    @Column(name = "MONTO_PROCESADO_CCE_SOL", precision = 16, scale = 0)
-    private Long montoProcesadoSol;
-    @Column(name = "MONTO_RECHAZADO_DOLAR", precision = 16, scale = 0)
-    private Long montoRechazadoDolar;
-    @Column(name = "MONTO_RECHAZADO_SOL", precision = 16, scale = 0)
-    private Long montoRechazadoSol;
+    @Column(name = "MONTO_PROCESADO_CCE_DOLAR")
+    private BigDecimal montoProcesadoDolar;
+    @Column(name = "MONTO_PROCESADO_CCE_SOL")
+    private BigDecimal montoProcesadoSol;
+    @Column(name = "MONTO_RECHAZADO_DOLAR")
+    private BigDecimal montoRechazadoDolar;
+    @Column(name = "MONTO_RECHAZADO_SOL")
+    private BigDecimal montoRechazadoSol;
     @Column(name = "ESTADO_FISICO")
     private Long estadoFisico;
     @Column(name = "FEC_MODIFICACION_FISICA")

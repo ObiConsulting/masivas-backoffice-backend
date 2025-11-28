@@ -13,6 +13,8 @@ import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.ERROR_DESCARGA_GENERAL;
 
 /**
  *
@@ -85,14 +90,18 @@ public class EntidadService {
             return entidad.getIdEntidad();
 
         } catch (Exception e) {
+
             Throwable excepcion = e.getCause();
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al crear entidad"));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al crear entidad"));
             throw new GenericException(e);
         }
 
@@ -171,10 +180,13 @@ public class EntidadService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_ENTIDAD_UNICA, ConstantesServices.MENSAJE_ERROR_COD_ENTIDAD_UNICA,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al editar entidad"));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al editar entidad"));
             throw new GenericException(e);
         }
 
@@ -279,12 +291,14 @@ public class EntidadService {
             parameters.put("IN_CODIGO", request.getCodigo());
             parameters.put("IN_NOMBRE", request.getNombre());
             parameters.put("IN_ESTADO", request.getEstado());
-
+            LOGGER.info(EXITO_DESCARGA_ENTIDAD);
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteEntidadesFinancieras.jrxml", "entidadesFinancieras", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -309,9 +323,10 @@ public class EntidadService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
-        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
+        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), ConstantesServices.TABLA_ENTIDAD, userContext.getIp(),
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

@@ -17,6 +17,9 @@ public class UniqueFieldException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public UniqueFieldException(Throwable cause) {
+        super(cause);
+    }
     public String getErrorCode() {
         return errorCode;
     }

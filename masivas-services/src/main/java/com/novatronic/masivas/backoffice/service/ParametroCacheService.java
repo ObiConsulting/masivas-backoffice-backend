@@ -63,13 +63,13 @@ public class ParametroCacheService {
             // 2. Si no existe en classpath, intentar desde ruta externa
             String configPath = System.getenv("SIXCFG");
             if (configPath == null || configPath.isBlank()) {
-                LOGGER.error(LogUtil.generarMensajeLogError(null,"Variable de entorno SIXCFG no está definida.",null));
+                LOGGER.error(LogUtil.generarMensajeLogError("Variable de entorno SIXCFG no está definida."));
                 throw new IOException();
             }
             String externalFilePath = configPath + EXTERNAL_FILE_RELATIVE;
             Resource externalResource = new FileSystemResource(externalFilePath);
             if (!externalResource.exists()) {
-                LOGGER.error(LogUtil.generarMensajeLogError(null,"El archivo de configuración no existe: "+externalFilePath,null));
+                LOGGER.error(LogUtil.generarMensajeLogError("El archivo de configuración no existe: "+externalFilePath));
                 throw new IOException();
             }
             novaProps = PropertiesLoaderUtils.loadProperties(externalResource);

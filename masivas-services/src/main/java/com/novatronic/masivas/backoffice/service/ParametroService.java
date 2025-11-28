@@ -13,6 +13,8 @@ import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
 
 /**
  *
@@ -92,10 +96,13 @@ public class ParametroService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al crear parámetro"));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al crear parámetro"));
             throw new GenericException(e);
         }
 
@@ -168,10 +175,13 @@ public class ParametroService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO, ConstantesServices.MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al editar parámetro"));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al editar parámetro"));
             throw new GenericException(e);
         }
     }
@@ -276,12 +286,14 @@ public class ParametroService {
             parameters.put("IN_GRUPO_PARAMETRO", genericService.getNombreGrupoParametro(request.getIdGrupoParametro()));
             parameters.put("IN_CODIGO", request.getCodigo());
             parameters.put("IN_ESTADO", request.getEstado());
-
+            LOGGER.info(EXITO_DESCARGA_PARAMETRO);
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteParametro.jrxml", "parametro", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -305,8 +317,9 @@ public class ParametroService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
-        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
+        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), ConstantesServices.TABLA_PARAMETRO, userContext.getIp(),
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 }

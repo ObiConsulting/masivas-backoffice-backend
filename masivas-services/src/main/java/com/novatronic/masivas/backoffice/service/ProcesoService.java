@@ -7,6 +7,7 @@ import com.novatronic.masivas.backoffice.entity.TpProceso;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
 import com.novatronic.masivas.backoffice.repository.ProcesoRepository;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
@@ -170,8 +171,9 @@ public class ProcesoService {
     }
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

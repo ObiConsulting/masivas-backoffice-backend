@@ -37,7 +37,7 @@ public class DetalleConsultaArchivoMasivasDTO implements Serializable {
     private boolean flagRestaurar;
 
     public DetalleConsultaArchivoMasivasDTO(Long idArchivo, String nombre, LocalDateTime fechaObtencion, LocalDateTime fechaProcesada, Long cantidadDeclarado, Long cantidadProcesado,
-            Long montoProcesadoDolar, Long montoProcesadoSol, Long montoRechazadoDolar, Long montoRechazadoSol, String estado, boolean flagRespaldar, boolean flagRestaurar) {
+                                            BigDecimal montoProcesadoDolar, BigDecimal montoProcesadoSol, BigDecimal montoRechazadoDolar, BigDecimal montoRechazadoSol, String estado, boolean flagRespaldar, boolean flagRestaurar) {
         this.idArchivo = idArchivo;
         this.nombre = nombre;
         this.fechaObtencion = fechaObtencion;

@@ -7,7 +7,9 @@ import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
 import com.novatronic.masivas.backoffice.repository.DetalleArchivoMasivasRepository;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
 
 /**
  *
@@ -159,11 +163,14 @@ public class DetalleMasivasService {
             parameters.put("IN_CUENTA_DESTINO", request.getCuentaDestino());
             parameters.put("IN_MOTIVO_RECHAZO", genericService.getNombreMotivoRechazo(request.getMotivoRechazo()));
             parameters.put("IN_TIPO_TRANSACCION", genericService.getNombreTipoTransaccion(request.getTipoTransaccion()));
+            LOGGER.info(EXITO_DESCARGA_DETALLE_MASIVAS);
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteDetalleArchivoMasivas.jrxml", "detalleMasivas", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(ERROR_DESCARGA_GENERAL));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(ERROR_DESCARGA_GENERAL));
             throw new GenericException(e);
         } finally {
             if (virtualizer != null) {
@@ -178,8 +185,9 @@ public class DetalleMasivasService {
     }
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

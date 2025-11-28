@@ -25,9 +25,11 @@ import org.springframework.web.client.RestClientException;
 public class GlobalExceptionHandler {
 
     private static final NovaLogger LOGGER = NovaLogger.getLogger(GlobalExceptionHandler.class);
-
+    private String log="";
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<MasivasResponse<Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        log=LogUtil.generarMensajeLogError(null,"Se produjo una Validation Exception",null);
+        LOGGER.error(log,ex);
         String errores = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
@@ -37,7 +39,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({UniqueFieldException.class, NoOperationExistsException.class, ActionRestCoreException.class})
     public ResponseEntity<MasivasResponse<Object>> handleBusinessExceptions(RuntimeException ex) {
-        LOGGER.error(LogUtil.generarMensajeLogError("9999",ex.getMessage(),null), ex);
+        log=LogUtil.generarMensajeLogError(null,"Se produjo una Business Exception",null);
+        LOGGER.error(log,ex);
         String errorCode = "";
 
         if (ex instanceof UniqueFieldException uniqueFieldException) {
@@ -52,19 +55,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataBaseException.class)
     public ResponseEntity<MasivasResponse<Object>> handleDataBaseException(DataBaseException ex) {
-        LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_BD,null), ex);
+        log=LogUtil.generarMensajeLogError(null,ConstantesServices.MENSAJE_ERROR_BD,null);
+        LOGGER.error(log, ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_BD, ConstantesServices.MENSAJE_ERROR_BD, null));
     }
 
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<MasivasResponse<Object>> handleRestClientException(RestClientException ex) {
-        LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_API_CORE,null),ex);
+        log=LogUtil.generarMensajeLogError(null,ConstantesServices.MENSAJE_ERROR_API_CORE,null);
+        LOGGER.error(log, ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_API_CORE, ConstantesServices.MENSAJE_ERROR_API_CORE, null));
     }
 
     @ExceptionHandler(GenericException.class)
     public ResponseEntity<MasivasResponse<Object>> handleGenericException(GenericException ex) {
-        LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_GENERICO,null), ex);
+        log=LogUtil.generarMensajeLogError(null,ConstantesServices.MENSAJE_ERROR_GENERICO,null);
+        LOGGER.error(log, ex);
         return ResponseEntity.status(HttpStatus.OK).body(new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null));
     }
 

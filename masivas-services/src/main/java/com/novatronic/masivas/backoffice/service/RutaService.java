@@ -11,6 +11,8 @@ import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.ERROR_DESCARGA_GENERAL;
 
 /**
  *
@@ -163,12 +168,14 @@ public class RutaService {
             //Filtros
             parameters.put("IN_CATEGORIA", genericService.getNombreCategoriaDirectorio(request.getCodCategoriaDirectorio()));
             parameters.put("IN_TIPO_ARCHIVO", genericService.getNombreTipoArchivo(request.getCodTipoArchivo()));
-
+            LOGGER.info(EXITO_DESCARGA_RUTA);
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteRutaArchivos.jrxml", "rutaArchivo", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -190,9 +197,10 @@ public class RutaService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
-        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
+        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(),  ConstantesServices.TABLA_RUTA, userContext.getIp(),
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

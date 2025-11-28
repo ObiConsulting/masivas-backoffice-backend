@@ -18,18 +18,16 @@ import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
 import com.novatronic.masivas.backoffice.repository.ArchivoDirectorioRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoMasivasRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoTitularidadRepository;
-import com.novatronic.masivas.backoffice.util.LogUtil;
+import com.novatronic.masivas.backoffice.util.*;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
-import com.novatronic.masivas.backoffice.util.ConstantesServices;
-import com.novatronic.masivas.backoffice.util.GenerarReporte;
-import com.novatronic.masivas.backoffice.util.ServicesUtil;
 import com.novatronic.novalog.audit.logger.NovaLogger;
 import jakarta.transaction.RollbackException;
 import java.time.LocalDateTime;
@@ -48,6 +46,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
 
 /**
  *
@@ -142,7 +142,6 @@ public class ArchivoService {
             CustomPaginate<DetalleConsultaArchivoMasivasDTO> customPaginate = new CustomPaginate<>(totalPaginas, totalRegistros, objPageable.getContent());
 
             logEvento(ConstantesServices.MENSAJE_TRAZABILIDAD_RESULTADOS, customPaginate.getTotalRegistros());
-
             return customPaginate;
 
         } catch (DataAccessException e) {
@@ -215,8 +214,10 @@ public class ArchivoService {
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteArchivoDirectorio.jrxml", "archivoDirectorio", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -251,8 +252,10 @@ public class ArchivoService {
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteArchivoMasivas.jrxml", "archivoMasivas", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -287,8 +290,10 @@ public class ArchivoService {
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteArchivoTitularidad.jrxml", "archivoTitularidad", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -554,12 +559,13 @@ public class ArchivoService {
     }
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
     public void logError(String mensajeError, Exception e) {
-        LOGGER.error(LogUtil.generarMensajeLogError("9999",mensajeError,null), e);
+        LOGGER.error(LogUtil.generarMensajeLogError(mensajeError), e);
     }
 
 }

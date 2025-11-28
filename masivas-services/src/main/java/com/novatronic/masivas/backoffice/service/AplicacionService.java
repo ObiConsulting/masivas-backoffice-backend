@@ -13,6 +13,7 @@ import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
 import com.novatronic.masivas.backoffice.exception.NoOperationExistsException;
 import com.novatronic.masivas.backoffice.exception.UniqueFieldException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
 import com.novatronic.masivas.backoffice.repository.AplicacionRepository;
 import com.novatronic.masivas.backoffice.util.LogUtil;
 import com.novatronic.novalog.audit.util.Estado;
@@ -33,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
 
 /**
  *
@@ -90,11 +93,13 @@ public class AplicacionService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA,ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA,null),e);
-                    //throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA, ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA,ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA,ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al crear aplicación",null));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al crear aplicación",null));
             throw new GenericException(e);
         }
 
@@ -173,10 +178,13 @@ public class AplicacionService {
             if (excepcion instanceof RollbackException) {
                 excepcion = excepcion.getCause();
                 if (excepcion instanceof ConstraintViolationException) {
-                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA, ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA, e);
+                    LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA,ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA,null));
+                    throw new UniqueFieldException(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA,ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA,e);
                 }
+                LOGGER.error(LogUtil.generarMensajeLogError("Error al editar aplicación",null));
                 throw new DataBaseException(e);
             }
+            LOGGER.error(LogUtil.generarMensajeLogError("Error al editar aplicación",null));
             throw new GenericException(e);
         }
 
@@ -280,12 +288,14 @@ public class AplicacionService {
             parameters.put("IN_CODIGO", request.getCodigo());
             parameters.put("IN_NOMBRE", request.getNombre());
             parameters.put("IN_ESTADO", request.getEstado());
-
+            LOGGER.info(EXITO_DESCARGA_APLICACION);
             return GenerarReporte.generarReporte(resultado.getContenido(), parameters, usuario, tipoArchivo, "reportes/reporteAplicaciones.jrxml", "aplicacion", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw e;
         } catch (Exception e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_ERROR_DESCARGA_GENERAL,ERROR_DESCARGA_GENERAL,null));
             throw new GenericException(e);
         }
 
@@ -308,9 +318,10 @@ public class AplicacionService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
-        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
+        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), ConstantesServices.TABLA_APLICACION, userContext.getIp(),
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
 }

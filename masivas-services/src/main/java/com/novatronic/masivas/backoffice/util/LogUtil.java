@@ -1,5 +1,7 @@
 package com.novatronic.masivas.backoffice.util;
 
+import static com.novatronic.masivas.backoffice.util.ConstantesServices.RESPUESTA_ERROR_9999;
+
 public class LogUtil {
     public static String NOMBREMICROSERVICIO;
     public static String NODOCODIGO;
@@ -35,9 +37,21 @@ public class LogUtil {
         return String.format("%" + len + "s", s).replace(' ', '0'); // pad izquierda
     }
 
+    public static String padCodigoGenerico() {
+        return String.format("%-6s", RESPUESTA_ERROR_9999);
+    }
+
+    public static String generarMensajeLogError(String descripcion) {
+        return generarMensajeLogError(RESPUESTA_ERROR_9999, descripcion, null);
+    }
+
+    public static String generarMensajeLogError(String descripcion, String mensaje) {
+        return generarMensajeLogError(RESPUESTA_ERROR_9999, descripcion, mensaje);
+    }
+
     public static String generarMensajeLogError(String codigo, String descripcion, String mensaje) {
         return String.format("%-6.6s %s %s",
-                codigo != null ? codigo : "",
+                codigo != null ? codigo : RESPUESTA_ERROR_9999,
                 descripcion != null ? descripcion : "",
                 mensaje != null ? mensaje : "");
     }

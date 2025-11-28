@@ -46,7 +46,7 @@ public class EntidadControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(entidadService.crearEntidad(any(), any())).thenReturn(1l);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.registrarEntidad(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -59,7 +59,7 @@ public class EntidadControllerTest {
         CustomPaginate<DetalleConsultaEntidadDTO> response = new CustomPaginate<>();
 
         when(entidadService.buscarEntidad(any())).thenReturn(response);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.buscarEntidad(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -71,7 +71,7 @@ public class EntidadControllerTest {
         MasivasRequestDTO request = new MasivasRequestDTO();
 
         when(entidadService.editarEntidad(any(), any())).thenReturn(1l);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.editarEntidad(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -84,7 +84,7 @@ public class EntidadControllerTest {
         DetalleRegistroEntidadDTO response = new DetalleRegistroEntidadDTO();
 
         when(entidadService.obtenerEntidad(any())).thenReturn(response);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.obtenerEntidad(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -97,7 +97,7 @@ public class EntidadControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(entidadService.cambiarEstadoEntidad(any(), any(), any())).thenReturn(response);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.activar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -110,7 +110,7 @@ public class EntidadControllerTest {
         EstadoDTO response = new EstadoDTO();
 
         when(entidadService.cambiarEstadoEntidad(any(), any(), any())).thenReturn(response);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.desactivar(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -123,7 +123,7 @@ public class EntidadControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(entidadService.descargarEntidades(any(), any(), any())).thenReturn(response);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.descargarPDF(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());
@@ -136,7 +136,7 @@ public class EntidadControllerTest {
         ReporteDTO response = new ReporteDTO();
 
         when(entidadService.descargarEntidades(any(), any(), any())).thenReturn(response);
-        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any(), any());
+        doNothing().when(entidadService).logAuditoria(any(), any(), any(), any(), any(), any(), any());
 
         ResponseEntity<MasivasResponse<Object>> resultado = entidadController.descargarXLSX(request, userContext);
         assertEquals(200, resultado.getStatusCodeValue());

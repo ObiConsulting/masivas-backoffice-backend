@@ -90,8 +90,8 @@ public class GenerarReporte {
             return new ReporteDTO(nombreArchivo, reporte);
 
         } catch (IOException | JRException e) {
-            LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_JASPER,"Ocurrió un error al generar el reporte " + jasperFile,null), e);
-            throw new JasperReportException(ConstantesServices.CODIGO_ERROR_JASPER, ConstantesServices.MENSAJE_ERROR_JASPER);
+            LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.CODIGO_ERROR_JASPER,"Ocurrió un error al generar el reporte " + jasperFile,null));
+            throw new JasperReportException(e);
         }
     }
 

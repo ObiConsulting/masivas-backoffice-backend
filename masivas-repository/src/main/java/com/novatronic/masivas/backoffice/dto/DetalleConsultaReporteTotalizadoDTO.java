@@ -19,8 +19,8 @@ public class DetalleConsultaReporteTotalizadoDTO implements Serializable {
 
     private Long totalProcesado = 0L;
     private Long totalPendiente = 0L;
-    private BigDecimal montoProcesadoDolar;
-    private BigDecimal montoProcesadoSol;
-    private BigDecimal montoRechazadoDolar;
-    private BigDecimal montoRechazadoSol;
+    private String montoProcesadoDolar;
+    private String montoProcesadoSol;
+    private String montoRechazadoDolar;
+    private String montoRechazadoSol;
 }

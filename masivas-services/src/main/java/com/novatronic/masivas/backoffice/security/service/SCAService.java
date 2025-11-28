@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import static com.novatronic.masivas.backoffice.util.LogUtil.generarMensajeLogError;
+
 /**
  *
  * @author Obi Consulting
@@ -46,7 +48,7 @@ public class SCAService {
             log.info("Inicializando ManejadorAutenticacion...");
 
             if (configProperties == null) {
-                log.error("Las propiedades AAS no fueron inyectadas correctamente.");
+                log.error(generarMensajeLogError("Las propiedades AAS no fueron inyectadas correctamente."));
                 throw new IllegalStateException("Las propiedades AAS son nulas.");
             }
             log.info("Propiedades AAS cargadas correctamente.");
@@ -61,9 +63,9 @@ public class SCAService {
             log.info("Inicio Recursos Correctamente");
 
         } catch (AASException ex) {
-            log.error(LogUtil.generarMensajeLogError("9999","Error AASException ",null), ex);
+            log.error(generarMensajeLogError("Error AASException "), ex);
         } catch (IllegalStateException e) {
-            log.error(LogUtil.generarMensajeLogError("9999",Constantes.MENSAJE_ERROR_BD_USUARIO,null), e);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), e);
         }
     }
 
@@ -73,9 +75,9 @@ public class SCAService {
             aaService.shutdown();
             log.info("Cierre de recursos correctamente");
         } catch (AASException ex) {
-            log.error(LogUtil.generarMensajeLogError("9999","Error al detener los servicios, ",null), ex);
+            log.error(generarMensajeLogError("Error al detener los servicios, "), ex);
         } catch (Exception e) {
-            log.error(LogUtil.generarMensajeLogError("9999",Constantes.MENSAJE_ERROR_BD_USUARIO,null), e);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), e);
         }
     }
 
@@ -115,13 +117,13 @@ public class SCAService {
             objRespuesta.setResponseDescription(ConstantesServices.MENSAJE_EXITO_INICIAR_SESION);
 
         } catch (AASException ex) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, ex);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), ex);
             objRespuesta.setToken("");
             objRespuesta.setResponseCode(ex.getExternalCode());
             objRespuesta.setResponseDescription(ex.getLocalizedMessage());
 
         } catch (UnknownHostException ex) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, ex);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), ex);
             objRespuesta.setToken("");
             objRespuesta.setResponseCode(ConstantesServices.RESPUESTA_ERROR_9999);
             objRespuesta.setResponseDescription("Ocurrio un error al iniciar sesión");
@@ -135,9 +137,9 @@ public class SCAService {
         try {
             mapaAtributos = aaService.getUserAttributes(token);
         } catch (AASException ex) {
-            log.error(LogUtil.generarMensajeLogError(null,"Error al obtener lista de recursos, ",null), ex);
+            log.error(generarMensajeLogError("Error al obtener lista de recursos, "), ex);
         } catch (Exception e) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), e);
         }
         return mapaAtributos;
     }
@@ -146,9 +148,9 @@ public class SCAService {
         try {
             resources = aaService.listResources(token);
         } catch (AASException ex) {
-            log.error(LogUtil.generarMensajeLogError(null,"Error al obtener lista de recursos, ",null), ex);
+            log.error(generarMensajeLogError("Error al obtener lista de recursos, "), ex);
         } catch (Exception e) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), e);
         }
         return resources;
     }
@@ -157,9 +159,9 @@ public class SCAService {
         try {
             profile = aaService.listProfiles(token);
         } catch (AASException ex) {
-            log.error(LogUtil.generarMensajeLogError(null,"Error al obtener lista de Profiles, ",null), ex);
+            log.error(generarMensajeLogError("Error al obtener lista de Profiles, "), ex);
         } catch (Exception e) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), e);
         }
         return profile;
     }
@@ -190,13 +192,13 @@ public class SCAService {
             objRespuesta.setResponseDescription(ConstantesServices.MENSAJE_EXITO_CAMBIAR_CONTRASENA);
 
         } catch (AASException ex) {
-            log.error(LogUtil.generarMensajeLogError("9999","Error al generar token. ",null), ex);
+            log.error(generarMensajeLogError("Error al generar token. "), ex);
             objRespuesta.setToken("");
             objRespuesta.setResponseCode(ex.getExternalCode());
             objRespuesta.setResponseDescription(ex.getCause().fillInStackTrace().getMessage());
 
         } catch (UnknownHostException e) {
-            log.error(Constantes.MENSAJE_ERROR_BD_USUARIO, e);
+            log.error(generarMensajeLogError(Constantes.MENSAJE_ERROR_BD_USUARIO), e);
             objRespuesta.setToken("");
             objRespuesta.setResponseCode(ConstantesServices.RESPUESTA_ERROR_9999);
             objRespuesta.setResponseDescription("Ocurrio un error al cambiar contraseña");

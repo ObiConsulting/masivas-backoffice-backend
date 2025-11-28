@@ -15,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import static com.novatronic.masivas.backoffice.util.LogUtil.padCodigoGenerico;
+
 /**
  *
  * @author Obi Consulting
@@ -38,7 +40,7 @@ public final class ServicesUtil {
             return BigDecimal.valueOf(long1);
         }
         // Si llega aquí, es un tipo inesperado
-        LOGGER.error("Advertencia: Tipo de dato inesperado para la suma: " + valor.getClass().getName());
+        LOGGER.error("{} Advertencia: Tipo de dato inesperado para la suma: {}", padCodigoGenerico(), valor.getClass().getName());
         return BigDecimal.ZERO;
     }
 

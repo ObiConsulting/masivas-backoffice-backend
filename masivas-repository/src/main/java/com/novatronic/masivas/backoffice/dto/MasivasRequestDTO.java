@@ -42,16 +42,17 @@ public class MasivasRequestDTO {
     private Long idProceso;
     private String horario;
 
+    private static final String CODIGO=", codigo=";
     public String toStringGrupoParametro() {
-        return "{" + "idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", descripcion=" + descripcion + '}';
+        return "{" + "idGrupoParametro=" + idGrupoParametro + CODIGO + codigo + ", descripcion=" + descripcion + '}';
     }
 
     public String toStringParametro() {
-        return "{" + "idParametro=" + idParametro + ", idGrupoParametro=" + idGrupoParametro + ", codigo=" + codigo + ", valor=" + valor + '}';
+        return "{" + "idParametro=" + idParametro + ", idGrupoParametro=" + idGrupoParametro + CODIGO + codigo + ", valor=" + valor + '}';
     }
 
     public String toStringEntidad() {
-        return "{" + "idEntidad=" + idEntidad + ", codigo=" + codigo + ", nombre=" + nombre + '}';
+        return "{" + "idEntidad=" + idEntidad + CODIGO + codigo + ", nombre=" + nombre + '}';
     }
 
     public String toStringRuta() {
@@ -63,7 +64,7 @@ public class MasivasRequestDTO {
     }
 
     public String toStringAplicacion() {
-        return "{" + "idAplicacion=" + idAplicacion + ", codigo=" + codigo + ", nombre=" + nombre + '}';
+        return "{" + "idAplicacion=" + idAplicacion + CODIGO + codigo + ", nombre=" + nombre + '}';
     }
 
     public String toStringActivarDesactivar() {

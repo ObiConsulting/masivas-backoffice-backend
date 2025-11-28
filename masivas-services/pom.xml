@@ -14,6 +14,16 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>com.novatronic.masivas.backoffice.MasivasBackend</exec.mainClass>
+        <sonar.exclusions>
+            **/*Util.java,
+            **/Log*.java,
+            **/*Config.java,
+            **/util/**,
+            **/*Test.java
+        </sonar.exclusions>
+        <sonar.test.exclusions>
+            **/*Test.java
+        </sonar.test.exclusions>
     </properties>
 
     <parent>

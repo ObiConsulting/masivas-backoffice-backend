@@ -52,7 +52,7 @@ public interface DetalleArchivoMasivasRepository extends JpaRepository<TpDetalle
             Pageable pageable
     );
 
-    @Query("SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleReporteConsolidadoDTO("
+    @Query("  SELECT NEW com.novatronic.masivas.backoffice.dto.DetalleReporteConsolidadoDTO("
             + "CONCAT(d.codEntidadDestino, ' - ', e.nombre), "
             + "CONCAT (d.moneda, ' - ', mo.valor), "
             + "COUNT(d.idArchivo), "

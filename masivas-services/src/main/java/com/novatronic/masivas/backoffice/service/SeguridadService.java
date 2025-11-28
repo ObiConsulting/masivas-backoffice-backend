@@ -3,6 +3,7 @@ package com.novatronic.masivas.backoffice.service;
 import com.hazelcast.core.HazelcastInstance;
 import com.novatronic.masivas.backoffice.dto.MasivasResponse;
 import com.novatronic.masivas.backoffice.dto.SCAResponseDto;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
 import com.novatronic.masivas.backoffice.security.model.CaptchaRequest;
 import com.novatronic.masivas.backoffice.security.model.CaptchaResponse;
 import com.novatronic.masivas.backoffice.security.model.LoginResponse;
@@ -218,10 +219,10 @@ public class SeguridadService {
 
         } catch (ResourceAccessException e) {
             // Timeout o problema de red
-            LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_EXCEPTION,null), e);
+            LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.MENSAJE_ERROR_EXCEPTION), e);
             return null;
         } catch (RestClientException e) {
-            LOGGER.error(LogUtil.generarMensajeLogError("9999",ConstantesServices.MENSAJE_ERROR_EXCEPTION,null), e);
+            LOGGER.error(LogUtil.generarMensajeLogError(ConstantesServices.MENSAJE_ERROR_EXCEPTION), e);
             return null;
 
         }
@@ -231,14 +232,15 @@ public class SeguridadService {
         LOGGER.info(mensaje, param);
     }
 
-    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
-        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null, null, mensajeRespuesta, codigoRespuesta);
+    public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje=LogAuditoria.resolveTrxId();
+        LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), ConstantesServices.INTEGRACION_SCA, userContext.getIp(),
+                idMensaje, origen, null, null, mensajeRespuesta, codigoRespuesta);
     }
 
     public void logError(String mensajeError, Exception e) {
         if (LOGGER.isErrorEnabled()) {
-            LOGGER.error(LogUtil.generarMensajeLogError("9999",mensajeError,null), e);
+            LOGGER.error(LogUtil.generarMensajeLogError(mensajeError), e);
         }
     }
 

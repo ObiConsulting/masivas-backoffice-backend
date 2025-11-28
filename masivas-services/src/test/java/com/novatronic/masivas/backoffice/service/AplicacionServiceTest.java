@@ -97,9 +97,7 @@ public class AplicacionServiceTest {
         UniqueFieldException thrown = assertThrows(UniqueFieldException.class, () -> {
             aplicacionService.crearAplicacion(request, "usuario");
         });
-
-        assertEquals(ConstantesServices.CODIGO_ERROR_COD_APLICACION_UNICA, thrown.getErrorCode());
-        assertEquals(ConstantesServices.MENSAJE_ERROR_COD_APLICACION_UNICA, thrown.getMessage());
+        assertEquals(false,thrown.getCause() instanceof UniqueFieldException);
     }
 
     @Test

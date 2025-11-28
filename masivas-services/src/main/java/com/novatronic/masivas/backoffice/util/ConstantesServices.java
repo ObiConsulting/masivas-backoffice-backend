@@ -240,7 +240,7 @@ public class ConstantesServices {
     public static final String MENSAJE_BAD_REQUEST = "Campos Inesperados";
     public static final String MENSAJE_ERROR_COD_ENTIDAD_UNICA = "El codigo entidad ya existe";
     public static final String MENSAJE_ERROR_COD_GRUPO_PARAMETRO_UNICO = "El codigo grupo parámetro ya existe";
-    public static final String MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO = "La combinación de código y grupo de parámetro ya existe";
+    public static final String MENSAJE_ERROR_COD_PARAMETRO_GRUPO_PARAMETRO_UNICO = "El código ingresado ya existe dentro del mismo grupo.";
     public static final String MENSAJE_ERROR_OPERACION_NO_ENCONTRADA = "Operación no encontrada";
     public static final String MENSAJE_ERROR_COD_APLICACION_UNICA = "El codigo aplicación ya existe";
     public static final String MENSAJE_ERROR_JASPER = "Se ha producido un error al generar el archivo jasper. Por favor, inténtalo de nuevo en unos minutos.";

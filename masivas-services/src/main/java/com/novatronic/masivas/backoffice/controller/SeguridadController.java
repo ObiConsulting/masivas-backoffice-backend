@@ -87,7 +87,7 @@ public class SeguridadController {
             MasivasResponse<CustomPaginate<String>> respuesta = new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, "Operación correcta", customPaginate);
 
             seguridadService.logEvento(respuesta.getMensaje());
-            seguridadService.logAuditoria(null, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_PERMISSION,
+            seguridadService.logAuditoria(null, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.ACCION_PERMISSION,
                     respuesta.getMensaje(), ConstantesServices.RESPUESTA_OK_API);
 
             return ResponseEntity.ok(respuesta);
@@ -95,7 +95,7 @@ public class SeguridadController {
         } catch (Exception e) {
 
             seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
-            seguridadService.logAuditoria(null, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_FRACASO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_PERMISSION,
+            seguridadService.logAuditoria(null, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_FRACASO, userContext, ConstantesServices.ACCION_PERMISSION,
                     ConstantesServices.MENSAJE_ERROR_GENERICO, ConstantesServices.CODIGO_ERROR_GENERICO);
 
             MasivasResponse<CustomPaginate<String>> res = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
@@ -116,7 +116,7 @@ public class SeguridadController {
             respuesta = new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_CERRAR_SESION, null);
 
             seguridadService.logEvento(respuesta.getMensaje());
-            seguridadService.logAuditoria(userContext, Evento.EV_LOGOFF_USUARIO, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_LOGOUT,
+            seguridadService.logAuditoria(userContext, Evento.EV_LOGOFF_USUARIO, Estado.ESTADO_EXITO, userContext, ConstantesServices.ACCION_LOGOUT,
                     respuesta.getMensaje(), ConstantesServices.RESPUESTA_OK_API);
 
             return ResponseEntity.ok(respuesta);
@@ -124,7 +124,7 @@ public class SeguridadController {
         } catch (Exception e) {
 
             seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
-            seguridadService.logAuditoria(userContext, Evento.EV_LOGOFF_USUARIO, Estado.ESTADO_FRACASO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_LOGOUT,
+            seguridadService.logAuditoria(userContext, Evento.EV_LOGOFF_USUARIO, Estado.ESTADO_FRACASO, userContext, ConstantesServices.ACCION_LOGOUT,
                     ConstantesServices.MENSAJE_ERROR_GENERICO, ConstantesServices.CODIGO_ERROR_GENERICO);
 
             respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);
@@ -141,7 +141,7 @@ public class SeguridadController {
             respuesta = seguridadService.changePassword(authRequest.getUsername(), authRequest.getPassword(), authRequest.getNewpassword());
 
             seguridadService.logEvento(respuesta.getMensaje());
-            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD,
+            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_EXITO, userContext, ConstantesServices.ACCION_CHANGE_PASSWORD,
                     respuesta.getMensaje(), ConstantesServices.RESPUESTA_OK_API);
             LogSecurity.log("Cambio de contraseña",authRequest.getUsername());
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
@@ -149,7 +149,7 @@ public class SeguridadController {
         } catch (Exception e) {
 
             seguridadService.logError(ConstantesServices.MENSAJE_ERROR_GENERICO, e);
-            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_FRACASO, userContext, ConstantesServices.INTEGRACION_SCA, ConstantesServices.ACCION_CHANGE_PASSWORD,
+            seguridadService.logAuditoria(authRequest, Evento.EV_ACTUALIZA_CONFIG_SISTEMA, Estado.ESTADO_FRACASO, userContext, ConstantesServices.ACCION_CHANGE_PASSWORD,
                     ConstantesServices.MENSAJE_ERROR_GENERICO, ConstantesServices.CODIGO_ERROR_GENERICO);
 
             respuesta = new MasivasResponse<>(ConstantesServices.CODIGO_ERROR_GENERICO, ConstantesServices.MENSAJE_ERROR_GENERICO, null);

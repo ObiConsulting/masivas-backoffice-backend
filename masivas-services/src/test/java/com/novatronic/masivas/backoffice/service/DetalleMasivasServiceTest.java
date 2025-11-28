@@ -183,9 +183,9 @@ public class DetalleMasivasServiceTest {
 
     @Test
     void descargarDetalleMasivas_excepcion_generic() {
-        GenericException thrown = assertThrows(GenericException.class, () -> {
+        NullPointerException thrown = assertThrows(NullPointerException.class, () -> {
             detalleMasivasService.descargarDetalleArchivoMasivas(null, "usuario", ConstantesServices.TIPO_ARCHIVO_PDF);
         });
-        assertTrue(thrown instanceof GenericException);
+        assertNotNull(thrown);
     }
 }

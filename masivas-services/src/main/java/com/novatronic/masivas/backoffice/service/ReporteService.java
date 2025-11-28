@@ -8,10 +8,12 @@ import com.novatronic.masivas.backoffice.dto.ReporteDTO;
 import com.novatronic.masivas.backoffice.exception.DataBaseException;
 import com.novatronic.masivas.backoffice.exception.GenericException;
 import com.novatronic.masivas.backoffice.exception.JasperReportException;
+import com.novatronic.masivas.backoffice.log.LogAuditoria;
 import com.novatronic.masivas.backoffice.repository.ArchivoDirectorioRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoMasivasRepository;
 import com.novatronic.masivas.backoffice.repository.ArchivoTitularidadRepository;
 import com.novatronic.masivas.backoffice.repository.DetalleArchivoMasivasRepository;
+import com.novatronic.masivas.backoffice.util.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.novatronic.masivas.backoffice.security.model.UserContext;
@@ -28,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
 
 /**
  *
@@ -96,6 +100,7 @@ public class ReporteService {
             return reporte;
 
         } catch (DataAccessException e) {
+            LOGGER.error(LogUtil.generarMensajeLogError(CODIGO_REPORTE_TOTALIZADO_GENERAL,ERROR_REPORTE_TOTALIZADO_GENERAL,null));
             throw new DataBaseException(e);
         } catch (Exception e) {
             throw new GenericException(e);
@@ -188,7 +193,7 @@ public class ReporteService {
             //Filtros
             parameters.put("IN_FECHA", ServicesUtil.formatearLocalDateToString(request.getFecha()));
             parameters.put("IN_MONEDA", genericService.getNombreMoneda(request.getMoneda()));
-
+            LOGGER.info(EXITO_DESCARGA_CONSOLIDAD);
             return GenerarReporte.generarReporte(resultado, parameters, usuario, tipoArchivo, "reportes/reporteConsolidado.jrxml", "reporteConsolidado", logo);
 
         } catch (JasperReportException | DataBaseException | GenericException e) {
@@ -203,7 +208,7 @@ public class ReporteService {
      * Método que realiza el calculo de los totales según su estado para los
      * diferentes tipos de archivos.
      *
-     * @param request
+     * @param reporte
      * @param listaArchivo
      * @return
      */
@@ -253,10 +258,10 @@ public class ReporteService {
                     BigDecimal montoProcesadoSol = ServicesUtil.convertirABigDecimal(resultado[3]).movePointLeft(2);
                     BigDecimal montoRechazadoDolar = ServicesUtil.convertirABigDecimal(resultado[4]).movePointLeft(2);
                     BigDecimal montoRechazadoSol = ServicesUtil.convertirABigDecimal(resultado[5]).movePointLeft(2);
-                    reporte.setMontoProcesadoDolar(montoProcesadoDolar);
-                    reporte.setMontoProcesadoSol(montoProcesadoSol);
-                    reporte.setMontoRechazadoDolar(montoRechazadoDolar);
-                    reporte.setMontoRechazadoSol(montoRechazadoSol);
+                    reporte.setMontoProcesadoDolar(montoProcesadoDolar.toString());
+                    reporte.setMontoProcesadoSol(montoProcesadoSol.toString());
+                    reporte.setMontoRechazadoDolar(montoRechazadoDolar.toString());
+                    reporte.setMontoRechazadoSol(montoRechazadoSol.toString());
                 }
                 case "Pendiente por Procesar" ->
                     reporte.setTotalPendiente(reporte.getTotalPendiente() + cantidad);
@@ -272,12 +277,14 @@ public class ReporteService {
     }
 
     public <T> void logAuditoria(T request, Evento idEvento, Estado estado, UserContext userContext, String recursoAfectado, String origen, String mensajeRespuesta, String codigoRespuesta) {
+        String idMensaje= LogAuditoria.resolveTrxId();
         LOGGER.audit(null, request, idEvento, estado, userContext.getUsername(), userContext.getScaProfile(), recursoAfectado, userContext.getIp(),
-                ConstantesServices.VACIO, origen, null,null, mensajeRespuesta, codigoRespuesta);
+                idMensaje, origen, null,null, mensajeRespuesta, codigoRespuesta);
     }
 
     public void logError(String mensajeError, Exception e) {
-        LOGGER.error(mensajeError, e);
+        String log=LogUtil.generarMensajeLogError(mensajeError);
+        LOGGER.error(log, e );
     }
 
 }

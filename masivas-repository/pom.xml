@@ -59,11 +59,6 @@
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>txw2</artifactId>
                 </exclusion>
-                
-                <!--                <exclusion>
-                    <groupId>com.sun.istack</groupId>
-                    <artifactId>istack-commons-runtime</artifactId>
-                </exclusion>-->
             </exclusions>
         </dependency>
         
@@ -135,11 +130,6 @@
             <artifactId>NovaLog-Audit</artifactId>
             <version>3.0.0</version>
         </dependency>
-        <!--        <dependency>
-            <groupId>com.novatronic.log</groupId>
-            <artifactId>NovaLog</artifactId>
-            <version>2.0.0</version>
-        </dependency>-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>

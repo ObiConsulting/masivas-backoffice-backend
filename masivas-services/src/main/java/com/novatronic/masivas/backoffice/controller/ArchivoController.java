@@ -13,6 +13,7 @@ import com.novatronic.masivas.backoffice.security.model.UserContext;
 import com.novatronic.masivas.backoffice.service.ArchivoService;
 import com.novatronic.masivas.backoffice.service.DetalleMasivasService;
 import com.novatronic.masivas.backoffice.util.ConstantesServices;
+import com.novatronic.novalog.audit.logger.NovaLogger;
 import com.novatronic.novalog.audit.util.Estado;
 import com.novatronic.novalog.audit.util.Evento;
 import jakarta.validation.Valid;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.novatronic.masivas.backoffice.util.ConstantesLog.*;
 
 /**
  *
@@ -37,6 +40,7 @@ public class ArchivoController {
     @Autowired
     private DetalleMasivasService detalleMasivasService;
 
+    private static final NovaLogger LOGGER=  NovaLogger.getLogger(ArchivoController.class);
     /**
      * Endpoing que realiza la busqueda de los archivos de tipo directorio en el
      * sistema. Recibe un objeto con filtros de búsqueda, y retorna una lista
@@ -126,6 +130,7 @@ public class ArchivoController {
         ReporteDTO reporteDTO = archivoService.descargarArchivoDirectorio(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS, ConstantesServices.ACCION_EXPORT,
                 ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        LOGGER.info(EXITO_DESCARGA_DIRECTORIO);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -144,6 +149,7 @@ public class ArchivoController {
         ReporteDTO reporteDTO = archivoService.descargarArchivoDirectorio(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS, ConstantesServices.ACCION_EXPORT,
                 ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        LOGGER.info(EXITO_DESCARGA_DIRECTORIO);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -162,6 +168,7 @@ public class ArchivoController {
         ReporteDTO reporteDTO = archivoService.descargarArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_MASIVAS, ConstantesServices.ACCION_EXPORT,
                 ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        LOGGER.info(EXITO_DESCARGA_MASIVAS);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -179,7 +186,8 @@ public class ArchivoController {
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoMasivasXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_MASIVAS, ConstantesServices.ACCION_EXPORT,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        LOGGER.info(EXITO_DESCARGA_MASIVAS);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -197,7 +205,8 @@ public class ArchivoController {
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoTitularidadPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoTitularidad(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_TITULARIDAD, ConstantesServices.ACCION_EXPORT,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        LOGGER.info(EXITO_DESCARGA_TITULARIDAD);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -215,7 +224,8 @@ public class ArchivoController {
     public ResponseEntity<MasivasResponse<Object>> descargarArchivoTitularidadXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = archivoService.descargarArchivoTitularidad(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
         archivoService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_ARCHIVO_TITULARIDAD, ConstantesServices.ACCION_EXPORT,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        LOGGER.info(EXITO_DESCARGA_TITULARIDAD);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -233,7 +243,8 @@ public class ArchivoController {
     public ResponseEntity<MasivasResponse<Object>> descargarDetalleArchivoMasivasPDF(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = detalleMasivasService.descargarDetalleArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_PDF);
         detalleMasivasService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS, ConstantesServices.ACCION_EXPORT,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
@@ -251,7 +262,8 @@ public class ArchivoController {
     public ResponseEntity<MasivasResponse<Object>> descargarDetalleMasivasXLSX(@Valid @RequestBody FiltroMasivasRequest request, @AuthenticationPrincipal UserContext userContext) {
         ReporteDTO reporteDTO = detalleMasivasService.descargarDetalleArchivoMasivas(request, userContext.getUsername(), ConstantesServices.TIPO_ARCHIVO_XLSX);
         detalleMasivasService.logAuditoria(request, Evento.EV_CONSULTA_REPORTE, Estado.ESTADO_EXITO, userContext, ConstantesServices.TABLA_DETALLE_MASIVAS, ConstantesServices.ACCION_EXPORT,
-                ConstantesServices.MENSAJE_EXITO_CREAR_APLICACION, ConstantesServices.RESPUESTA_OK_API);
+                ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, ConstantesServices.RESPUESTA_OK_API);
+        LOGGER.info(EXITO_DESCARGA_DETALLE_MASIVAS);
         return ResponseEntity.ok(new MasivasResponse<>(ConstantesServices.RESPUESTA_OK_API, ConstantesServices.MENSAJE_EXITO_DESCARGAR_OPERACION, reporteDTO));
     }
 
